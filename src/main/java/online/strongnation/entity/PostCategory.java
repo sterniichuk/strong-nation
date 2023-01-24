@@ -10,20 +10,20 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "blog_category", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"blog_id", "category_id"})
+@Table(name = "post_category", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"post_id", "category_id"})
 })
-public class BlogCategory {
+public class PostCategory {
 
     @Id
     @SequenceGenerator(
-            name = "blog_category_sequence",
-            sequenceName = "blog_category_sequence",
+            name = "post_category_sequence",
+            sequenceName = "post_category_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "blog_category_sequence"
+            generator = "post_category_sequence"
     )
     @Column(name = "id")
     private Long id;
@@ -32,7 +32,7 @@ public class BlogCategory {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    public BlogCategory(Category category) {
+    public PostCategory(Category category) {
         this.category = category;
     }
 
@@ -40,7 +40,7 @@ public class BlogCategory {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BlogCategory that = (BlogCategory) o;
+        PostCategory that = (PostCategory) o;
         return category.equals(that.category);
     }
 

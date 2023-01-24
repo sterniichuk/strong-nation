@@ -38,10 +38,10 @@ public class Region {
     @ToString.Exclude
     private List<RegionCategory> categories;
 
-    @OneToMany(targetEntity = Blog.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Post.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private List<Blog> blogs;
+    private List<Post> posts;
 
     @Override
     public boolean equals(Object o) {

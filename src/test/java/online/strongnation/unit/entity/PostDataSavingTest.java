@@ -15,20 +15,20 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-class BlogDataSavingTest {
+class PostDataSavingTest {
 
     @Autowired
-    private BlogRepository repository;
+    private PostRepository repository;
     @Autowired
     private RegionRepository regionRepository;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private BlogCategoryRepository blogCategoryRepository;
+    private PostCategoryRepository postCategoryRepository;
     @Autowired
     private RegionCategoryRepository regionCategoryRepository;
     @Autowired
-    private BlogPhotoRepository blogPhotoRepository;
+    private PostPhotoRepository postPhotoRepository;
     @Autowired
     private CountryRepository countryRepository;
 
@@ -48,31 +48,31 @@ class BlogDataSavingTest {
         final BigDecimal money1 = new BigDecimal(1000);
         region.setMoney(money1);
 
-        final Blog blog = new Blog();
-        final String heading = "first blog some heading";
-        blog.setHeading(heading);
+        final Post post = new Post();
+        final String heading = "first post some heading";
+        post.setHeading(heading);
         final BigDecimal money = new BigDecimal(1000);
-        blog.setMoney(money);
-        blog.setDate(LocalDateTime.now());
-        final BlogPhoto photo = new BlogPhoto();
+        post.setMoney(money);
+        post.setDate(LocalDateTime.now());
+        final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
         photo.setPathToPhoto(path);
-        blog.setBlogPhoto(photo);
+        post.setPostPhoto(photo);
         final String link = "localH0sT";
-        blog.setLink(link);
-        region.setBlogs(List.of(blog));
+        post.setLink(link);
+        region.setPosts(List.of(post));
         countryRepository.save(country);
 
         final var savedRegion = regionRepository.findFirstByName(name).orElseThrow(()->{throw new RegionNotFoundException();});
         assertThat(savedRegion).isEqualTo(region);
-        assertThat(savedRegion.getBlogs()).isNotNull();
-        assertThat(savedRegion.getBlogs().size()).isEqualTo(1);
-        assertThat(savedRegion.getBlogs().get(0)).isEqualTo(blog);
-        var blogSaved = repository.findAll().get(0);
-        assertThat(blogSaved.getId()).isNotEqualTo(null);
-        assertThat(blogSaved.getHeading()).isEqualTo(heading);
-        assertThat(blogSaved.getMoney()).isEqualTo(money);
-        assertThat(blogSaved.getCategories()).isEqualTo(null);
+        assertThat(savedRegion.getPosts()).isNotNull();
+        assertThat(savedRegion.getPosts().size()).isEqualTo(1);
+        assertThat(savedRegion.getPosts().get(0)).isEqualTo(post);
+        var postSaved = repository.findAll().get(0);
+        assertThat(postSaved.getId()).isNotEqualTo(null);
+        assertThat(postSaved.getHeading()).isEqualTo(heading);
+        assertThat(postSaved.getMoney()).isEqualTo(money);
+        assertThat(postSaved.getCategories()).isEqualTo(null);
     }
 
     @Test
@@ -86,43 +86,43 @@ class BlogDataSavingTest {
         final BigDecimal money1 = new BigDecimal(1000);
         region.setMoney(money1);
 
-        final Blog blog = new Blog();
-        final String heading = "first blog some heading";
-        blog.setHeading(heading);
+        final Post post = new Post();
+        final String heading = "first post some heading";
+        post.setHeading(heading);
         final BigDecimal money = new BigDecimal(1000);
-        blog.setMoney(money);
-        blog.setDate(LocalDateTime.now());
-        final BlogPhoto photo = new BlogPhoto();
+        post.setMoney(money);
+        post.setDate(LocalDateTime.now());
+        final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
         photo.setPathToPhoto(path);
-        blog.setBlogPhoto(photo);
+        post.setPostPhoto(photo);
         final String link = "localH0sT";
-        blog.setLink(link);
-        region.setBlogs(List.of(blog));
+        post.setLink(link);
+        region.setPosts(List.of(post));
 
-        BlogCategory blogCategory = new BlogCategory();
+        PostCategory postCategory = new PostCategory();
         Category category = new Category();
         category.setNumber(9.f);
         category.setName("food");
         category.setUnits("kg");
-        blogCategory.setCategory(category);
-        blog.setCategories(List.of(blogCategory));
+        postCategory.setCategory(category);
+        post.setCategories(List.of(postCategory));
         countryRepository.save(country);
 
-        var blogSaved = repository.findAll().get(0);
-        assertThat(blogSaved.getCategories()).isNotNull();
-        assertThat(blogSaved.getCategories().size()).isEqualTo(1);
-        BlogCategory blogCategorySavedInBlogCollection = blogSaved.getCategories().get(0);
-        assertThat(blogCategorySavedInBlogCollection).isEqualTo(blogCategory);
+        var postSaved = repository.findAll().get(0);
+        assertThat(postSaved.getCategories()).isNotNull();
+        assertThat(postSaved.getCategories().size()).isEqualTo(1);
+        PostCategory postCategorySavedInPostCollection = postSaved.getCategories().get(0);
+        assertThat(postCategorySavedInPostCollection).isEqualTo(postCategory);
 
         Category category1 = categoryRepository.findAll()
                 .stream().filter(x->category.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
         assertThat(category).isEqualTo(category1);
 
-        var blogCategories = blogCategoryRepository.findAll();
-        assertThat(blogCategories.isEmpty()).isFalse();
-        assertThat(blogCategories.get(0)).isEqualTo(blogCategory);
+        var postCategories = postCategoryRepository.findAll();
+        assertThat(postCategories.isEmpty()).isFalse();
+        assertThat(postCategories.get(0)).isEqualTo(postCategory);
 
         var regionCategories = regionCategoryRepository.findAll();
         assertThat(regionCategories.isEmpty()).isTrue();
@@ -139,24 +139,24 @@ class BlogDataSavingTest {
         final BigDecimal money1 = new BigDecimal(1000);
         region.setMoney(money1);
 
-        final Blog blog = new Blog();
-        final String heading = "first blog some heading";
-        blog.setHeading(heading);
+        final Post post = new Post();
+        final String heading = "first post some heading";
+        post.setHeading(heading);
         final BigDecimal money = new BigDecimal(1000);
-        blog.setMoney(money);
-        blog.setDate(LocalDateTime.now());
-        final BlogPhoto photo = new BlogPhoto();
+        post.setMoney(money);
+        post.setDate(LocalDateTime.now());
+        final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
         photo.setPathToPhoto(path);
-        blog.setBlogPhoto(photo);
+        post.setPostPhoto(photo);
         final String link = "localH0sT";
-        blog.setLink(link);
-        region.setBlogs(List.of(blog));
+        post.setLink(link);
+        region.setPosts(List.of(post));
         countryRepository.save(country);
 
-        List<BlogPhoto> all = blogPhotoRepository.findAll();
+        List<PostPhoto> all = postPhotoRepository.findAll();
         assertThat(all.size()).isEqualTo(1);
-        BlogPhoto savedPhoto = all.get(0);
+        PostPhoto savedPhoto = all.get(0);
         assertThat(savedPhoto.getId()).isNotNull();
         assertThat(savedPhoto).isEqualTo(photo);
     }

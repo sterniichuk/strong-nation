@@ -10,24 +10,24 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "blog_photo")
-public class BlogPhoto {
+@Table(name = "post_photo")
+public class PostPhoto {
     @Id
     @SequenceGenerator(
-            name = "blog_photo_sequence",
-            sequenceName = "blog_photo_sequence",
+            name = "post_photo_sequence",
+            sequenceName = "post_photo_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "blog_photo_sequence"
+            generator = "post_photo_sequence"
     )
     @Column(name = "id")
     private Long id;
     @Column(nullable = false)
     private String pathToPhoto;
 
-    public BlogPhoto(String pathToPhoto) {
+    public PostPhoto(String pathToPhoto) {
         this.pathToPhoto = pathToPhoto;
     }
 
@@ -35,7 +35,7 @@ public class BlogPhoto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BlogPhoto photo = (BlogPhoto) o;
+        PostPhoto photo = (PostPhoto) o;
         return pathToPhoto.equals(photo.pathToPhoto);
     }
 

@@ -1,9 +1,9 @@
 package online.strongnation.controller;
 
 import lombok.RequiredArgsConstructor;
-import online.strongnation.dto.BlogDTO;
+import online.strongnation.dto.PostDTO;
 import online.strongnation.dto.CategoryDTO;
-import online.strongnation.dto.GetBlogResponse;
+import online.strongnation.dto.GetPostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,21 +13,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("blog/v1")
+@RequestMapping("post/v1")
 @RequiredArgsConstructor
-public class BlogController {
+public class PostController {
     private final CategoryDTO categoryWithUnits = CategoryDTO.builder()
             .name("food").units("kg").number(1000.1f).build();
     private final CategoryDTO categoryWithoutUnits = CategoryDTO.builder()
             .name("cars").number(101f).build();
-    private final BlogDTO fullDto = BlogDTO.builder()
+    private final PostDTO fullDto = PostDTO.builder()
             .heading("Some amazing heading that you have never seen before")
             .money(new BigDecimal("10101.12"))
             .date(LocalDateTime.now())
             .link("https://github.com/")
             .categories(List.of(categoryWithoutUnits, categoryWithUnits))
             .id(1L).build();
-    private final GetBlogResponse blogResponse = GetBlogResponse.builder()
+    private final GetPostResponse postResponse = GetPostResponse.builder()
             .heading(fullDto.getHeading())
             .date(fullDto.getDate())
             .id(fullDto.getId())
@@ -35,52 +35,52 @@ public class BlogController {
             .build();
 
     @PostMapping("/add/{country}/{region}")
-    public ResponseEntity<BlogDTO> create(@RequestBody BlogDTO blog,
+    public ResponseEntity<PostDTO> create(@RequestBody PostDTO post,
                                           @PathVariable("country") String countryName,
                                           @PathVariable("region") String region) {
-        return new ResponseEntity<>(blog.toBuilder().id(1L).build(), HttpStatus.CREATED);
+        return new ResponseEntity<>(post.toBuilder().id(1L).build(), HttpStatus.CREATED);
     }
 
     @PostMapping("/add-by-region-id/{id}")
-    public ResponseEntity<BlogDTO> create(@RequestBody BlogDTO blog,
+    public ResponseEntity<PostDTO> create(@RequestBody PostDTO post,
                                           @PathVariable("id") Long id) {
-        return new ResponseEntity<>(blog.toBuilder().id(1L).build(), HttpStatus.CREATED);
+        return new ResponseEntity<>(post.toBuilder().id(1L).build(), HttpStatus.CREATED);
     }
 
     @GetMapping("/all/{country}/{region}")
-    public ResponseEntity<List<GetBlogResponse>> all(@PathVariable("country") String countryName,
-                                               @PathVariable("region") String regionName) {
-        return new ResponseEntity<>(List.of(blogResponse), HttpStatus.OK);
+    public ResponseEntity<List<GetPostResponse>> all(@PathVariable("country") String countryName,
+                                                     @PathVariable("region") String regionName) {
+        return new ResponseEntity<>(List.of(postResponse), HttpStatus.OK);
     }
 
     @GetMapping("/all-by-region-id/{id}")
-    public ResponseEntity<List<GetBlogResponse>> all(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(List.of(blogResponse), HttpStatus.OK);
+    public ResponseEntity<List<GetPostResponse>> all(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(List.of(postResponse), HttpStatus.OK);
     }
 
-    @GetMapping("/get-by-blog-id/{id}")
-    public ResponseEntity<BlogDTO> get(@PathVariable("id") Long id) {
+    @GetMapping("/get-by-post-id/{id}")
+    public ResponseEntity<PostDTO> get(@PathVariable("id") Long id) {
         return new ResponseEntity<>(fullDto.toBuilder().id(id).build(), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BlogDTO> update(@RequestBody BlogDTO blog) {
-        return new ResponseEntity<>(blog, HttpStatus.OK);
+    public ResponseEntity<PostDTO> update(@RequestBody PostDTO post) {
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<BlogDTO> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<PostDTO> delete(@PathVariable("id") Long id) {
         return new ResponseEntity<>(fullDto.toBuilder().id(id).build(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all-by-region-id/{id}")
-    public ResponseEntity<List<BlogDTO>> deleteAllByRegionId(@PathVariable("id") Long id) {
+    public ResponseEntity<List<PostDTO>> deleteAllByRegionId(@PathVariable("id") Long id) {
         return new ResponseEntity<>(List.of(fullDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all/{country}/{region}")
-    public ResponseEntity<List<BlogDTO>> deleteAll(@PathVariable("country") String countryName,
-                                          @PathVariable("region") String region) {
+    public ResponseEntity<List<PostDTO>> deleteAll(@PathVariable("country") String countryName,
+                                                   @PathVariable("region") String region) {
         return new ResponseEntity<>(List.of(fullDto), HttpStatus.OK);
     }
 }

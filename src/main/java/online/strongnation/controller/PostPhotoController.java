@@ -14,14 +14,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 @RestController
-@RequestMapping("blog-photo/v1")
+@RequestMapping("post-photo/v1")
 @RequiredArgsConstructor
-public class BlogPhotoController {
+public class PostPhotoController {
     private String string;
 
     @PostMapping("/upload/{id}")
     public ResponseEntity<Long> upload(@RequestParam("file") MultipartFile file,
-                                                  @PathVariable("id") Long blogId) {
+                                                  @PathVariable("id") Long postId) {
         try {
             byte[] bytes = file.getBytes();
             string = new String(bytes, StandardCharsets.UTF_8);
@@ -29,7 +29,7 @@ public class BlogPhotoController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new ResponseEntity<>(blogId, HttpStatus.CREATED);
+        return new ResponseEntity<>(postId, HttpStatus.CREATED);
     }
 
     @GetMapping("/download/{id}")

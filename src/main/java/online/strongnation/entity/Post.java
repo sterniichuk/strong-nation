@@ -2,7 +2,6 @@ package online.strongnation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,17 +13,17 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "blog")
-public class Blog {
+@Table(name = "post")
+public class Post {
     @Id
     @SequenceGenerator(
-            name = "blog_sequence",
-            sequenceName = "blog_sequence",
+            name = "post_sequence",
+            sequenceName = "post_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "blog_sequence"
+            generator = "post_sequence"
     )
     @Column(name = "id")
     private Long id;
@@ -38,20 +37,20 @@ public class Blog {
     private LocalDateTime date;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "blog_photo_id", referencedColumnName = "id")
-    private BlogPhoto blogPhoto;
+    @JoinColumn(name = "post_photo_id", referencedColumnName = "id")
+    private PostPhoto postPhoto;
 
-    @OneToMany(targetEntity = BlogCategory.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "blog_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private List<BlogCategory> categories;
+    private List<PostCategory> categories;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Blog blog = (Blog) o;
-        return heading.equals(blog.heading) && link.equals(blog.link) && date.equals(blog.date);
+        Post post = (Post) o;
+        return heading.equals(post.heading) && link.equals(post.link) && date.equals(post.date);
     }
 
     @Override
