@@ -1,15 +1,19 @@
 package online.strongnation.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Table(name = "blog")
 public class Blog {
     @Id
@@ -23,17 +27,15 @@ public class Blog {
             generator = "blog_sequence"
     )
     @Column(name = "id")
-    @EqualsAndHashCode.Exclude
     private Long id;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String heading;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String link;
     private BigDecimal money;
 
     @Column(nullable = false)
     private LocalDateTime date;
-    private LocalDateTime edited;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "blog_photo_id", referencedColumnName = "id")
@@ -41,5 +43,19 @@ public class Blog {
 
     @OneToMany(targetEntity = BlogCategory.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "blog_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     private List<BlogCategory> categories;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blog blog = (Blog) o;
+        return heading.equals(blog.heading) && link.equals(blog.link) && date.equals(blog.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(heading, link, date);
+    }
 }

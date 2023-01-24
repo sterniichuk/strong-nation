@@ -1,12 +1,16 @@
 package online.strongnation.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+
+import java.util.Objects;
 
 @Entity
-@Data
-@Table(name="blog_photo")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Table(name = "blog_photo")
 public class BlogPhoto {
     @Id
     @SequenceGenerator(
@@ -19,7 +23,24 @@ public class BlogPhoto {
             generator = "blog_photo_sequence"
     )
     @Column(name = "id")
-    @EqualsAndHashCode.Exclude
     private Long id;
+    @Column(nullable = false)
     private String pathToPhoto;
+
+    public BlogPhoto(String pathToPhoto) {
+        this.pathToPhoto = pathToPhoto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BlogPhoto photo = (BlogPhoto) o;
+        return pathToPhoto.equals(photo.pathToPhoto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathToPhoto);
+    }
 }

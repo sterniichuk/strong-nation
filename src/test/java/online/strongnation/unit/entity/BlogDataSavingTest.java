@@ -1,5 +1,6 @@
-package online.strongnation.entity;
+package online.strongnation.unit.entity;
     
+import online.strongnation.entity.*;
 import online.strongnation.exception.RegionNotFoundException;
 import online.strongnation.repository.*;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +29,8 @@ class BlogDataSavingTest {
     private RegionCategoryRepository regionCategoryRepository;
     @Autowired
     private BlogPhotoRepository blogPhotoRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     @AfterEach
     void tearDown() {
@@ -36,7 +39,10 @@ class BlogDataSavingTest {
 
     @Test
     void simpleSave() {
+        Country country = new Country();
+        country.setName("Ukraine");
         Region region = new Region();
+        country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
         final BigDecimal money1 = new BigDecimal(1000);
@@ -55,7 +61,7 @@ class BlogDataSavingTest {
         final String link = "localH0sT";
         blog.setLink(link);
         region.setBlogs(List.of(blog));
-        regionRepository.save(region);
+        countryRepository.save(country);
 
         final var savedRegion = regionRepository.findFirstByName(name).orElseThrow(()->{throw new RegionNotFoundException();});
         assertThat(savedRegion).isEqualTo(region);
@@ -71,7 +77,10 @@ class BlogDataSavingTest {
 
     @Test
     void saveWithCategory() {
+        Country country = new Country();
+        country.setName("Ukraine");
         Region region = new Region();
+        country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
         final BigDecimal money1 = new BigDecimal(1000);
@@ -98,7 +107,7 @@ class BlogDataSavingTest {
         category.setUnits("kg");
         blogCategory.setCategory(category);
         blog.setCategories(List.of(blogCategory));
-        regionRepository.save(region);
+        countryRepository.save(country);
 
         var blogSaved = repository.findAll().get(0);
         assertThat(blogSaved.getCategories()).isNotNull();
@@ -121,7 +130,10 @@ class BlogDataSavingTest {
 
     @Test
     void checkPhotoSaving(){
+        Country country = new Country();
+        country.setName("Ukraine");
         Region region = new Region();
+        country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
         final BigDecimal money1 = new BigDecimal(1000);
@@ -140,7 +152,7 @@ class BlogDataSavingTest {
         final String link = "localH0sT";
         blog.setLink(link);
         region.setBlogs(List.of(blog));
-        regionRepository.save(region);
+        countryRepository.save(country);
 
         List<BlogPhoto> all = blogPhotoRepository.findAll();
         assertThat(all.size()).isEqualTo(1);

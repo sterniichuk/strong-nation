@@ -1,6 +1,12 @@
-package online.strongnation.entity;
+package online.strongnation.unit.entity;
 
+import online.strongnation.entity.Category;
+import online.strongnation.entity.Country;
+import online.strongnation.entity.Region;
+import online.strongnation.entity.RegionCategory;
 import online.strongnation.repository.CategoryRepository;
+import online.strongnation.repository.CountryRepository;
+import online.strongnation.repository.RegionCategoryRepository;
 import online.strongnation.repository.RegionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -18,20 +24,29 @@ class RegionDataSavingTest {
     private RegionRepository repository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private RegionCategoryRepository regionCategoryRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     @AfterEach
     void tearDown() {
         repository.deleteAll();
+        regionCategoryRepository.deleteAll();
+        categoryRepository.deleteAll();
     }
 
     @Test
     void simpleSave() {
+        Country country = new Country();
+        country.setName("Ukraine");
         Region region = new Region();
+        country.setRegions(List.of(region));
         String name = "Rivne";
         region.setName(name);
         BigDecimal money = new BigDecimal(1000);
         region.setMoney(money);
-        repository.save(region);
+        countryRepository.save(country);
         List<Region> all = repository.findAll();
         List<Region> list = all.stream()
                 .filter(x -> name.equals(x.getName()))
@@ -46,7 +61,10 @@ class RegionDataSavingTest {
 
     @Test
     void saveWithCategory() {
+        Country country = new Country();
+        country.setName("Ukraine");
         Region region = new Region();
+        country.setRegions(List.of(region));
         String name = "Rivne";
         region.setName(name);
         BigDecimal money = new BigDecimal(1000);
@@ -60,7 +78,7 @@ class RegionDataSavingTest {
         regionCategory.setCategory(category);
 
         region.setCategories(List.of(regionCategory));
-        repository.save(region);
+        countryRepository.save(country);
 
         List<Region> all = repository.findAll();
         List<Region> list = all.stream()
@@ -83,5 +101,38 @@ class RegionDataSavingTest {
         assertThat(category).isEqualTo(category1);
     }
 
+    @Test
+    void testOnCascadeFields(){
+        Country country = new Country();
+        country.setName("Ukraine");
+        Region region = new Region();
+        country.setRegions(List.of(region));
+        String name = "Rivne";
+        region.setName(name);
+        BigDecimal money = new BigDecimal(1000);
+        region.setMoney(money);
 
+        RegionCategory regionCategory = new RegionCategory();
+        Category category = new Category();
+        category.setNumber(9.f);
+        category.setName("food");
+        category.setUnits("kg");
+        regionCategory.setCategory(category);
+
+        region.setCategories(List.of(regionCategory));
+        countryRepository.save(country);
+        region.setCategories(null);
+        repository.save(region);
+        var savedRegionCategory = regionCategoryRepository.findAll().get(0);
+        assertThat(savedRegionCategory.getId()).isNotNull();
+        regionCategoryRepository.deleteById(savedRegionCategory.getId());
+        assertThat(regionCategoryRepository.findAll().isEmpty()).isTrue();
+
+        List<Category> all = categoryRepository.findAll();
+        assertThat(all.isEmpty()).isTrue();
+        List<RegionCategory> regionCategoryList = regionCategoryRepository.findAll();
+        assertThat(regionCategoryList.isEmpty()).isTrue();
+        List<Region> regionList = repository.findAll();
+        assertThat(regionList.isEmpty()).isFalse();
+    }
 }
