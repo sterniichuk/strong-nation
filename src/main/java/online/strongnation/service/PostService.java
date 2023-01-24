@@ -6,14 +6,21 @@ import online.strongnation.dto.GetPostResponse;
 import java.util.List;
 
 public interface PostService {
-    Long addNewPostByRegionId(Long id, PostDTO postDTO);//returns id of created blog
-    Long addNewPostByRegionName(String name, PostDTO postDTO);
+    PostDTO create(PostDTO post, String countryName, String region);
 
-    List<GetPostResponse> findAllByRegionId(Long id);
-    List<GetPostResponse> findAllByRegionName(String id);
+    PostDTO create(PostDTO post, Long id);
 
-    void updatePostByRegionId(PostDTO postDTO);
-    void updatePostByRegionName(PostDTO postDTO);
+    List<GetPostResponse> all(String countryName, String regionName);
 
-    void updatePostById(PostDTO postDTO);
+    List<GetPostResponse> all(Long id);
+
+    PostDTO get(Long id);
+
+    PostDTO update(PostDTO post);
+
+    PostDTO delete(Long id);
+
+    List<PostDTO> deleteAllByRegionId(Long id);
+
+    List<PostDTO> deleteAll(String countryName, String region);
 }

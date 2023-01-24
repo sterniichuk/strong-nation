@@ -1,22 +1,27 @@
 package online.strongnation.service;
 
-import online.strongnation.dto.CategoryDTO;
 import online.strongnation.dto.RegionDTO;
 
 import java.util.List;
 
 public interface RegionService {
-    void addNewRegion(String name);
+    RegionDTO create(String countryName, String name);
 
-    List<RegionDTO> findAll();
-    RegionDTO findById(Long id);
-    RegionDTO findByName(String countryName, String name);
+    List<RegionDTO> createAll(String countryName, List<String> names);
 
-    void hardUpdateRegionById(Long id, RegionDTO region);
-    void hardUpdateRegionByName(String oldName, RegionDTO region);
-    void hardAddNewCategoryById(Long id, CategoryDTO category);
-    void hardAddNewCategoryName(String name, CategoryDTO category);
+    RegionDTO get(String countryName, String name);
 
-    void deleteRegionById(Long id);
-    void deleteRegionByName(String name);
+    RegionDTO get(Long id);
+
+    List<RegionDTO> all(String countryName);
+
+    RegionDTO rename(String countryName, String oldName, String newName);
+
+    RegionDTO renameById(Long id, String newName);
+
+    RegionDTO delete(String countryName, String name);
+
+    RegionDTO deleteById(Long id);
+
+    List<RegionDTO> deleteAll();
 }

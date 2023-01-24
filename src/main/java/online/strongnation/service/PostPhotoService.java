@@ -1,10 +1,8 @@
 package online.strongnation.service;
 
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PostPhotoService {
-    void addPhotoByBlogId(Long id, File file); //post's id
-    File getPhotoById(Long id);//photo's id
-    void updatePhotoById(Long id, File file); //photo's id
-    void deletePhotoById(Long id); //photo's id
+    void uploadPhotoByBlogId(Long id, MultipartFile file); //post's id
+    void downloadPhotoById(Long id); //post's id
 }

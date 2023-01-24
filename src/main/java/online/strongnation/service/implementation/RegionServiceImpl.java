@@ -1,6 +1,5 @@
 package online.strongnation.service.implementation;
 
-import online.strongnation.dto.CategoryDTO;
 import online.strongnation.dto.RegionDTO;
 import online.strongnation.service.RegionService;
 import org.springframework.stereotype.Service;
@@ -9,36 +8,54 @@ import java.util.List;
 
 @Service
 public class RegionServiceImpl implements RegionService {
-    @Override
-    public void addNewRegion(String name) {
-    }
 
     @Override
-    public List<RegionDTO> findAll() {return null;}
-
-    @Override
-    public RegionDTO findById(Long id) {return null;}
-
-    @Override
-    public RegionDTO findByName(String countryName, String name) {
+    public RegionDTO create(String countryName, String name) {
         return null;
     }
 
     @Override
-    public void hardUpdateRegionById(Long id, RegionDTO region) {}
+    public List<RegionDTO> createAll(String countryName, List<String> names) {
+        return null;
+    }
 
     @Override
-    public void hardUpdateRegionByName(String oldName, RegionDTO region) {}
+    public RegionDTO get(String countryName, String name) {
+        return null;
+    }
 
     @Override
-    public void hardAddNewCategoryById(Long id, CategoryDTO category) {}
+    public RegionDTO get(Long id) {
+        return null;
+    }
 
     @Override
-    public void hardAddNewCategoryName(String name, CategoryDTO category) {}
+    public List<RegionDTO> all(String countryName) {
+        return null;
+    }
 
     @Override
-    public void deleteRegionById(Long id) {}
+    public RegionDTO rename(String countryName, String oldName, String newName) {
+        return null;
+    }
 
     @Override
-    public void deleteRegionByName(String name) {}
+    public RegionDTO renameById(Long id, String newName) {
+        return null;
+    }
+
+    @Override
+    public RegionDTO delete(String countryName, String name) {
+        return null;
+    }
+
+    @Override
+    public RegionDTO deleteById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<RegionDTO> deleteAll() {
+        return null;
+    }
 }
