@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Entity
 @Table(name = "country")
 public class Country {
     @Id
@@ -30,7 +30,7 @@ public class Country {
     )
     @Column(name = "id")
     private Long id;
-    @Column(length = 100, unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
     @ColumnDefault("0")
     private BigDecimal money;
@@ -45,6 +45,10 @@ public class Country {
     @ToString.Exclude
     private List<Region> regions;
 
+    public Country(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,3 +62,6 @@ public class Country {
         return Objects.hash(name);
     }
 }
+
+
+

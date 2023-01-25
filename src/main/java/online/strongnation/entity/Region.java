@@ -28,7 +28,7 @@ public class Region {
     )
     @Column(name = "id")
     private Long id;
-    @Column(length = 100, nullable = false)
+    @Column(nullable = false)
     private String name;
     @ColumnDefault("0")
     private BigDecimal money;
