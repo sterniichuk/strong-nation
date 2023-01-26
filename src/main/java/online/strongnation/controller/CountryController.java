@@ -1,7 +1,7 @@
 package online.strongnation.controller;
 
 import lombok.AllArgsConstructor;
-import online.strongnation.dto.CountryDTO;
+import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.service.CountryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

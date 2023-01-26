@@ -1,9 +1,9 @@
 package online.strongnation.unit.entity;
 
-import online.strongnation.entity.Category;
-import online.strongnation.entity.Country;
-import online.strongnation.entity.Region;
-import online.strongnation.entity.RegionCategory;
+import online.strongnation.model.entity.Category;
+import online.strongnation.model.entity.Country;
+import online.strongnation.model.entity.Region;
+import online.strongnation.model.entity.RegionCategory;
 import online.strongnation.repository.CategoryRepository;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.repository.RegionCategoryRepository;

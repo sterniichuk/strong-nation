@@ -2,8 +2,8 @@ package online.strongnation.service.implementation;
 
 import lombok.RequiredArgsConstructor;
 import online.strongnation.config.EntityNameLength;
-import online.strongnation.dto.CountryDTO;
-import online.strongnation.entity.Country;
+import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.entity.Country;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalCountryException;
 import online.strongnation.repository.CountryRepository;
@@ -35,7 +35,7 @@ public class CountryServiceImpl implements CountryService {
         if (name == null) {
             throw new IllegalCountryException("Name of country is null");
         }
-        if (name.length() >= EntityNameLength.COUNTRY.length) {
+        if (name.length() > EntityNameLength.COUNTRY.length) {
             throw new IllegalCountryException("Too long name of country");
         }
         String clearName = StringUtils.normalizeSpace(name);

@@ -1,6 +1,6 @@
 package online.strongnation.service.implementation;
 
-import online.strongnation.dto.RegionDTO;
+import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.service.RegionService;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public RegionDTO renameById(Long id, String newName) {
+    public RegionDTO rename(Long id, String newName) {
         return null;
     }
 
@@ -50,12 +50,13 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public RegionDTO deleteById(Long id) {
+    public RegionDTO delete(Long id) {
         return null;
     }
 
+
     @Override
-    public List<RegionDTO> deleteAll() {
+    public List<RegionDTO> deleteAllByCountry(String name) {
         return null;
     }
 }

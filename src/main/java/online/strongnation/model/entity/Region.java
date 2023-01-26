@@ -1,7 +1,8 @@
-package online.strongnation.entity;
+package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.strongnation.model.dto.CategoryDTO;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
@@ -42,6 +43,14 @@ public class Region {
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<Post> posts;
+
+    public Region(String name) {
+        this.name = name;
+    }
+
+    public void setCategoriesDTO(List<CategoryDTO> categories) {
+        this.categories = categories.stream().map(RegionCategory::new).toList();
+    }
 
     @Override
     public boolean equals(Object o) {

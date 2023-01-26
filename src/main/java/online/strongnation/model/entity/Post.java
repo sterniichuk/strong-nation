@@ -1,4 +1,4 @@
-package online.strongnation.entity;
+package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

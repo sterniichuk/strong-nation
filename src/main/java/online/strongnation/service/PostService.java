@@ -1,7 +1,7 @@
 package online.strongnation.service;
 
-import online.strongnation.dto.PostDTO;
-import online.strongnation.dto.GetPostResponse;
+import online.strongnation.model.dto.PostDTO;
+import online.strongnation.model.dto.GetPostResponse;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package online.strongnation.repository;
 
-import online.strongnation.dto.CountryDTO;
-import online.strongnation.entity.Country;
+import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.entity.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,10 +23,10 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("update Country c set c.name = :new where lower(c.name) = lower(:old)")
     void updateNameOfCountry(@Param("old") String oldName, @Param("new") String newName);
 
-    @Query("select new online.strongnation.dto.CountryDTO(c)" +
+    @Query("select new online.strongnation.model.dto.CountryDTO(c)" +
             " from Country c where upper(c.name) = upper(:name)")
     Optional<CountryDTO> findCountryDTOByNameIgnoreCase(String name);
 
-    @Query("select new online.strongnation.dto.CountryDTO(c) from Country c")
+    @Query("select new online.strongnation.model.dto.CountryDTO(c) from Country c")
     List<CountryDTO> findAllDTO();
 }

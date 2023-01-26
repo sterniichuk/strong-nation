@@ -1,19 +1,15 @@
-package online.strongnation.dto;
+package online.strongnation.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
-public class PostDTO {
+public class GetPostResponse {
     private Long id;
     private String heading;
     private String link;
-    private BigDecimal money;
     private LocalDateTime date;
-    private List<CategoryDTO> categories;
 }

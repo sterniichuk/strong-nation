@@ -1,10 +1,11 @@
-package online.strongnation.entity;
+package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import online.strongnation.model.dto.CategoryDTO;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
@@ -49,6 +50,9 @@ public class Country {
         this.name = name;
     }
 
+    public void setCategoriesDTO(List<CategoryDTO> categories) {
+        this.categories = categories.stream().map(CountryCategory::new).toList();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

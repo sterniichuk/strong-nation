@@ -1,33 +1,32 @@
-package online.strongnation.dto;
+package online.strongnation.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import online.strongnation.model.entity.RegionCategory;
+import online.strongnation.model.entity.Region;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import lombok.NoArgsConstructor;
-import online.strongnation.entity.Country;
-import online.strongnation.entity.CountryCategory;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryDTO {
+public class RegionDTO {
     private Long id;
     private String name;
     private BigDecimal money;
     private List<CategoryDTO> categories;
 
-    public CountryDTO(Country entity) {
+    public RegionDTO(Region entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.money = entity.getMoney();
-        List<CountryCategory> entityCategories = entity.getCategories();
+        List<RegionCategory> entityCategories = entity.getCategories();
         this.categories = (entityCategories == null) ? List.of() : entityCategories
-                .stream().map(CountryCategory::getCategory)
+                .stream().map(RegionCategory::getCategory)
                 .map(CategoryDTO::new).toList();
     }
 }

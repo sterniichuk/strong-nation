@@ -1,7 +1,8 @@
 package online.strongnation.integration;
 
-import online.strongnation.dto.CountryDTO;
-import online.strongnation.entity.Country;
+import online.strongnation.config.EntityNameLength;
+import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.entity.Country;
 import online.strongnation.exception.IllegalCountryException;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.service.CountryService;
@@ -12,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,7 +30,6 @@ class CountryServiceTest {
 
     @BeforeEach
     void setUp() {
-//        service = new CountryServiceImpl(countryRepository);
         String polandName = "Poland";
         Country polandCountry = new Country(polandName);
         Country USACountry = new Country(USAName);
@@ -91,8 +91,8 @@ class CountryServiceTest {
     @Test
     void createWithTooLongCountry() {
         //given
-        byte[] array = new byte[300];
-        new Random().nextBytes(array);
+        byte[] array = new byte[EntityNameLength.REGION.length + 1];
+        Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
         //then
@@ -155,8 +155,8 @@ class CountryServiceTest {
     @Test
     void renameWithTooLongCountryOld() {
         //given
-        byte[] array = new byte[300];
-        new Random().nextBytes(array);
+        byte[] array = new byte[EntityNameLength.COUNTRY.length + 1];
+        Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
         //then
@@ -167,9 +167,9 @@ class CountryServiceTest {
     @Test
     void renameWithTooLongCountryNew() {
         //given
-        byte[] array = new byte[300];
-        new Random().nextBytes(array);
-        final var input = new String(array, StandardCharsets.UTF_8);
+        byte[] array = new byte[EntityNameLength.COUNTRY.length + 1];
+        Arrays.fill(array, (byte) 'A');
+        final String input = new String(array);
         //when
         //then
         assertThatThrownBy(() -> service.rename("Normal", input))

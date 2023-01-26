@@ -1,10 +1,10 @@
 package online.strongnation.unit.repository;
 
-import online.strongnation.dto.CategoryDTO;
-import online.strongnation.dto.CountryDTO;
-import online.strongnation.entity.Category;
-import online.strongnation.entity.Country;
-import online.strongnation.entity.CountryCategory;
+import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.entity.Category;
+import online.strongnation.model.entity.Country;
+import online.strongnation.model.entity.CountryCategory;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.repository.CountryRepository;
 import org.junit.jupiter.api.Test;
@@ -108,6 +108,4 @@ class CountryRepositoryTest {
         //then
         assertThat(actual).isEqualTo(expected);
     }
-
-
 }

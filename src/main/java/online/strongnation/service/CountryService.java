@@ -1,6 +1,6 @@
 package online.strongnation.service;
 
-import online.strongnation.dto.CountryDTO;
+import online.strongnation.model.dto.CountryDTO;
 
 import java.util.List;
 

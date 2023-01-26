@@ -1,10 +1,10 @@
-package online.strongnation.entity;
+package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import online.strongnation.model.dto.CategoryDTO;
 
 import java.util.Objects;
 
@@ -39,16 +39,20 @@ public class Category {
         this.units = units;
     }
 
+    public Category(CategoryDTO categoryDTO) {
+        this(categoryDTO.getName(), categoryDTO.getNumber(), categoryDTO.getUnits());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return name.equals(category.name) && number.equals(category.number) && Objects.equals(units, category.units);
+        return name.equals(category.name) && Objects.equals(units, category.units);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, number, units);
+        return Objects.hash(name, units);
     }
 }

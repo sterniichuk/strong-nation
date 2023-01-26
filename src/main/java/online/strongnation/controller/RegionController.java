@@ -1,9 +1,8 @@
 package online.strongnation.controller;
 
 import lombok.AllArgsConstructor;
-import online.strongnation.dto.CategoryDTO;
-import online.strongnation.dto.CountryDTO;
-import online.strongnation.dto.RegionDTO;
+import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.RegionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,8 +79,8 @@ public class RegionController {
         return new ResponseEntity<>(fullDto.toBuilder().id(id).build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete-all")
-    public ResponseEntity<List<RegionDTO>> deleteAll() {
+    @DeleteMapping("/delete-all-by-country/{country}")
+    public ResponseEntity<List<RegionDTO>> deleteAllByCountry(@PathVariable("country") String countryName) {
         return new ResponseEntity<>(List.of(fullDto), HttpStatus.OK);
     }
 }

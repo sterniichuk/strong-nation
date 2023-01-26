@@ -1,6 +1,6 @@
 package online.strongnation.service;
 
-import online.strongnation.dto.RegionDTO;
+import online.strongnation.model.dto.RegionDTO;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ public interface RegionService {
 
     RegionDTO rename(String countryName, String oldName, String newName);
 
-    RegionDTO renameById(Long id, String newName);
+    RegionDTO rename(Long id, String newName);
 
     RegionDTO delete(String countryName, String name);
 
-    RegionDTO deleteById(Long id);
+    RegionDTO delete(Long id);
 
-    List<RegionDTO> deleteAll();
+    List<RegionDTO> deleteAllByCountry(String name);
 }

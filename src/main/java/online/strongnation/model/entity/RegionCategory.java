@@ -1,7 +1,8 @@
-package online.strongnation.entity;
+package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.strongnation.model.dto.CategoryDTO;
 
 import java.util.Objects;
 
@@ -10,37 +11,40 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "post_category", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"post_id", "category_id"})
-})
-public class PostCategory {
+@Table(name = "region_category",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"region_id", "category_id"})})
+public class RegionCategory {
 
     @Id
     @SequenceGenerator(
-            name = "post_category_sequence",
-            sequenceName = "post_category_sequence",
+            name = "region_category_sequence",
+            sequenceName = "region_category_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "post_category_sequence"
+            generator = "region_category_sequence"
     )
     @Column(name = "id")
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
 
-    public PostCategory(Category category) {
+    public RegionCategory(Category category) {
         this.category = category;
+    }
+
+    public RegionCategory(CategoryDTO categoryDTO) {
+        this(new Category(categoryDTO));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostCategory that = (PostCategory) o;
+        RegionCategory that = (RegionCategory) o;
         return category.equals(that.category);
     }
 

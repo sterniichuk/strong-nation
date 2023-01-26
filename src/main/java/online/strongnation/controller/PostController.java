@@ -1,9 +1,9 @@
 package online.strongnation.controller;
 
 import lombok.RequiredArgsConstructor;
-import online.strongnation.dto.PostDTO;
-import online.strongnation.dto.CategoryDTO;
-import online.strongnation.dto.GetPostResponse;
+import online.strongnation.model.dto.PostDTO;
+import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.GetPostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,10 @@
-package online.strongnation.dto;
+package online.strongnation.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import online.strongnation.entity.Category;
+import online.strongnation.model.entity.Category;
 
 @Data
 @Builder
@@ -12,7 +12,7 @@ import online.strongnation.entity.Category;
 @NoArgsConstructor
 public class CategoryDTO {
     private String name;
-    private Float number;
+    private float number;
     private String units;
 
     public CategoryDTO(Category category){
@@ -20,5 +20,4 @@ public class CategoryDTO {
         this.number = category.getNumber();
         this.units = category.getUnits();
     }
-
 }

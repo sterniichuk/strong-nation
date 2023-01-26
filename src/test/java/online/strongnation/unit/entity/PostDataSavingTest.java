@@ -1,6 +1,6 @@
 package online.strongnation.unit.entity;
     
-import online.strongnation.entity.*;
+import online.strongnation.model.entity.*;
 import online.strongnation.exception.RegionNotFoundException;
 import online.strongnation.repository.*;
 import org.junit.jupiter.api.AfterEach;
