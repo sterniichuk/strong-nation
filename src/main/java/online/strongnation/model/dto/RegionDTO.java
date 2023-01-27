@@ -1,20 +1,20 @@
 package online.strongnation.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import online.strongnation.model.entity.RegionCategory;
 import online.strongnation.model.entity.Region;
+import online.strongnation.model.statistic.StatisticModel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
 @Builder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegionDTO {
+public class RegionDTO implements StatisticModel {
     private Long id;
     private String name;
     private BigDecimal money;

@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import online.strongnation.config.Floats;
 import online.strongnation.model.dto.CategoryDTO;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -28,12 +30,12 @@ public class Category {
     private Long id;
     @Column(length = 100, nullable = false)
     private String name;
-    @Column(nullable = false)
-    private Float number;
+    @Column(nullable = false, scale = Floats.CATEGORY_SCALE)
+    private BigDecimal number;
     @Column(length = 10)
     private String units;
 
-    public Category(String name, Float number, String units) {
+    public Category(String name, BigDecimal number, String units) {
         this.name = name;
         this.number = number;
         this.units = units;

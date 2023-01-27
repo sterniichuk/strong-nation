@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import online.strongnation.config.Floats;
 import online.strongnation.model.dto.CategoryDTO;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -34,6 +35,7 @@ public class Country {
     @Column(unique = true, nullable = false)
     private String name;
     @ColumnDefault("0")
+    @Column(scale = Floats.MONEY_SCALE)
     private BigDecimal money;
 
     @OneToMany(targetEntity = CountryCategory.class, cascade = CascadeType.ALL)
@@ -50,9 +52,6 @@ public class Country {
         this.name = name;
     }
 
-    public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(CountryCategory::new).toList();
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

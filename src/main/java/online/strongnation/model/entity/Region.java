@@ -2,6 +2,7 @@ package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.strongnation.config.Floats;
 import online.strongnation.model.dto.CategoryDTO;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -32,6 +33,7 @@ public class Region {
     @Column(nullable = false)
     private String name;
     @ColumnDefault("0")
+    @Column(scale = Floats.MONEY_SCALE)
     private BigDecimal money;
 
     @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL)
@@ -46,10 +48,6 @@ public class Region {
 
     public Region(String name) {
         this.name = name;
-    }
-
-    public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(RegionCategory::new).toList();
     }
 
     @Override

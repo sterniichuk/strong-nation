@@ -1,4 +1,4 @@
-package online.strongnation.exception.handing;
+package online.strongnation.exception.handling;
 
 import online.strongnation.exception.IllegalOperationException;
 import online.strongnation.exception.NotFoundException;

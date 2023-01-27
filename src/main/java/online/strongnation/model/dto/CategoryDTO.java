@@ -1,18 +1,19 @@
 package online.strongnation.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import online.strongnation.model.entity.Category;
 
-@Data
-@Builder
+import java.math.BigDecimal;
+
+@Getter
+@ToString
+@EqualsAndHashCode
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO {
     private String name;
-    private float number;
+    private BigDecimal number;
     private String units;
 
     public CategoryDTO(Category category){

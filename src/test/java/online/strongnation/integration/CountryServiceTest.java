@@ -129,8 +129,10 @@ class CountryServiceTest {
         final String newName = "Some new name";
         final var expected = countryRepository
                 .findCountryDTOByNameIgnoreCase(USAName)
-                .orElseThrow(IllegalCountryException::new);
-        expected.setName(newName);
+                .orElseThrow(IllegalCountryException::new)
+                .toBuilder()
+                .name(newName)
+                .build();
         //when
         CountryDTO actual = service.rename(USAName, newName);
         //then
@@ -144,8 +146,10 @@ class CountryServiceTest {
         final String givenNewName = "        Some  \n\t new \t  name    \n";
         final var expected = countryRepository
                 .findCountryDTOByNameIgnoreCase(USAName)
-                .orElseThrow(IllegalCountryException::new);
-        expected.setName(expectedName);
+                .orElseThrow(IllegalCountryException::new)
+                .toBuilder()
+                .name(expectedName)
+                .build();
         //when
         CountryDTO actual = service.rename(USAName, givenNewName);
         //then

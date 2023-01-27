@@ -1,21 +1,21 @@
 package online.strongnation.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.NoArgsConstructor;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.CountryCategory;
+import online.strongnation.model.statistic.StatisticModel;
 
-@Data
 @Builder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryDTO {
+public class CountryDTO implements StatisticModel {
     private Long id;
     private String name;
     private BigDecimal money;

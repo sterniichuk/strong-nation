@@ -2,6 +2,7 @@ package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import online.strongnation.config.Floats;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class Post {
     private String heading;
     @Column(columnDefinition = "TEXT", nullable = false)
     private String link;
+    @Column(scale = Floats.MONEY_SCALE)
     private BigDecimal money;
 
     @Column(nullable = false)

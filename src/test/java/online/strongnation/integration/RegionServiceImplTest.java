@@ -1,7 +1,6 @@
 package online.strongnation.integration;
 
 import online.strongnation.config.EntityNameLength;
-import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Region;
 import online.strongnation.exception.CountryNotFoundException;
@@ -45,84 +44,6 @@ class RegionServiceImplTest {
     private final BigDecimal WARSAW_IN_POLAND_MONEY = new BigDecimal("1010101010.22");
     private final BigDecimal POLAND_MONEY = WASHINGTON_IN_POLAND_MONEY.add(WARSAW_IN_POLAND_MONEY);
 
-    private final String FOOD = "food";
-    private final Float NUMBER_OF_FOOD = 10.101f;
-    private final String FOOD_UNITS = "kg";
-    private final String BIG_FOOD_UNITS = "ton";
-
-    private final String CARS = "car";
-    private final Float NUMBER_OF_CARS = 50F;
-
-    private final CategoryDTO WASHINGTON_IN_USA_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(NUMBER_OF_FOOD)
-            .units(FOOD_UNITS)
-            .build();
-    private final CategoryDTO WARSAW_IN_USA_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(NUMBER_OF_FOOD * 1.5f)
-            .units(FOOD_UNITS)
-            .build();
-    private final CategoryDTO USA_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(WARSAW_IN_USA_FOOD_CATEGORY.getNumber() + WASHINGTON_IN_USA_FOOD_CATEGORY.getNumber())
-            .units(FOOD_UNITS)
-            .build();
-    private final CategoryDTO WASHINGTON_IN_POLAND_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(NUMBER_OF_FOOD * 1.5f)
-            .units(FOOD_UNITS)
-            .build();
-    private final CategoryDTO WARSAW_IN_POLAND_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(NUMBER_OF_FOOD * 1.1f)
-            .units(FOOD_UNITS)
-            .build();
-    private final CategoryDTO POLAND_FOOD_CATEGORY = CategoryDTO.builder()
-            .name(FOOD)
-            .number(WARSAW_IN_POLAND_FOOD_CATEGORY.getNumber() + WASHINGTON_IN_POLAND_FOOD_CATEGORY.getNumber())
-            .units(FOOD_UNITS)
-            .build();
-
-    private final CategoryDTO WASHINGTON_IN_USA_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(NUMBER_OF_CARS)
-            .build();
-    private final CategoryDTO WARSAW_IN_USA_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(NUMBER_OF_CARS * 2f)
-            .build();
-    private final CategoryDTO USA_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(WARSAW_IN_USA_CARS_CATEGORY.getNumber() + WASHINGTON_IN_USA_CARS_CATEGORY.getNumber())
-            .build();
-    private final CategoryDTO WASHINGTON_IN_POLAND_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(NUMBER_OF_CARS * 3f)
-            .build();
-    private final CategoryDTO WARSAW_IN_POLAND_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(NUMBER_OF_CARS * 4f)
-            .build();
-    private final CategoryDTO POLAND_CARS_CATEGORY = CategoryDTO.builder()
-            .name(CARS)
-            .number(WARSAW_IN_POLAND_CARS_CATEGORY.getNumber() + WASHINGTON_IN_POLAND_CARS_CATEGORY.getNumber())
-            .build();
-
-    private final List<CategoryDTO> CATEGORIES_OF_WASHINGTON_OF_USA =
-            List.of(WASHINGTON_IN_USA_CARS_CATEGORY, WASHINGTON_IN_USA_FOOD_CATEGORY);
-    private final List<CategoryDTO> CATEGORIES_OF_WARSAW_OF_USA =
-            List.of(WARSAW_IN_USA_CARS_CATEGORY, WARSAW_IN_USA_FOOD_CATEGORY);
-    private final List<CategoryDTO> CATEGORIES_OF_WASHINGTON_OF_POLAND =
-            List.of(WASHINGTON_IN_POLAND_CARS_CATEGORY, WASHINGTON_IN_POLAND_FOOD_CATEGORY);
-    private final List<CategoryDTO> CATEGORIES_OF_WARSAW_OF_POLAND =
-            List.of(WARSAW_IN_POLAND_CARS_CATEGORY, WARSAW_IN_POLAND_FOOD_CATEGORY);
-
-    private final List<CategoryDTO> CATEGORIES_OF_POLAND =
-            List.of(POLAND_CARS_CATEGORY, POLAND_FOOD_CATEGORY);
-    private final List<CategoryDTO> CATEGORIES_OF_USA =
-            List.of(USA_CARS_CATEGORY, USA_FOOD_CATEGORY);
-
     //write tests for categories
     @Autowired
     private RegionRepository regionRepository;
@@ -132,25 +53,19 @@ class RegionServiceImplTest {
         //usa
         Region washington = new Region(WASHINGTON_NAME);
         washington.setMoney(WASHINGTON_IN_USA_MONEY);
-        washington.setCategoriesDTO(CATEGORIES_OF_WASHINGTON_OF_USA);
         Region warsawInUSA = new Region(WARSAW_NAME);
         warsawInUSA.setMoney(WARSAW_IN_USA_MONEY);
-        warsawInUSA.setCategoriesDTO(CATEGORIES_OF_WARSAW_OF_USA);
         Country USACountry = new Country(USA_NAME);
         USACountry.setMoney(USA_MONEY);
-        USACountry.setCategoriesDTO(CATEGORIES_OF_USA);
         USACountry.setRegions(List.of(washington, warsawInUSA));
         //poland
         Country polandCountry = new Country(POLAND_NAME);
         Region washingtonInPoland = new Region(WASHINGTON_NAME);
-        washingtonInPoland.setCategoriesDTO(CATEGORIES_OF_WASHINGTON_OF_POLAND);
         washingtonInPoland.setMoney(WASHINGTON_IN_POLAND_MONEY);
         Region warsawInPoland = new Region(WARSAW_NAME);
         warsawInPoland.setMoney(WARSAW_IN_POLAND_MONEY);
-        warsawInPoland.setCategoriesDTO(CATEGORIES_OF_WARSAW_OF_POLAND);
         polandCountry.setRegions(List.of(washingtonInPoland, warsawInPoland));
         polandCountry.setMoney(POLAND_MONEY);
-        polandCountry.setCategoriesDTO(CATEGORIES_OF_POLAND);
         countryRepository.saveAll(List.of(polandCountry, USACountry));
     }
 
@@ -277,8 +192,9 @@ class RegionServiceImplTest {
         final String newName = "Some new name";
         final var expected = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        expected.setName(newName);
+                .orElseThrow(RegionNotFoundException::new)
+                .toBuilder()
+                .name(newName).build();
         //when
         var actual = service.rename(USA_NAME, WASHINGTON_NAME, newName);
         //then
@@ -298,8 +214,9 @@ class RegionServiceImplTest {
         final String givenNewName = "        Some  \n\t new \t  name    \n";
         final var expected = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        expected.setName(expectedName);
+                .orElseThrow(RegionNotFoundException::new)
+                .toBuilder()
+                .name(expectedName).build();
         //when
         var actual = service.rename(USA_NAME, WASHINGTON_NAME, givenNewName);
         //then
@@ -349,8 +266,9 @@ class RegionServiceImplTest {
         final String givenNewName = "        Some  \n\t new \t  name    \n";
         final var expected = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        expected.setName(expectedName);
+                .orElseThrow(RegionNotFoundException::new)
+                .toBuilder()
+                .name(expectedName).build();
         //when
         var actual = service.rename(expected.getId(), givenNewName);
         //then

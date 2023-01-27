@@ -1,4 +1,4 @@
-package online.strongnation.exception.handing;
+package online.strongnation.exception.handling;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

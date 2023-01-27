@@ -20,8 +20,8 @@ public class StrongNationApplication {
 //            Region region = new Region();
 //            String name = "Rivne";
 //            region.setName(name);
-//            BigDecimal money = new BigDecimal(1000);
-//            region.setMoney(money);
+//            BigDecimal newMoneyValue = new BigDecimal(1000);
+//            region.setMoney(newMoneyValue);
 //
 //            RegionCategory regionCategory = new RegionCategory();
 //            Category category = new Category();
