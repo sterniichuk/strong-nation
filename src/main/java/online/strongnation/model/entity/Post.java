@@ -17,14 +17,9 @@ import java.util.Objects;
 @Table(name = "post")
 public class Post {
     @Id
-    @SequenceGenerator(
-            name = "post_sequence",
-            sequenceName = "post_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "post_sequence"
+            generator = "category_holder_sequence"
     )
     @Column(name = "id")
     private Long id;

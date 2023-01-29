@@ -17,9 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final CategoryDTO categoryWithUnits = CategoryDTO.builder()
-            .name("food").units("kg").number(1000.1f).build();
+            .name("food").units("kg").number(BigDecimal.valueOf(1000.1f)).build();
     private final CategoryDTO categoryWithoutUnits = CategoryDTO.builder()
-            .name("cars").number(101f).build();
+            .name("cars").number(BigDecimal.valueOf(101f)).build();
     private final PostDTO fullDto = PostDTO.builder()
             .heading("Some amazing heading that you have never seen before")
             .money(new BigDecimal("10101.12"))

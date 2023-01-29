@@ -30,11 +30,10 @@ public class RegionRepositoryTest {
     @AfterEach
     void tearDown() {
         countryRepository.deleteAll();
-        regionRepository.deleteAll();
     }
 
     @Test
-    void existsCountryWithRegion(){
+    void existsCountryWithRegion() {
         //given
         final String name = "NAME";
         final Country country = new Country("NaMe");
@@ -43,13 +42,13 @@ public class RegionRepositoryTest {
         country.setRegions(List.of(region));
         countryRepository.save(country);
         //when
-        boolean b = regionRepository.existsRegionInCountryByNamesIgnoringCase(name,regionName);
+        boolean b = regionRepository.existsRegionInCountryByNamesIgnoringCase(name, regionName);
         //then
         assertThat(b).isTrue();
     }
 
     @Test
-    void findDTO(){
+    void findDTO() {
         //given
         final String name = "NAME";
         final Country country = new Country("NaMe");
@@ -67,7 +66,7 @@ public class RegionRepositoryTest {
     }
 
     @Test
-    void findAllDTO(){
+    void findAllDTO() {
         //given
         //usa
         Region washington = new Region(WASHINGTON_NAME);
@@ -90,5 +89,41 @@ public class RegionRepositoryTest {
                 .toList().containsAll(actualUSAList)).isTrue();
         assertThat(polandRegions.stream().map(RegionDTO::new)
                 .toList().containsAll(actualPolandList)).isTrue();
+    }
+
+    @Test
+    void findDTOById() {
+        //given
+        final Country country = new Country("NaMe");
+        countryRepository.save(country);
+        String regionName = "some ReGion";
+        Region region = new Region(regionName);
+        region.setCountry(country);
+        var expected = new RegionDTO(regionRepository.save(region));
+        //when
+        var actual = regionRepository.findRegionDTOById(expected.getId())
+                .orElseThrow(RegionNotFoundException::new);
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void renameById() {
+        //given
+        String countryName = "NaMe";
+        final Country country = new Country(countryName);
+        countryRepository.save(country);
+        String regionName = "some ReGion";
+        String newRegionName = "some 2";
+        Region region = new Region(regionName);
+        region.setCountry(country);
+        regionRepository.save(region);
+        //when
+        regionRepository.updateNameOfRegionById(region.getId(), newRegionName);
+        //then
+        var oldExists = regionRepository.existsRegionInCountryByNamesIgnoringCase(countryName, regionName);
+        var newExists = regionRepository.existsRegionInCountryByNamesIgnoringCase(countryName, newRegionName);
+        assertThat(oldExists).isFalse();
+        assertThat(newExists).isTrue();
     }
 }

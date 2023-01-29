@@ -102,7 +102,7 @@ class PostDataSavingTest {
 
         PostCategory postCategory = new PostCategory();
         Category category = new Category();
-        category.setNumber(9.f);
+        category.setNumber(BigDecimal.valueOf(9.f));
         category.setName("food");
         category.setUnits("kg");
         postCategory.setCategory(category);

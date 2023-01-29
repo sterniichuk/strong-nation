@@ -1,11 +1,11 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.EntityNameLength;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Region;
+import online.strongnation.config.NameProperties;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalRegionException;
 import online.strongnation.exception.RegionNotFoundException;
+import online.strongnation.model.entity.Country;
+import online.strongnation.model.entity.Region;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.repository.RegionRepository;
 import online.strongnation.service.RegionService;
@@ -17,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -80,8 +80,9 @@ class RegionServiceImplTest {
         //given
         final String newRegionName = "New Region Name";
         //when
-        service.create(USA_NAME, newRegionName);
+        final var actual = service.create(USA_NAME, newRegionName);
         //then
+        assertThat(actual.getId()).isNotNull();
         assertThat(regionRepository.existsRegionByName(newRegionName)).isTrue();
     }
 
@@ -91,8 +92,9 @@ class RegionServiceImplTest {
         final String newRegionName = "      \nNew   \t\t\t\t                               Region       Name       ";
         final String expectedRegionName = "New Region Name";
         //when
-        service.create(USA_NAME, newRegionName);
+        final var actual = service.create(USA_NAME, newRegionName);
         //then
+        assertThat(actual.getId()).isNotNull();
         assertThat(regionRepository.existsRegionByName(expectedRegionName)).isTrue();
         assertThat(regionRepository.existsRegionByName(newRegionName)).isFalse();
     }
@@ -179,8 +181,11 @@ class RegionServiceImplTest {
         //then
         assertThatThrownBy(() -> service.createAll(USA_NAME, strings))
                 .isInstanceOf(IllegalRegionException.class)
-                .hasMessage("Region " + regionName + " already exists. List of regions is not saved");
+                .hasMessage("Region " + regionName + " is already present. Regions are not saved");
         for (var i : strings) {
+            if(regionName.equals(i)){
+                continue;
+            }
             assertThat(regionRepository
                     .existsRegionInCountryByNamesIgnoringCase(USA_NAME, i)).isFalse();
         }
@@ -238,8 +243,8 @@ class RegionServiceImplTest {
     @Test
     void renameWithTooLongRegionOld() {
         //given
-        byte[] array = new byte[EntityNameLength.REGION.length + 1];
-        new Random().nextBytes(array);
+        byte[] array = new byte[NameProperties.REGION_NAME_LENGTH + 1];
+        Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
         //then
@@ -250,13 +255,13 @@ class RegionServiceImplTest {
     @Test
     void renameWithTooLongCountryNew() {
         //given
-        byte[] array = new byte[EntityNameLength.REGION.length + 1];
-        new Random().nextBytes(array);
+        byte[] array = new byte[NameProperties.REGION_NAME_LENGTH + 1];
+        Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
         //then
         assertThatThrownBy(() -> service.rename(USA_NAME, WASHINGTON_NAME, input))
-                .isInstanceOf(RegionNotFoundException.class);
+                .isInstanceOf(IllegalRegionException.class);
     }
 
     @Test
@@ -352,10 +357,10 @@ class RegionServiceImplTest {
         boolean emptyRegionsPoland = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(POLAND_NAME).isEmpty();
         assertThat(emptyRegionsPoland).isFalse();
         var zero = countryRepository.findCountryByName(USA_NAME)
-                .orElseThrow(CountryNotFoundException::new).getName();
+                .orElseThrow(CountryNotFoundException::new).getMoney();
         assertThat(zero).isEqualTo(BigDecimal.ZERO);
         var notZero = countryRepository.findCountryByName(POLAND_NAME)
-                .orElseThrow(CountryNotFoundException::new).getName();
+                .orElseThrow(CountryNotFoundException::new).getMoney();
         assertThat(notZero).isNotEqualTo(BigDecimal.ZERO);
     }
 }

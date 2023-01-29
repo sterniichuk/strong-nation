@@ -1,9 +1,12 @@
 package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import online.strongnation.config.Floats;
-import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.config.NameProperties;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
@@ -19,18 +22,13 @@ import java.util.Objects;
         uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country_id"})})
 public class Region {
     @Id
-    @SequenceGenerator(
-            name = "region_sequence",
-            sequenceName = "region_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "region_sequence"
+            generator = "category_holder_sequence"
     )
     @Column(name = "id")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = NameProperties.REGION_NAME_LENGTH)
     private String name;
     @ColumnDefault("0")
     @Column(scale = Floats.MONEY_SCALE)
@@ -45,6 +43,10 @@ public class Region {
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<Post> posts;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Country country;
 
     public Region(String name) {
         this.name = name;

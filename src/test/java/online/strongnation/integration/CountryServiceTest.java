@@ -1,6 +1,6 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.EntityNameLength;
+import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.exception.IllegalCountryException;
@@ -91,7 +91,7 @@ class CountryServiceTest {
     @Test
     void createWithTooLongCountry() {
         //given
-        byte[] array = new byte[EntityNameLength.REGION.length + 1];
+        byte[] array = new byte[NameProperties.REGION_NAME_LENGTH + 1];
         Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
@@ -159,7 +159,7 @@ class CountryServiceTest {
     @Test
     void renameWithTooLongCountryOld() {
         //given
-        byte[] array = new byte[EntityNameLength.COUNTRY.length + 1];
+        byte[] array = new byte[NameProperties.COUNTRY_NAME_LENGTH + 1];
         Arrays.fill(array, (byte) 'A');
         final var input = new String(array, StandardCharsets.UTF_8);
         //when
@@ -171,7 +171,7 @@ class CountryServiceTest {
     @Test
     void renameWithTooLongCountryNew() {
         //given
-        byte[] array = new byte[EntityNameLength.COUNTRY.length + 1];
+        byte[] array = new byte[NameProperties.COUNTRY_NAME_LENGTH + 1];
         Arrays.fill(array, (byte) 'A');
         final String input = new String(array);
         //when

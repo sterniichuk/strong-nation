@@ -72,7 +72,7 @@ class RegionDataSavingTest {
 
         RegionCategory regionCategory = new RegionCategory();
         Category category = new Category();
-        category.setNumber(9.f);
+        category.setNumber(BigDecimal.valueOf(9.f));
         category.setName("food");
         category.setUnits("kg");
         regionCategory.setCategory(category);
@@ -114,7 +114,7 @@ class RegionDataSavingTest {
 
         RegionCategory regionCategory = new RegionCategory();
         Category category = new Category();
-        category.setNumber(9.f);
+        category.setNumber(BigDecimal.valueOf(9.f));
         category.setName("food");
         category.setUnits("kg");
         regionCategory.setCategory(category);

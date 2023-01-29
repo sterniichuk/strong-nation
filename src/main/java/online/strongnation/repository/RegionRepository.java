@@ -3,6 +3,7 @@ package online.strongnation.repository;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.entity.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -15,17 +16,28 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
     boolean existsRegionByName(String name);
 
-    @Query("SELECT COUNT(reg)>0 FROM Country c JOIN c.regions reg" +
+    @Query("SELECT COUNT(reg)>0 FROM Region reg JOIN reg.country c" +
             " WHERE LOWER(reg.name) = LOWER(:region) AND LOWER(c.name)=LOWER(:country)")
     boolean existsRegionInCountryByNamesIgnoringCase(String country, String region);
 
     @Query("SELECT new online.strongnation.model.dto.RegionDTO(reg)" +
-            " FROM Country c JOIN c.regions reg " +
+            " FROM Region reg JOIN reg.country c " +
             "WHERE UPPER(c.name) = UPPER(:country) AND UPPER(reg.name) = UPPER(:region)")
     Optional<RegionDTO> findRegionDTOInCountryByNamesIgnoringCase(String country, String region);
 
+    @Query("SELECT reg FROM Region reg JOIN reg.country c WHERE UPPER(c.name) = UPPER(:country)")
+    List<Region> findRegionsInCountryByNamesIgnoringCase(String country);
+
+    @Modifying
+    @Query("update Region reg set reg.name = :newName where reg.id = :id")
+    void updateNameOfRegionById(Long id, String newName);
+
     @Query("SELECT new online.strongnation.model.dto.RegionDTO(reg)" +
-            " FROM Country c JOIN c.regions reg " +
+            " FROM Region reg WHERE reg.id = :id")
+    Optional<RegionDTO> findRegionDTOById(Long id);
+
+    @Query("SELECT new online.strongnation.model.dto.RegionDTO(reg)" +
+            " FROM Region reg JOIN reg.country c " +
             "WHERE UPPER(c.name) = UPPER(:country)")
     List<RegionDTO> findAllRegionDTOByCountryNameIgnoringCase(String country);
 }

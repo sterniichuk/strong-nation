@@ -1,16 +1,16 @@
 package online.strongnation.service.implementation;
 
 import lombok.RequiredArgsConstructor;
-import online.strongnation.config.EntityNameLength;
 import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalCountryException;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.service.CountryService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static online.strongnation.service.implementation.NameFixer.checkAndNormalizeCountry;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDTO create(final String name) {
-        String clearName = checkAndNormalize(name);
+        String clearName = checkAndNormalizeCountry(name);
         if (countryRepository.existsCountryByNameIgnoreCase(clearName)) {
             throw new IllegalCountryException("Country " + name + " already exists");
         }
@@ -31,23 +31,9 @@ public class CountryServiceImpl implements CountryService {
         return new CountryDTO(country);
     }
 
-    private String checkAndNormalize(final String name) {
-        if (name == null) {
-            throw new IllegalCountryException("Name of country is null");
-        }
-        if (name.length() > EntityNameLength.COUNTRY.length) {
-            throw new IllegalCountryException("Too long name of country");
-        }
-        String clearName = StringUtils.normalizeSpace(name);
-        if (clearName.length() == 0) {
-            throw new IllegalCountryException("Empty name");
-        }
-        return clearName;
-    }
-
     @Override
     public CountryDTO get(final String name) {
-        final String clearName = checkAndNormalize(name);
+        final String clearName = checkAndNormalizeCountry(name);
         return getByNormalizedName(clearName);
     }
 
@@ -66,8 +52,8 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional
     public CountryDTO rename(String oldName, String newName) {
-        final String oldNameClear = checkAndNormalize(oldName);
-        final String newNameClear = checkAndNormalize(newName);
+        final String oldNameClear = checkAndNormalizeCountry(oldName);
+        final String newNameClear = checkAndNormalizeCountry(newName);
         if (!countryRepository.existsCountryByNameIgnoreCase(oldNameClear)) {
             throw new CountryNotFoundException("Country " + oldNameClear + " not found");
         }
@@ -77,7 +63,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDTO delete(String name) {
-        final String clearName = checkAndNormalize(name);
+        final String clearName = checkAndNormalizeCountry(name);
         final CountryDTO deleted = getByNormalizedName(clearName);
         countryRepository.deleteById(deleted.getId());
         return deleted;
