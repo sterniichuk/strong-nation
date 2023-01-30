@@ -249,7 +249,7 @@ class RegionServiceImplTest {
         //when
         //then
         assertThatThrownBy(() -> service.rename(USA_NAME, input, WASHINGTON_NAME))
-                .isInstanceOf(RegionNotFoundException.class);
+                .isInstanceOf(IllegalRegionException.class);
     }
 
     @Test

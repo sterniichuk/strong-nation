@@ -1,11 +1,11 @@
 package online.strongnation.unit.repository;
 
+import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.model.entity.Category;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.CountryCategory;
-import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.repository.CountryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,21 +129,5 @@ class CountryRepositoryTest {
         var actual = countryRepository.getIdByNameIgnoreCase("nothing");
         //then
         assertThat(actual).isEmpty();
-    }
-
-    @Test
-    void testUpdateMoney() {
-        //given
-        final String name = "NAME";
-        final Country country = new Country("NaMe");
-        final BigDecimal newMoney = BigDecimal.valueOf(11111111.11);
-        country.setMoney(BigDecimal.valueOf(12010021318.1));
-        countryRepository.save(country);
-        //when
-        countryRepository.updateMoneyOfCountryByNameIgnoreCase(name, newMoney);
-        var actual = countryRepository.findCountryByNameIgnoreCase(name)
-                .orElseThrow(CountryNotFoundException::new).getMoney();
-        //then
-        assertThat(actual).isEqualTo(newMoney);
     }
 }

@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
+import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.CountryDTO;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
@@ -42,7 +44,7 @@ public class Country {
     @OneToMany(targetEntity = CountryCategory.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private List<CountryCategory> categories;
+    private List<CountryCategory> categories = new ArrayList<>(0);
 
     @OneToMany(
             mappedBy = "country",
@@ -51,6 +53,10 @@ public class Country {
     )
     @ToString.Exclude
     private List<Region> regions = new ArrayList<>(0);
+
+    public void addCategory(Category category){
+        categories.add(new CountryCategory(category));
+    }
 
     public void setRegions(List<Region> regions) {
         regions.forEach(r -> r.setCountry(this));
@@ -69,6 +75,16 @@ public class Country {
 
     public Country(String name) {
         this.name = name;
+    }
+    public Country(CountryDTO dto) {
+        this.name = dto.getName();
+        this.id = dto.getId();
+        this.money = dto.getMoney();
+        setCategoriesDTO(dto.getCategories());
+    }
+
+    public void setCategoriesDTO(List<CategoryDTO> categories) {
+        this.categories = categories.stream().map(Category::new).map(CountryCategory::new).toList();
     }
 
     @Override

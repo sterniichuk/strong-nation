@@ -151,7 +151,7 @@ class StatisticServiceTest {
         StatisticResult statisticResult = service.deleteChild(USA, WASHINGTON_IN_USA);
         var actual = statisticResult.updatedCategories();
         //then
-        assertThat(statisticResult.newMoneyValue().orElseThrow(IllegalStateException::new)
+        assertThat(statisticResult.getNewMoneyValueOpt().orElseThrow(IllegalStateException::new)
                 .compareTo(WARSAW_IN_USA_MONEY)).isEqualTo(0);
         assertThat(actual).isEqualTo(CATEGORIES_OF_WARSAW_OF_USA);
         assertThat(statisticResult.excessiveCategories().isEmpty()).isTrue();
@@ -174,9 +174,9 @@ class StatisticServiceTest {
                 .categories(List.of(someRareCategory)).build();
         //when
         StatisticResult statisticResult = service.deleteChild(testCountry, testRegion);
-        var actual = statisticResult.excessiveCategories();
+        var actual = statisticResult.excessiveCategories().get(0);
         //then
-        assertThat(statisticResult.newMoneyValue().orElseThrow(IllegalStateException::new)
+        assertThat(statisticResult.getNewMoneyValueOpt().orElseThrow(IllegalStateException::new)
                 .compareTo(POLAND_MONEY)).isEqualTo(0);
         assertThat(actual).isEqualTo(someRareCategory);
         assertThat(statisticResult.updatedCategories().isEmpty()).isTrue();
@@ -188,7 +188,7 @@ class StatisticServiceTest {
         //when
         StatisticResult actual = service.updateChild(USA, WASHINGTON_IN_USA, WASHINGTON_IN_USA);
         //then
-        assertThat(actual.newMoneyValue()).isEmpty();
+        assertThat(actual.getNewMoneyValueOpt()).isEmpty();
         assertThat(actual.excessiveCategories().isEmpty()).isTrue();
         assertThat(actual.updatedCategories().isEmpty()).isTrue();
         assertThat(actual.newCategories().isEmpty()).isTrue();
@@ -202,20 +202,46 @@ class StatisticServiceTest {
         BigDecimal newFoodNumber = NUMBER_OF_FOOD.divide(
                 BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
         final var newFoodCategory = WASHINGTON_IN_USA_FOOD_CATEGORY.toBuilder()
-                .number(newFoodNumber).build();
+                .number(newFoodNumber)
+                .build();
         final var newWashington = RegionDTO.builder()
                 .money(newMoney)
                 .categories(List.of(newFoodCategory, WASHINGTON_IN_USA_CARS_CATEGORY)).build();
         //when
         StatisticResult actual = service.updateChild(USA, WASHINGTON_IN_USA, newWashington);
         //then
-        assertThat(actual.newMoneyValue().orElseThrow(IllegalStateException::new))
-                .isEqualTo(USA_MONEY.subtract(newMoney));
+        assertThat(actual.getNewMoneyValueOpt().orElseThrow(IllegalStateException::new))
+                .isEqualTo(USA_MONEY.subtract(WASHINGTON_IN_USA_MONEY.subtract(newMoney)));
         assertThat(actual.excessiveCategories().isEmpty()).isTrue();
         assertThat(actual.updatedCategories().get(0))
                 .isEqualTo(USA_FOOD_CATEGORY.toBuilder()
-                        .number(USA_FOOD_CATEGORY.getNumber().subtract(newFoodNumber)));
+                        .number(USA_FOOD_CATEGORY.getNumber().subtract(newFoodNumber)).build());
         assertThat(actual.newCategories().isEmpty()).isTrue();
+    }
+
+    @Test
+    void updateWithExcessive() {
+        //given
+        CategoryDTO someRareCategory = CategoryDTO.builder()
+                .name("some name")
+                .number(NUMBER_OF_FOOD.multiply(BigDecimal.valueOf(1.5f)))
+                .units(FOOD_UNITS)
+                .build();
+        CountryDTO testCountry = CountryDTO.builder()
+                .money(USA_MONEY.add(POLAND_MONEY))
+                .categories(List.of(USA_FOOD_CATEGORY, someRareCategory)).build();
+        RegionDTO testRegion = RegionDTO.builder()
+                .money(USA_MONEY)
+                .categories(List.of(someRareCategory)).build();
+        //when
+        StatisticResult statisticResult = service.updateChild(testCountry, testRegion,
+                RegionDTO.builder().money(USA_MONEY).categories(List.of()).build());
+        var actual = statisticResult.excessiveCategories().get(0);
+        //then
+        assertThat(statisticResult.getNewMoneyValueOpt()).isEmpty();
+        assertThat(actual).isEqualTo(someRareCategory);
+        assertThat(statisticResult.updatedCategories().isEmpty()).isTrue();
+        assertThat(statisticResult.newCategories().isEmpty()).isTrue();
     }
 
     @Test
@@ -232,7 +258,7 @@ class StatisticServiceTest {
         //when
         final var actual = service.addChildToParent(USA, testRegion);
         //then
-        assertThat(actual.newMoneyValue().orElseThrow(IllegalStateException::new))
+        assertThat(actual.getNewMoneyValueOpt().orElseThrow(IllegalStateException::new))
                 .isEqualTo(USA_MONEY.multiply(BigDecimal.valueOf(2)));
         assertThat(actual.excessiveCategories().isEmpty()).isTrue();
         assertThat(actual.newCategories().get(0))
@@ -249,7 +275,7 @@ class StatisticServiceTest {
         //when
         final var actual = service.addChildToParent(USA, testRegion);
         //then
-        assertThat(actual.newMoneyValue().orElseThrow(IllegalStateException::new))
+        assertThat(actual.getNewMoneyValueOpt().orElseThrow(IllegalStateException::new))
                 .isEqualTo(USA_MONEY.multiply(BigDecimal.valueOf(2)));
         assertThat(actual.excessiveCategories().isEmpty()).isTrue();
         assertThat(actual.updatedCategories().get(0))

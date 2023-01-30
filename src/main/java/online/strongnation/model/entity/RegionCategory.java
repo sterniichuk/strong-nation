@@ -3,6 +3,7 @@ package online.strongnation.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.statistic.CategoryHolder;
 
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Table(name = "region_category",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"region_id", "category_id"})})
-public class RegionCategory {
+public class RegionCategory implements CategoryHolder {
 
     @Id
     @SequenceGenerator(

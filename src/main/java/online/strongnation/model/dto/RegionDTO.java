@@ -27,7 +27,7 @@ public class RegionDTO implements StatisticModel {
         List<RegionCategory> entityCategories = entity.getCategories();
         this.categories =
                 (entityCategories == null || entityCategories.isEmpty()) ? List.of() : entityCategories
-                .stream().map(RegionCategory::getCategory)
-                .map(CategoryDTO::new).toList();
+                        .stream().map(RegionCategory::getCategory)
+                        .map(CategoryDTO::new).toList();
     }
 }

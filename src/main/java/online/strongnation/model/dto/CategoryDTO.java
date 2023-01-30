@@ -21,4 +21,20 @@ public class CategoryDTO {
         this.number = category.getNumber();
         this.units = category.getUnits();
     }
+
+    public CategoryDTO addNumber(CategoryDTO category){
+        return new CategoryDTO(
+                this.getName(),
+                this.getNumber().add(category.getNumber()),
+                this.getUnits()
+        );
+    }
+
+    public CategoryDTO updateNumber(BigDecimal number){
+        return new CategoryDTO(
+                this.getName(),
+                number,
+                this.getUnits()
+        );
+    }
 }

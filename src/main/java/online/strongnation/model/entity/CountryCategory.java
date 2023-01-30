@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.statistic.CategoryHolder;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Table(name = "country_category",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"country_id", "category_id"})})
-public class CountryCategory {
+public class CountryCategory implements CategoryHolder {
     @Id
     @SequenceGenerator(
             name = "country_category_sequence",
