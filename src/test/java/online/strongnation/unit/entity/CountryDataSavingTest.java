@@ -2,7 +2,7 @@ package online.strongnation.unit.entity;
 
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.model.dto.CategoryDTO;
-import online.strongnation.model.entity.Category;
+import online.strongnation.model.entity.CategoryEntity;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.CountryCategory;
 import online.strongnation.repository.CountryRepository;
@@ -29,11 +29,11 @@ public class CountryDataSavingTest {
         String name = "Ukraine";
         country.setName(name);
         CountryCategory regionCategory = new CountryCategory();
-        Category category = new Category();
-        category.setNumber(BigDecimal.valueOf(9.f));
-        category.setName("food");
-        category.setUnits("kg");
-        regionCategory.setCategory(category);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
+        categoryEntity.setName("food");
+        categoryEntity.setUnits("kg");
+        regionCategory.setCategoryEntity(categoryEntity);
 
         country.setCategories(List.of(regionCategory));
         countryRepository.save(country);
@@ -42,7 +42,7 @@ public class CountryDataSavingTest {
                 .orElseThrow(CountryNotFoundException::new);
         List<CategoryDTO> categories = countrySaved
                 .getCategories().stream()
-                .map(CountryCategory::getCategory)
+                .map(CountryCategory::getCategoryEntity)
                 .map(x -> new CategoryDTO(x.getName(), x.getNumber(), x.getUnits()))
                 .toList();
         //then

@@ -27,7 +27,7 @@ public class CountryDTO implements StatisticModel {
         this.money = entity.getMoney();
         List<CountryCategory> entityCategories = entity.getCategories();
         this.categories = (entityCategories == null) ? List.of() : entityCategories
-                .stream().map(CountryCategory::getCategory)
+                .stream().map(CountryCategory::getCategoryEntity)
                 .map(CategoryDTO::new).toList();
     }
 }

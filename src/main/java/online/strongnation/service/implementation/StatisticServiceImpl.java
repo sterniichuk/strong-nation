@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static online.strongnation.service.implementation.CategoryUtils.getCategoryMap;
 
 @Service
 public class StatisticServiceImpl implements StatisticService {
@@ -90,10 +90,7 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    private Map<String, CategoryDTO> getCategoryMap(List<CategoryDTO> list) {
-        return list.stream()
-                .collect(Collectors.toMap(CategoryDTO::getName, Function.identity()));
-    }
+
 
     private void groupCategoriesWhenUpdateChild(StatisticModel parent, StatisticModel old,
                                                 StatisticModel updated,

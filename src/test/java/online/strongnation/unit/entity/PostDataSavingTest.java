@@ -72,7 +72,7 @@ class PostDataSavingTest {
         assertThat(postSaved.getId()).isNotEqualTo(null);
         assertThat(postSaved.getHeading()).isEqualTo(heading);
         assertThat(postSaved.getMoney()).isEqualTo(money);
-        assertThat(postSaved.getCategories()).isEqualTo(null);
+        assertThat(postSaved.getCategories().isEmpty()).isTrue();
     }
 
     @Test
@@ -101,11 +101,11 @@ class PostDataSavingTest {
         region.setPosts(List.of(post));
 
         PostCategory postCategory = new PostCategory();
-        Category category = new Category();
-        category.setNumber(BigDecimal.valueOf(9.f));
-        category.setName("food");
-        category.setUnits("kg");
-        postCategory.setCategory(category);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
+        categoryEntity.setName("food");
+        categoryEntity.setUnits("kg");
+        postCategory.setCategoryEntity(categoryEntity);
         post.setCategories(List.of(postCategory));
         countryRepository.save(country);
 
@@ -115,10 +115,10 @@ class PostDataSavingTest {
         PostCategory postCategorySavedInPostCollection = postSaved.getCategories().get(0);
         assertThat(postCategorySavedInPostCollection).isEqualTo(postCategory);
 
-        Category category1 = categoryRepository.findAll()
-                .stream().filter(x->category.getName().equals(x.getName()))
+        CategoryEntity categoryEntity1 = categoryRepository.findAll()
+                .stream().filter(x-> categoryEntity.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
-        assertThat(category).isEqualTo(category1);
+        assertThat(categoryEntity).isEqualTo(categoryEntity1);
 
         var postCategories = postCategoryRepository.findAll();
         assertThat(postCategories.isEmpty()).isFalse();

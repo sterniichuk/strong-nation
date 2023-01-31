@@ -4,17 +4,19 @@ import lombok.RequiredArgsConstructor;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalRegionException;
 import online.strongnation.exception.RegionNotFoundException;
+import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Region;
+import online.strongnation.model.statistic.StatisticResult;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.repository.RegionRepository;
 import online.strongnation.service.RegionService;
+import online.strongnation.service.StatisticOfEntityUpdater;
 import online.strongnation.service.StatisticService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class RegionServiceImpl implements RegionService {
     private final RegionRepository regionRepository;
     private final CountryRepository countryRepository;
     private final StatisticService statistic;
+    private final StatisticOfEntityUpdater updater;
 
     @Override
     public RegionDTO create(final String countryName, final String name) {
@@ -119,33 +122,49 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
+    @Transactional
     public RegionDTO delete(String countryName, String name) {
         String clearCountryName = checkAndNormalizeCountry(countryName);
         String clearRegionName = checkAndNormalizeRegion(name);
         RegionDTO regionDTO = findRegionInCountryByNames(clearCountryName, clearRegionName);
         Country country = countryRepository.findCountryByName(clearCountryName).orElseThrow(CountryNotFoundException::new);
-//        StatisticResult result = statistic.deleteChild(new CountryDTO(country), regionDTO);
+        StatisticResult result = statistic.deleteChild(new CountryDTO(country), regionDTO);
+        updater.update(country, result);
+        countryRepository.save(country);
         regionRepository.deleteById(regionDTO.getId());
         return regionDTO;
     }
 
     @Override
+    @Transactional
     public RegionDTO delete(Long id) {
         RegionDTO regionDTO = get(id);
+        Country country = regionRepository.findCountryOfRegionById(id)
+                .orElseThrow(IllegalRegionException::new);
         regionRepository.deleteById(regionDTO.getId());
+        StatisticResult result = statistic.deleteChild(new CountryDTO(country), regionDTO);
+        updater.update(country, result);
+        countryRepository.save(country);
         return regionDTO;
     }
 
 
     @Override
-    public List<RegionDTO> deleteAllByCountry(String country) {
-        String clearCountryName = checkAndNormalizeCountry(country);
-        if (!countryRepository.existsCountryByNameIgnoreCase(clearCountryName)) {
-            throw new CountryNotFoundException("Country " + country + " doesn't exist");
-        }
-        List<RegionDTO> regions = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(country);
-        regions.forEach(r -> regionRepository.deleteById(r.getId()));
-        countryRepository.updateMoneyOfCountryByNameIgnoreCase(country, BigDecimal.ZERO);
+    @Transactional
+    public List<RegionDTO> deleteAllByCountry(String countryName) {
+        String clearCountryName = checkAndNormalizeCountry(countryName);
+        Country country = countryRepository.findCountryByNameIgnoreCase(clearCountryName)
+                .orElseThrow(() -> {
+                    String message = "Country " + clearCountryName + " doesn't exist";
+                    throw new CountryNotFoundException(message);
+                });
+        List<RegionDTO> regions = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(countryName);
+        regions.forEach(r -> {
+            regionRepository.deleteById(r.getId());
+            StatisticResult result = statistic.deleteChild(new CountryDTO(country), r);
+            updater.update(country, result);
+        });
+        countryRepository.save(country);
         return regions;
     }
 

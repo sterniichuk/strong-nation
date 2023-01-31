@@ -1,5 +1,6 @@
 package online.strongnation.integration;
 
+import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalRegionException;
@@ -358,7 +359,7 @@ class RegionServiceImplTest {
         assertThat(emptyRegionsPoland).isFalse();
         var zero = countryRepository.findCountryByName(USA_NAME)
                 .orElseThrow(CountryNotFoundException::new).getMoney();
-        assertThat(zero).isEqualTo(BigDecimal.ZERO);
+        assertThat(zero).isEqualTo(BigDecimal.ZERO.setScale(Floats.MONEY_SCALE, Floats.MONEY_ROUNDING));
         var notZero = countryRepository.findCountryByName(POLAND_NAME)
                 .orElseThrow(CountryNotFoundException::new).getMoney();
         assertThat(notZero).isNotEqualTo(BigDecimal.ZERO);

@@ -1,7 +1,7 @@
 package online.strongnation.model.dto;
 
 import lombok.*;
-import online.strongnation.model.entity.Category;
+import online.strongnation.model.Category;
 
 import java.math.BigDecimal;
 
@@ -11,15 +11,15 @@ import java.math.BigDecimal;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDTO {
+public class CategoryDTO implements Category {
     private String name;
     private BigDecimal number;
     private String units;
 
-    public CategoryDTO(Category category){
-        this.name = category.getName();
-        this.number = category.getNumber();
-        this.units = category.getUnits();
+    public CategoryDTO(Category categoryEntity){
+        this.name = categoryEntity.getName();
+        this.number = categoryEntity.getNumber();
+        this.units = categoryEntity.getUnits();
     }
 
     public CategoryDTO addNumber(CategoryDTO category){

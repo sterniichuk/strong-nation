@@ -1,7 +1,8 @@
 package online.strongnation.model.statistic;
 
-import online.strongnation.model.entity.Category;
+
+import online.strongnation.model.entity.CategoryEntity;
 
 public interface CategoryHolder {
-    Category getCategory();
+    CategoryEntity getCategoryEntity();
 }

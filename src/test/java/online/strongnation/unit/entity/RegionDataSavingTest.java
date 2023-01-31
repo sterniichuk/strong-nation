@@ -1,6 +1,6 @@
 package online.strongnation.unit.entity;
 
-import online.strongnation.model.entity.Category;
+import online.strongnation.model.entity.CategoryEntity;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Region;
 import online.strongnation.model.entity.RegionCategory;
@@ -71,11 +71,11 @@ class RegionDataSavingTest {
         region.setMoney(money);
 
         RegionCategory regionCategory = new RegionCategory();
-        Category category = new Category();
-        category.setNumber(BigDecimal.valueOf(9.f));
-        category.setName("food");
-        category.setUnits("kg");
-        regionCategory.setCategory(category);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
+        categoryEntity.setName("food");
+        categoryEntity.setUnits("kg");
+        regionCategory.setCategoryEntity(categoryEntity);
 
         region.setCategories(List.of(regionCategory));
         countryRepository.save(country);
@@ -91,14 +91,14 @@ class RegionDataSavingTest {
 
         var regionCategorySaved = regionSaved.getCategories().get(0);
 
-        assertThat(regionCategorySaved.getCategory()).isNotEqualTo(null);
-        var savedCategory = regionCategorySaved.getCategory();
-        assertThat(savedCategory).isEqualTo(category);
+        assertThat(regionCategorySaved.getCategoryEntity()).isNotEqualTo(null);
+        var savedCategory = regionCategorySaved.getCategoryEntity();
+        assertThat(savedCategory).isEqualTo(categoryEntity);
 
-        Category category1 = categoryRepository.findAll()
-                .stream().filter(x->category.getName().equals(x.getName()))
+        CategoryEntity categoryEntity1 = categoryRepository.findAll()
+                .stream().filter(x-> categoryEntity.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
-        assertThat(category).isEqualTo(category1);
+        assertThat(categoryEntity).isEqualTo(categoryEntity1);
     }
 
     @Test
@@ -113,11 +113,11 @@ class RegionDataSavingTest {
         region.setMoney(money);
 
         RegionCategory regionCategory = new RegionCategory();
-        Category category = new Category();
-        category.setNumber(BigDecimal.valueOf(9.f));
-        category.setName("food");
-        category.setUnits("kg");
-        regionCategory.setCategory(category);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
+        categoryEntity.setName("food");
+        categoryEntity.setUnits("kg");
+        regionCategory.setCategoryEntity(categoryEntity);
 
         region.setCategories(List.of(regionCategory));
         countryRepository.save(country);
@@ -128,7 +128,7 @@ class RegionDataSavingTest {
         regionCategoryRepository.deleteById(savedRegionCategory.getId());
         assertThat(regionCategoryRepository.findAll().isEmpty()).isTrue();
 
-        List<Category> all = categoryRepository.findAll();
+        List<CategoryEntity> all = categoryRepository.findAll();
         assertThat(all.isEmpty()).isTrue();
         List<RegionCategory> regionCategoryList = regionCategoryRepository.findAll();
         assertThat(regionCategoryList.isEmpty()).isTrue();

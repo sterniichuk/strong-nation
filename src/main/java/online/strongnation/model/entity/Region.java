@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
+import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.statistic.StatisticEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
@@ -20,7 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Table(name = "region",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country_id"})})
-public class Region {
+public class Region implements StatisticEntity {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -50,6 +52,10 @@ public class Region {
 
     public Region(String name) {
         this.name = name;
+    }
+
+    public void addCategory(CategoryDTO category) {
+        categories.add(new RegionCategory(category));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package online.strongnation.unit.repository;
 
+import online.strongnation.exception.IllegalCountryException;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Region;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -125,5 +127,20 @@ public class RegionRepositoryTest {
         var newExists = regionRepository.existsRegionInCountryByNamesIgnoringCase(countryName, newRegionName);
         assertThat(oldExists).isFalse();
         assertThat(newExists).isTrue();
+    }
+    @Test
+    void renameCountryByRegionId() {
+        //given
+        String countryName = "NaMe";
+        final Country country = new Country(countryName);
+        countryRepository.save(country);
+        String regionName = "some ReGion";
+        Region region = new Region(regionName);
+        region.setCountry(country);
+        regionRepository.save(region);
+        //when
+        Optional<Country> actual = regionRepository.findCountryOfRegionById(region.getId());
+        //then
+        assertThat(actual.orElseThrow(IllegalCountryException::new)).isEqualTo(country);
     }
 }

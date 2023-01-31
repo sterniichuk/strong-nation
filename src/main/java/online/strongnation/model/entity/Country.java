@@ -9,12 +9,14 @@ import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.statistic.StatisticEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -22,7 +24,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "country")
-public class Country {
+public class Country implements StatisticEntity {
     @Id
     @SequenceGenerator(
             name = "category_holder_sequence",
@@ -54,7 +56,11 @@ public class Country {
     @ToString.Exclude
     private List<Region> regions = new ArrayList<>(0);
 
-    public void addCategory(Category category){
+    public void addCategory(CategoryEntity categoryEntity) {
+        categories.add(new CountryCategory(categoryEntity));
+    }
+
+    public void addCategory(CategoryDTO category) {
         categories.add(new CountryCategory(category));
     }
 
@@ -76,6 +82,7 @@ public class Country {
     public Country(String name) {
         this.name = name;
     }
+
     public Country(CountryDTO dto) {
         this.name = dto.getName();
         this.id = dto.getId();
@@ -84,7 +91,8 @@ public class Country {
     }
 
     public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(Category::new).map(CountryCategory::new).toList();
+        this.categories = categories.stream().map(CategoryEntity::new).map(CountryCategory::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
