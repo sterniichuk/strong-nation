@@ -26,6 +26,10 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
             "WHERE UPPER(c.name) = UPPER(:country) AND UPPER(reg.name) = UPPER(:region)")
     Optional<RegionDTO> findRegionDTOInCountryByNamesIgnoringCase(String country, String region);
 
+    @Query("SELECT reg FROM Region reg JOIN reg.country c " +
+            "WHERE UPPER(c.name) = UPPER(:country) AND UPPER(reg.name) = UPPER(:region)")
+    Optional<Region> findRegionInCountryByNamesIgnoringCase(String country, String region);
+
     @Modifying
     @Query("update Region reg set reg.name = :newName where reg.id = :id")
     void updateNameOfRegionById(Long id, String newName);
@@ -41,4 +45,6 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
     @Query("SELECT c FROM Region reg JOIN reg.country c WHERE reg.id = :id")
     Optional<Country> findCountryOfRegionById(Long id);
+
+
 }

@@ -8,12 +8,15 @@ import lombok.ToString;
 import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -24,9 +27,14 @@ import java.util.Objects;
         uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country_id"})})
 public class Region implements StatisticEntity {
     @Id
+    @SequenceGenerator(
+            name = "region_sequence",
+            sequenceName = "region_sequence",
+            allocationSize = 1
+    )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_holder_sequence"
+            generator = "region_sequence"
     )
     @Column(name = "id")
     private Long id;
@@ -49,6 +57,10 @@ public class Region implements StatisticEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private Country country;
+
+    public void setPostsDTO(List<PostDTO> dtoList){
+        this.posts = dtoList.stream().map(Post::new).collect(Collectors.toCollection(ArrayList::new));
+    }
 
     public Region(String name) {
         this.name = name;

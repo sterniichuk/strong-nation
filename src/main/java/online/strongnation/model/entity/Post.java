@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import online.strongnation.config.Floats;
 import online.strongnation.model.dto.CategoryDTO;
+import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 
 import java.math.BigDecimal;
@@ -20,9 +21,14 @@ import java.util.Objects;
 @Table(name = "post")
 public class Post implements StatisticEntity {
     @Id
+    @SequenceGenerator(
+            name = "post_sequence",
+            sequenceName = "post_sequence",
+            allocationSize = 1
+    )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_holder_sequence"
+            generator = "post_sequence"
     )
     @Column(name = "id")
     private Long id;
@@ -44,6 +50,13 @@ public class Post implements StatisticEntity {
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<PostCategory> categories = new ArrayList<>(0);
+
+    public Post(PostDTO dto){
+        this.heading = dto.getHeading();
+        this.link = dto.getLink();
+        this.date = dto.getDate();
+        this.money = dto.getMoney();
+    }
 
     @Override
     public boolean equals(Object o) {

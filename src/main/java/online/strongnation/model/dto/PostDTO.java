@@ -19,4 +19,13 @@ public class PostDTO {
     private BigDecimal money;
     private LocalDateTime date;
     private List<CategoryDTO> categories;
+
+    public GetPostResponse toGetResponse(){
+        return GetPostResponse.builder()
+                .id(id)
+                .date(date)
+                .heading(heading)
+                .link(link)
+                .build();
+    }
 }

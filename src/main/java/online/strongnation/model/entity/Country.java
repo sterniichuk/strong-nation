@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 public class Country implements StatisticEntity {
     @Id
     @SequenceGenerator(
-            name = "category_holder_sequence",
-            sequenceName = "category_holder_sequence",
+            name = "country_sequence",
+            sequenceName = "country_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_holder_sequence"
+            generator = "country_sequence"
     )
     @Column(name = "id")
     private Long id;

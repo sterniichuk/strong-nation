@@ -12,7 +12,7 @@ public interface PostService {
 
     List<GetPostResponse> all(String countryName, String regionName);
 
-    List<GetPostResponse> all(Long id);
+    List<GetPostResponse> all(Long id);//regionId
 
     PostDTO get(Long id);
 

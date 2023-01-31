@@ -46,7 +46,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     private Optional<BigDecimal> addChildMoney(StatisticModel parent, StatisticModel child) {
-        BigDecimal childMoney = child.getMoney();
+        var childMoney = child.getMoney();
         return (childMoney != null) ?
                 Optional.of(parent.getMoney().add(childMoney))
                 : Optional.empty();
