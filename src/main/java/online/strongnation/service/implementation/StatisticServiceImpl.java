@@ -70,7 +70,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public StatisticResult updateChild(StatisticModel parent, StatisticModel old, StatisticModel updated) {
+    public <T extends StatisticModel> StatisticResult updateChild(StatisticModel parent, T old, T updated) {
         if (updated == null) {
             return emptyStatistic;
         }
@@ -89,7 +89,6 @@ public class StatisticServiceImpl implements StatisticService {
                 .newMoneyValue(newMoney.orElse(null))
                 .build();
     }
-
 
 
     private void groupCategoriesWhenUpdateChild(StatisticModel parent, StatisticModel old,
@@ -182,7 +181,7 @@ public class StatisticServiceImpl implements StatisticService {
             var parentCategory = parentCategories.get(i.getName());
             if (parentCategory != null && Objects.equals(parentCategory.getUnits(), i.getUnits())) {
                 BigDecimal newNumber = parentCategory.getNumber().subtract(i.getNumber());
-                if(newNumber.compareTo(BigDecimal.ZERO) > 0){
+                if (newNumber.compareTo(BigDecimal.ZERO) > 0) {
                     updated.add(parentCategory.updateNumber(newNumber));
                     continue;
                 }

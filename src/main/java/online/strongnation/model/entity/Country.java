@@ -9,6 +9,7 @@ import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -56,10 +57,6 @@ public class Country implements StatisticEntity {
     @ToString.Exclude
     private List<Region> regions = new ArrayList<>(0);
 
-    public void addCategory(CategoryEntity categoryEntity) {
-        categories.add(new CountryCategory(categoryEntity));
-    }
-
     public void addCategory(CategoryDTO category) {
         categories.add(new CountryCategory(category));
     }
@@ -69,14 +66,12 @@ public class Country implements StatisticEntity {
         this.regions = regions;
     }
 
-    public void addRegion(Region region) {
-        regions.add(region);
-        region.setCountry(this);
-    }
-
-    public void removeRegion(Region region) {
-        regions.remove(region);
-        region.setCountry(null);
+    public void setRegionsDTO(List<RegionDTO> dtoList){
+        this.regions = dtoList.stream().map(x->{
+            Region region = new Region(x);
+            region.setCountry(this);
+            return region;
+        }).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Country(String name) {
@@ -91,7 +86,7 @@ public class Country implements StatisticEntity {
     }
 
     public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(CategoryEntity::new).map(CountryCategory::new)
+        this.categories = categories.stream().map(CategoryDAO::new).map(CountryCategory::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

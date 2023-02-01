@@ -1,6 +1,6 @@
 package online.strongnation.service.implementation;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalRegionException;
 import online.strongnation.exception.RegionNotFoundException;
@@ -20,11 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static online.strongnation.service.implementation.NameFixer.checkAndNormalizeCountry;
-import static online.strongnation.service.implementation.NameFixer.checkAndNormalizeRegion;
+import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeCountry;
+import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeRegion;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RegionServiceImpl implements RegionService {
 
     private final RegionRepository regionRepository;
@@ -56,7 +56,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public List<RegionDTO> createAll(String countryName, List<String> names) {
         String clearCountryName = checkAndNormalizeCountry(countryName);
-        List<String> clearedRegions = names.stream().map(NameFixer::checkAndNormalizeRegion).toList();
+        List<String> clearedRegions = names.stream().map(RequestParameterFixer::checkAndNormalizeRegion).toList();
         Country country = findCountryByName(clearCountryName);
         final ArrayList<Region> regions = new ArrayList<>(clearedRegions.size());
         clearedRegions.forEach(s -> {

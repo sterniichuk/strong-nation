@@ -20,7 +20,7 @@ public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
         var categories = updated.getCategories();
         var iterator = categories.iterator();
         while (iterator.hasNext()){
-            var next = iterator.next().getCategoryEntity();
+            var next = iterator.next().getCategoryDAO();
             CategoryDTO updatedCategory = updateMap.get(next.getName());
             if(updatedCategory != null && Objects.equals(updatedCategory.getUnits(), next.getUnits())){
                 next.setNumber(updatedCategory.getNumber());

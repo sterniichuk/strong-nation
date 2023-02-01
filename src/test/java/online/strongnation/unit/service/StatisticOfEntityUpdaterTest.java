@@ -69,7 +69,7 @@ class StatisticOfEntityUpdaterTest {
         //when
         service.update(country, statistic);
         //then
-        var categories = country.getCategories().stream().map(CategoryHolder::getCategoryEntity)
+        var categories = country.getCategories().stream().map(CategoryHolder::getCategoryDAO)
                 .map(CategoryDTO::new).toList();
         assertThat(categories.contains(UPDATED_CARS_CATEGORY)).isTrue();
         assertThat(categories.contains(CARS_CATEGORY)).isFalse();

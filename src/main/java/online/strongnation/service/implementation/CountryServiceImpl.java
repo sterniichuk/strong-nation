@@ -10,7 +10,7 @@ import online.strongnation.service.CountryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static online.strongnation.service.implementation.NameFixer.checkAndNormalizeCountry;
+import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeCountry;
 
 import java.util.List;
 

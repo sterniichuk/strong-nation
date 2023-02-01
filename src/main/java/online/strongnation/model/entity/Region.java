@@ -9,6 +9,7 @@ import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.PostDTO;
+import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -49,17 +50,41 @@ public class Region implements StatisticEntity {
     @ToString.Exclude
     private List<RegionCategory> categories;
 
-    @OneToMany(targetEntity = Post.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(
+            mappedBy = "region",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @ToString.Exclude
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>(0);
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private Country country;
 
     public void setPostsDTO(List<PostDTO> dtoList){
-        this.posts = dtoList.stream().map(Post::new).collect(Collectors.toCollection(ArrayList::new));
+        this.posts = dtoList.stream().map(x->{
+          Post post = new Post(x);
+          post.setRegion(this);
+          return post;
+        }).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public void setPosts(List<Post> posts){
+        posts.forEach(x->x.setRegion(this));
+        this.posts = posts;
+    }
+
+    public Region(RegionDTO dto) {
+        this.name = dto.getName();
+        this.id = dto.getId();
+        this.money = dto.getMoney();
+        setCategoriesDTO(dto.getCategories());
+    }
+
+    public void setCategoriesDTO(List<CategoryDTO> categories) {
+        this.categories = categories.stream().map(CategoryDAO::new).map(RegionCategory::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Region(String name) {

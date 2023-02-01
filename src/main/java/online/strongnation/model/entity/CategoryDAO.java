@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import online.strongnation.config.Floats;
+import online.strongnation.config.NameProperties;
 import online.strongnation.model.Category;
 import online.strongnation.model.dto.CategoryDTO;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "category")
-public class CategoryEntity implements Category {
+public class CategoryDAO implements Category {
     @Id
     @SequenceGenerator(
             name = "category_sequence",
@@ -29,20 +30,20 @@ public class CategoryEntity implements Category {
     )
     @Column(name = "id")
     private Long id;
-    @Column(length = 100, nullable = false)
+    @Column(length = NameProperties.CATEGORY_NAME_LENGTH, nullable = false)
     private String name;
     @Column(nullable = false, scale = Floats.CATEGORY_SCALE)
     private BigDecimal number;
-    @Column(length = 10)
+    @Column(length = NameProperties.CATEGORY_UNITS_LENGTH)
     private String units;
 
-    public CategoryEntity(String name, BigDecimal number, String units) {
+    public CategoryDAO(String name, BigDecimal number, String units) {
         this.name = name;
         this.number = number;
         this.units = units;
     }
 
-    public CategoryEntity(CategoryDTO categoryDTO) {
+    public CategoryDAO(CategoryDTO categoryDTO) {
         this(categoryDTO.getName(), categoryDTO.getNumber(), categoryDTO.getUnits());
     }
 
@@ -50,8 +51,8 @@ public class CategoryEntity implements Category {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CategoryEntity categoryEntity = (CategoryEntity) o;
-        return name.equals(categoryEntity.name) && Objects.equals(units, categoryEntity.units);
+        CategoryDAO categoryDAO = (CategoryDAO) o;
+        return name.equals(categoryDAO.name) && Objects.equals(units, categoryDAO.units);
     }
 
     @Override

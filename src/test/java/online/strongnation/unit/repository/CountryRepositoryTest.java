@@ -3,7 +3,7 @@ package online.strongnation.unit.repository;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.entity.CategoryEntity;
+import online.strongnation.model.entity.CategoryDAO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.CountryCategory;
 import online.strongnation.repository.CountryRepository;
@@ -68,7 +68,7 @@ class CountryRepositoryTest {
         //given
         final String name = "NAME";
         final Country country = new Country("NaMe");
-        final var categoryInner = new CategoryEntity(
+        final var categoryInner = new CategoryDAO(
                 "food",
                 BigDecimal.valueOf(3f),
                 "kg"
@@ -92,7 +92,7 @@ class CountryRepositoryTest {
     void projections() {
         //given
         final Country country = new Country("NaMe");
-        final var categoryInner = new CategoryEntity(
+        final var categoryInner = new CategoryDAO(
                 "food",
                 BigDecimal.valueOf(3f),
                 "kg"

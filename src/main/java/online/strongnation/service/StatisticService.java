@@ -5,6 +5,6 @@ import online.strongnation.model.statistic.StatisticResult;
 
 public interface StatisticService {
     StatisticResult addChildToParent(StatisticModel parent, StatisticModel child);
-    StatisticResult updateChild(StatisticModel parent, StatisticModel old, StatisticModel updated);
+    <T extends StatisticModel> StatisticResult updateChild(StatisticModel parent, T old, T updated);
     StatisticResult deleteChild(StatisticModel parent, StatisticModel child);
 }

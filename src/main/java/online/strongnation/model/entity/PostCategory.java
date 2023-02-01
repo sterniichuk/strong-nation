@@ -32,13 +32,13 @@ public class PostCategory implements CategoryHolder {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private CategoryEntity categoryEntity;
+    private CategoryDAO categoryDAO;
 
-    public PostCategory(CategoryEntity categoryEntity) {
-        this.categoryEntity = categoryEntity;
+    public PostCategory(CategoryDAO categoryDAO) {
+        this.categoryDAO = categoryDAO;
     }
     public PostCategory(CategoryDTO categoryDTO) {
-        this(new CategoryEntity(categoryDTO));
+        this(new CategoryDAO(categoryDTO));
     }
 
     @Override
@@ -46,11 +46,11 @@ public class PostCategory implements CategoryHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostCategory that = (PostCategory) o;
-        return categoryEntity.equals(that.categoryEntity);
+        return categoryDAO.equals(that.categoryDAO);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(categoryEntity);
+        return Objects.hash(categoryDAO);
     }
 }

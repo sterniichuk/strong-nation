@@ -101,11 +101,11 @@ class PostDataSavingTest {
         region.setPosts(List.of(post));
 
         PostCategory postCategory = new PostCategory();
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
-        categoryEntity.setName("food");
-        categoryEntity.setUnits("kg");
-        postCategory.setCategoryEntity(categoryEntity);
+        CategoryDAO categoryDAO = new CategoryDAO();
+        categoryDAO.setNumber(BigDecimal.valueOf(9.f));
+        categoryDAO.setName("food");
+        categoryDAO.setUnits("kg");
+        postCategory.setCategoryDAO(categoryDAO);
         post.setCategories(List.of(postCategory));
         countryRepository.save(country);
 
@@ -115,10 +115,10 @@ class PostDataSavingTest {
         PostCategory postCategorySavedInPostCollection = postSaved.getCategories().get(0);
         assertThat(postCategorySavedInPostCollection).isEqualTo(postCategory);
 
-        CategoryEntity categoryEntity1 = categoryRepository.findAll()
-                .stream().filter(x-> categoryEntity.getName().equals(x.getName()))
+        CategoryDAO categoryDAO1 = categoryRepository.findAll()
+                .stream().filter(x-> categoryDAO.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
-        assertThat(categoryEntity).isEqualTo(categoryEntity1);
+        assertThat(categoryDAO).isEqualTo(categoryDAO1);
 
         var postCategories = postCategoryRepository.findAll();
         assertThat(postCategories.isEmpty()).isFalse();
