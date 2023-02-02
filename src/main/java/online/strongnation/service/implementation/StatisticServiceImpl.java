@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static online.strongnation.service.implementation.CategoryUtils.getCategoryMap;
 
@@ -58,11 +59,7 @@ public class StatisticServiceImpl implements StatisticService {
         for (var i : child.getCategories()) {
             var categoryDTO = parentCategories.get(i.getName());
             if (categoryDTO != null) {
-                if (Objects.equals(categoryDTO.getUnits(), i.getUnits())) {
-                    updated.add(categoryDTO.addNumber(i));
-                } else {
-                    newCategories.add(i);
-                }
+                updated.add(categoryDTO.addNumber(i));
                 continue;
             }
             newCategories.add(i);
@@ -76,7 +73,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         Optional<BigDecimal> newMoney = updateNumber(parent.getMoney(), old.getMoney(), updated.getMoney());
         if (parent.getCategories().size() == 0) {
-            return nothingCategoriesToUpdate(updated.getCategories(), newMoney);
+            return onlyNewData(updated.getCategories(), newMoney);
         }
         List<CategoryDTO> newCategories = new ArrayList<>();
         List<CategoryDTO> updatedCategories = new ArrayList<>();
@@ -90,6 +87,56 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
+    @Override
+    public <T extends StatisticModel> StatisticResult updateSelf(T old, T updated) {
+        if (updated == null) {
+            return emptyStatistic;
+        }
+        Optional<BigDecimal> newMoney = selfUpdateNumber(old.getMoney(), updated.getMoney());
+        List<CategoryDTO> categories = updated.getCategories() == null ? List.of() : updated.getCategories();
+        if (old.getCategories().size() == 0) {
+            return onlyNewData(categories, newMoney);
+        }
+        List<CategoryDTO> newCategories = new ArrayList<>();
+        List<CategoryDTO> updatedCategories = new ArrayList<>();
+        List<CategoryDTO> excessiveCategories = new ArrayList<>();
+        groupCategoriesWhenUpdateSelf(old, updated, updatedCategories, newCategories, excessiveCategories);
+        return StatisticResult.builder()
+                .updatedCategories(updatedCategories)
+                .excessiveCategories(excessiveCategories)
+                .newCategories(newCategories)
+                .newMoneyValue(newMoney.orElse(null))
+                .build();
+    }
+
+    private <T extends StatisticModel> void groupCategoriesWhenUpdateSelf(T old, T updated,
+                                                                          List<CategoryDTO> updatedCategories,
+                                                                          List<CategoryDTO> newCategories,
+                                                                          List<CategoryDTO> excessiveCategories) {
+        Map<String, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
+        Set<String> presentCategoryInNewModel = new HashSet<>();
+        for (var i : updated.getCategories()) {
+            var oldCategory = oldMap.get(i.getName());
+            if (oldCategory != null) {
+                Optional<BigDecimal> number = selfUpdateNumber(oldCategory.getNumber(), i.getNumber());
+                number.ifPresent(m -> updatedCategories.add(oldCategory.updateNumber(m)));
+                presentCategoryInNewModel.add(oldCategory.getName());
+                continue;
+            }
+            newCategories.add(i);
+        }
+        old.getCategories().forEach(c -> {
+            String name = c.getName();
+            if (!presentCategoryInNewModel.remove(name)) {
+                excessiveCategories.add(c);
+            }
+        });
+    }
+
+    Optional<BigDecimal> selfUpdateNumber(BigDecimal old, BigDecimal newNumber) {
+        int compare = old.compareTo(newNumber);
+        return compare == 0 ? Optional.empty() : Optional.of(newNumber);
+    }
 
     private void groupCategoriesWhenUpdateChild(StatisticModel parent, StatisticModel old,
                                                 StatisticModel updated,
@@ -98,31 +145,47 @@ public class StatisticServiceImpl implements StatisticService {
                                                 List<CategoryDTO> excessiveCategories) {
         Map<String, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
         Map<String, CategoryDTO> parentMap = getCategoryMap(parent.getCategories());
-        Set<CategoryDTO> presentCategoryInNewModel = new HashSet<>();
+        Set<CategoryDTO> analyzed = new HashSet<>();
+        BiConsumer<BigDecimal, CategoryDTO> categoryAnalizator = (m, parentCategory) -> {
+            if (m.compareTo(BigDecimal.ZERO) <= 0) {
+                excessiveCategories.add(parentCategory);
+            } else {
+                updatedCategories.add(parentCategory.updateNumber(m));
+            }
+        };
         for (var i : updated.getCategories()) {
-            var oldCategory = oldMap.get(i.getName());
-            if (oldCategory != null) {
-                if (Objects.equals(oldCategory.getUnits(), i.getUnits())) {
-                    var parentMoney = parentMap.get(i.getName());
-                    Optional<BigDecimal> number = updateNumber(parentMoney, oldCategory, i);
-                    number.ifPresent(m -> updatedCategories.add(oldCategory.updateNumber(m)));
-                    presentCategoryInNewModel.add(oldCategory);
-                } else {
-                    newCategories.add(i);
-                }
+            var parentCategory = parentMap.get(i.getName());
+            if (parentCategory != null) {
+                var oldCategory = oldMap.get(i.getName());
+                Optional<BigDecimal> number = updateNumber(parentCategory, oldCategory, i);
+                number.ifPresent(m -> categoryAnalizator.accept(m, parentCategory));
+                analyzed.add(oldCategory);
                 continue;
             }
             newCategories.add(i);
         }
         old.getCategories().forEach(c -> {
-            if (!presentCategoryInNewModel.remove(c)) {
-                excessiveCategories.add(c);
+            if (!analyzed.remove(c)) {
+                var parentCategory = parentMap.get(c.getName());
+                BigDecimal number = updateNumberWhenChildDeletedCategory(parentCategory, c);
+                categoryAnalizator.accept(number, c);
             }
         });
     }
 
+    private BigDecimal updateNumberWhenChildDeletedCategory(CategoryDTO parent,
+                                                                      CategoryDTO child) {
+        return updateNumberWhenChildDeletedCategory(parent.getNumber(), child.getNumber());
+    }
+
+    private BigDecimal updateNumberWhenChildDeletedCategory(BigDecimal parent,
+                                                                      BigDecimal child) {
+        return parent.subtract(child);
+    }
+
     private Optional<BigDecimal> updateNumber(CategoryDTO parent, CategoryDTO old, CategoryDTO updated) {
-        return updateNumber(parent.getNumber(), old.getNumber(), updated.getNumber());
+        BigDecimal number = old == null ? BigDecimal.ZERO : old.getNumber();
+        return updateNumber(parent.getNumber(), number, updated.getNumber());
     }
 
     private Optional<BigDecimal> updateNumber(BigDecimal parent, BigDecimal old, BigDecimal updated) {
@@ -140,7 +203,7 @@ public class StatisticServiceImpl implements StatisticService {
         };
     }
 
-    private StatisticResult nothingCategoriesToUpdate(List<CategoryDTO> newCategories, Optional<BigDecimal> newMoney) {
+    private StatisticResult onlyNewData(List<CategoryDTO> newCategories, Optional<BigDecimal> newMoney) {
         return StatisticResult.builder()
                 .updatedCategories(List.of())
                 .excessiveCategories(List.of())
@@ -149,8 +212,8 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    private StatisticResult nothingCategoriesToUpdate(Optional<BigDecimal> newMoney) {
-        return nothingCategoriesToUpdate(List.of(), newMoney);
+    private StatisticResult onlyNewData(Optional<BigDecimal> newMoney) {
+        return onlyNewData(List.of(), newMoney);
     }
 
     @Override
@@ -161,7 +224,7 @@ public class StatisticServiceImpl implements StatisticService {
         Optional<BigDecimal> newMoney = subtractChildMoney(parent, child);
         List<CategoryDTO> parentCategories = parent.getCategories();
         if (parentCategories == null || parentCategories.size() == 0) {
-            return nothingCategoriesToUpdate(newMoney);
+            return onlyNewData(newMoney);
         }
         List<CategoryDTO> excessive = new ArrayList<>();
         List<CategoryDTO> updated = new ArrayList<>();

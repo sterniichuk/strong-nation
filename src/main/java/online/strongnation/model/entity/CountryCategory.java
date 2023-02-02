@@ -31,7 +31,7 @@ public class CountryCategory implements CategoryHolder {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private CategoryDAO categoryDAO;
 

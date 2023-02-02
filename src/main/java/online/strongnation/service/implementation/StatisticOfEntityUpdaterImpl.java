@@ -6,8 +6,6 @@ import online.strongnation.model.statistic.StatisticResult;
 import online.strongnation.service.StatisticOfEntityUpdater;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 import static online.strongnation.service.implementation.CategoryUtils.getCategoryMap;
 
 @Service
@@ -22,12 +20,12 @@ public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
         while (iterator.hasNext()){
             var next = iterator.next().getCategoryDAO();
             CategoryDTO updatedCategory = updateMap.get(next.getName());
-            if(updatedCategory != null && Objects.equals(updatedCategory.getUnits(), next.getUnits())){
+            if(updatedCategory != null){
                 next.setNumber(updatedCategory.getNumber());
                 continue;
             }
             CategoryDTO deletedCategory = excessive.get(next.getName());
-            if(deletedCategory != null && Objects.equals(deletedCategory.getUnits(), next.getUnits())){
+            if(deletedCategory != null){
                 iterator.remove();
             }
         }

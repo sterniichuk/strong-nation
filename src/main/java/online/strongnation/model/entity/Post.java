@@ -7,7 +7,6 @@ import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.statistic.StatisticEntity;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,8 +38,7 @@ public class Post implements StatisticEntity {
     private String heading;
     @Column(columnDefinition = "TEXT", nullable = false)
     private String link;
-    @ColumnDefault("0")
-    @Column(scale = Floats.MONEY_SCALE)
+    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
     private BigDecimal money;
 
     @Column(nullable = false)
@@ -50,7 +48,7 @@ public class Post implements StatisticEntity {
     @JoinColumn(name = "post_photo_id", referencedColumnName = "id")
     private PostPhoto postPhoto;
 
-    @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<PostCategory> categories = new ArrayList<>(0);
@@ -59,7 +57,7 @@ public class Post implements StatisticEntity {
     @ToString.Exclude
     private Region region;
 
-    public Post(PostDTO dto){
+    public Post(PostDTO dto) {
         this.heading = dto.getHeading();
         this.link = dto.getLink();
         this.date = dto.getDate();
@@ -68,7 +66,7 @@ public class Post implements StatisticEntity {
     }
 
     public void setCategoriesDTO(List<CategoryDTO> categories) {
-        if(categories != null && !categories.isEmpty()){
+        if (categories != null && !categories.isEmpty()) {
             this.categories = categories.stream().map(PostCategory::new)
                     .collect(Collectors.toCollection(ArrayList::new));
         }

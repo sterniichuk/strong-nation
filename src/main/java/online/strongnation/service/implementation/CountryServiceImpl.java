@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeCountry;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public class CountryServiceImpl implements CountryService {
             throw new IllegalCountryException("Country " + name + " already exists");
         }
         Country country = new Country(clearName);
+        country.setMoney(BigDecimal.ZERO);
         countryRepository.save(country);
         return new CountryDTO(country);
     }

@@ -30,7 +30,7 @@ public class PostCategory implements CategoryHolder {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryDAO categoryDAO;
 

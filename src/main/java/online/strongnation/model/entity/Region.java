@@ -11,7 +11,6 @@ import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.statistic.StatisticEntity;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,14 +40,13 @@ public class Region implements StatisticEntity {
     private Long id;
     @Column(nullable = false, length = NameProperties.REGION_NAME_LENGTH)
     private String name;
-    @ColumnDefault("0")
-    @Column(scale = Floats.MONEY_SCALE)
+    @Column(scale = Floats.MONEY_SCALE, columnDefinition="Decimal(38,2) default '0.00'")
     private BigDecimal money;
 
-    @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private List<RegionCategory> categories;
+    private List<RegionCategory> categories = new ArrayList<>(0);
 
     @OneToMany(
             mappedBy = "region",

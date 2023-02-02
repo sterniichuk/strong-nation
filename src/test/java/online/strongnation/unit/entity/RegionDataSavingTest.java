@@ -25,15 +25,11 @@ class RegionDataSavingTest {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private RegionCategoryRepository regionCategoryRepository;
-    @Autowired
     private CountryRepository countryRepository;
 
     @AfterEach
     void tearDown() {
-        repository.deleteAll();
-        regionCategoryRepository.deleteAll();
-        categoryRepository.deleteAll();
+        countryRepository.deleteAll();
     }
 
     @Test
@@ -56,7 +52,7 @@ class RegionDataSavingTest {
         assertThat(regionSaved.getName()).isEqualTo(name);
         assertThat(regionSaved.getMoney()).isEqualTo(money);
         assertThat(regionSaved.getId()).isNotEqualTo(null);
-        assertThat(regionSaved.getCategories()).isEqualTo(null);
+        assertThat(regionSaved.getCategories().isEmpty()).isTrue();
     }
 
     @Test
@@ -99,40 +95,5 @@ class RegionDataSavingTest {
                 .stream().filter(x-> categoryDAO.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
         assertThat(categoryDAO).isEqualTo(categoryDAO1);
-    }
-
-    @Test
-    void testOnCascadeFields(){
-        Country country = new Country();
-        country.setName("Ukraine");
-        Region region = new Region();
-        country.setRegions(List.of(region));
-        String name = "Rivne";
-        region.setName(name);
-        BigDecimal money = new BigDecimal(1000);
-        region.setMoney(money);
-
-        RegionCategory regionCategory = new RegionCategory();
-        CategoryDAO categoryDAO = new CategoryDAO();
-        categoryDAO.setNumber(BigDecimal.valueOf(9.f));
-        categoryDAO.setName("food");
-        categoryDAO.setUnits("kg");
-        regionCategory.setCategoryDAO(categoryDAO);
-
-        region.setCategories(List.of(regionCategory));
-        countryRepository.save(country);
-        region.setCategories(null);
-        repository.save(region);
-        var savedRegionCategory = regionCategoryRepository.findAll().get(0);
-        assertThat(savedRegionCategory.getId()).isNotNull();
-        regionCategoryRepository.deleteById(savedRegionCategory.getId());
-        assertThat(regionCategoryRepository.findAll().isEmpty()).isTrue();
-
-        List<CategoryDAO> all = categoryRepository.findAll();
-        assertThat(all.isEmpty()).isTrue();
-        List<RegionCategory> regionCategoryList = regionCategoryRepository.findAll();
-        assertThat(regionCategoryList.isEmpty()).isTrue();
-        List<Region> regionList = repository.findAll();
-        assertThat(regionList.isEmpty()).isFalse();
     }
 }

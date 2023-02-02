@@ -10,10 +10,7 @@ import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Post;
 import online.strongnation.model.entity.Region;
 import online.strongnation.model.statistic.StatisticResult;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.PostRepository;
-import online.strongnation.repository.RegionCategoryRepository;
-import online.strongnation.repository.RegionRepository;
+import online.strongnation.repository.*;
 import online.strongnation.service.PostService;
 import online.strongnation.service.StatisticOfEntityUpdater;
 import online.strongnation.service.StatisticService;
@@ -128,6 +125,8 @@ public class PostServiceImpl implements PostService {
         Pair pair = getPairByPostId(post.getId());
         RegionDTO oldRegion = new RegionDTO(pair.region);
         PostDTO old = new PostDTO(postDAO);
+        var statisticResultOfPost = statistic.updateSelf(old, checkedPost);
+        updater.update(postDAO, statisticResultOfPost);
         StatisticResult regionResult = statistic
                 .updateChild(new RegionDTO(pair.region), old, checkedPost);
         updateParentDAOs(postDAO, pair.region, pair.country, oldRegion, regionResult);
@@ -159,6 +158,7 @@ public class PostServiceImpl implements PostService {
         StatisticResult regionResult = statistic
                 .deleteChild(new RegionDTO(pair.region), post);
         updateParentDAOs(pair.region, pair.country, oldRegion, regionResult);
+        postRepository.deleteById(id);
         return post;
     }
 
@@ -187,6 +187,7 @@ public class PostServiceImpl implements PostService {
             StatisticResult countryResult = statistic
                     .updateChild(new CountryDTO(country), oldRegion, new RegionDTO(region));
             updater.update(country, countryResult);
+            postRepository.deleteById(post.getId());
         });
         regionRepository.save(region);
         countryRepository.save(country);

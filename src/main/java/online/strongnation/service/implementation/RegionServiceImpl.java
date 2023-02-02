@@ -17,6 +17,7 @@ import online.strongnation.service.StatisticService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class RegionServiceImpl implements RegionService {
         }
         Region region = new Region(clearRegionName);
         region.setCountry(country);
+        region.setMoney(BigDecimal.ZERO);
         regionRepository.save(region);
         return new RegionDTO(region);
     }
@@ -64,6 +66,7 @@ public class RegionServiceImpl implements RegionService {
                 throw new IllegalRegionException("Region " + s + " is already present. Regions are not saved");
             }
             Region r = new Region(s);
+            r.setMoney(BigDecimal.ZERO);
             r.setCountry(country);
             regions.add(r);
         });

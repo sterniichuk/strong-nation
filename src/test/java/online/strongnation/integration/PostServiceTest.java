@@ -12,7 +12,9 @@ import online.strongnation.model.entity.Post;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.repository.PostRepository;
 import online.strongnation.repository.RegionRepository;
+import online.strongnation.service.CountryService;
 import online.strongnation.service.PostService;
+import online.strongnation.service.RegionService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +92,7 @@ class PostServiceTest {
             .build();
     private final CategoryDTO WARSAW_IN_USA_CARS_CATEGORY = CategoryDTO.builder()
             .name(CARS)
-            .number(NUMBER_OF_CARS.add(BigDecimal.valueOf(2f)))
+            .number(BigDecimal.valueOf(100))
             .build();
     private final CategoryDTO USA_CARS_CATEGORY = CategoryDTO.builder()
             .name(CARS)
@@ -157,7 +159,11 @@ class PostServiceTest {
             .build();
 
     @Autowired
-    private PostService service;
+    private PostService postService;
+    @Autowired
+    private CountryService countryService;
+    @Autowired
+    private RegionService regionService;
     @Autowired
     private RegionRepository regionRepository;
     @Autowired
@@ -166,7 +172,7 @@ class PostServiceTest {
     @BeforeEach
     void setUp() {
         final Country USA_ENTITY = new Country(USA);
-        USA_ENTITY.setRegionsDTO(List.of(WASHINGTON_IN_USA, WARSAW_IN_POLAND));
+        USA_ENTITY.setRegionsDTO(List.of(WASHINGTON_IN_USA, WARSAW_IN_USA));
         countryRepository.save(USA_ENTITY);
     }
 
@@ -188,7 +194,7 @@ class PostServiceTest {
                 .heading(heading)
                 .build();
         //when
-        PostDTO actual = service.create(post, USA_NAME, WASHINGTON_NAME);
+        PostDTO actual = postService.create(post, USA_NAME, WASHINGTON_NAME);
         //then
         assertThat(actual.getId()).isNotNull();
         var country = countryRepository.findCountryByName(USA_NAME).orElseThrow(CountryNotFoundException::new);
@@ -212,7 +218,7 @@ class PostServiceTest {
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         //when
-        PostDTO actual = service.create(post, USA_NAME, WASHINGTON_NAME);
+        PostDTO actual = postService.create(post, USA_NAME, WASHINGTON_NAME);
         //then
         assertThat(actual.getId()).isNotNull();
         var country = countryRepository.findCountryDTOByNameIgnoreCase(USA_NAME).orElseThrow(CountryNotFoundException::new);
@@ -245,7 +251,7 @@ class PostServiceTest {
                 .orElseThrow(RegionNotFoundException::new)
                 .getId();
         //when
-        PostDTO actual = service.create(post, regionId);
+        PostDTO actual = postService.create(post, regionId);
         //then
         assertThat(actual.getId()).isNotNull();
         var country = countryRepository.findCountryByName(USA_NAME).orElseThrow(CountryNotFoundException::new);
@@ -273,7 +279,7 @@ class PostServiceTest {
                 .orElseThrow(RegionNotFoundException::new)
                 .getId();
         //when
-        PostDTO actual = service.create(post, regionId);
+        PostDTO actual = postService.create(post, regionId);
         //then
         assertThat(actual.getId()).isNotNull();
         var country = countryRepository.findCountryDTOByNameIgnoreCase(USA_NAME).orElseThrow(CountryNotFoundException::new);
@@ -308,7 +314,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(post));
         regionRepository.save(region);
         //when
-        var actual = service.all(USA_NAME, WASHINGTON_NAME);
+        var actual = postService.all(USA_NAME, WASHINGTON_NAME);
         //then
         Long id = postRepository.findAll().get(0).getId();
         assertThat(actual).isEqualTo(List.of(post.getWithId(id).toGetResponse()));
@@ -334,7 +340,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(post));
         regionRepository.save(region);
         //when
-        var actual = service.all(region.getId());
+        var actual = postService.all(region.getId());
         //then
         Long id = postRepository.findAll().get(0).getId();
         assertThat(actual).isEqualTo(List.of(post.getWithId(id).toGetResponse()));
@@ -360,7 +366,7 @@ class PostServiceTest {
         regionRepository.save(region);
         Post postDAO = postRepository.findAll().get(0);
         //when
-        var actual = service.get(postDAO.getId());
+        var actual = postService.get(postDAO.getId());
         //then
         Long id = postRepository.findAll().get(0).getId();
         assertThat(actual).isEqualTo(post.getWithId(id));
@@ -399,7 +405,7 @@ class PostServiceTest {
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         //when
-        service.update(newPost);
+        postService.update(newPost);
         //then
         var regionUpdatedMoney = regionRepository
                 .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -445,7 +451,7 @@ class PostServiceTest {
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
                 .build();
         //when
-        service.update(newPost);
+        postService.update(newPost);
         //then
         final var regionCategories = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -487,7 +493,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(old));
         regionRepository.save(region);
         //when
-        service.delete(postRepository.findAll().get(0).getId());
+        postService.delete(postRepository.findAll().get(0).getId());
         //then
         final var regionCategories = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -529,7 +535,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(old));
         regionRepository.save(region);
         //when
-        service.delete(postRepository.findAll().get(0).getId());
+        postService.delete(postRepository.findAll().get(0).getId());
         //then
         final var regionDTO = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -563,7 +569,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(old));
         regionRepository.save(region);
         //when
-        service.deleteAllByRegionId(region.getId());
+        postService.deleteAllByRegionId(region.getId());
         //then
         final var regionDTO = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -597,7 +603,7 @@ class PostServiceTest {
         region.setPostsDTO(List.of(old));
         regionRepository.save(region);
         //when
-        service.deleteAll(USA_NAME, WASHINGTON_NAME);
+        postService.deleteAll(USA_NAME, WASHINGTON_NAME);
         //then
         final var regionCategories = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -615,5 +621,67 @@ class PostServiceTest {
                 .compareTo(currentRegionFoodNumber)).isEqualTo(0);
         assertThat(USA_FOOD_CATEGORY.getNumber().subtract(newNumber)
                 .compareTo(currentCountryFoodNumber)).isEqualTo(0);
+    }
+
+
+    @Test
+    void updateCategoryDifficultTest() {
+        //given
+        final String heading = "first post some heading";
+        final BigDecimal money = BigDecimal.valueOf(120.22);
+        final String link = "localH0sT";
+        final PostDTO old = PostDTO.builder()
+                .money(money)
+                .date(checkDate(LocalDateTime.now()))
+                .link(link)
+                .heading(heading)
+                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY, WARSAW_IN_USA_CARS_CATEGORY))
+                .build();
+        final PostDTO specialPost = PostDTO.builder()
+                .money(money)
+                .date(checkDate(LocalDateTime.now()))
+                .link(link)
+                .heading(heading)
+                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY, WARSAW_IN_USA_CARS_CATEGORY,
+                        CategoryDTO.builder()
+                                .name("guns")
+                                .number(BigDecimal.valueOf(1000_000))
+                                .build()))
+                .build();
+
+        final String COUNTRY_NAME = "some random country name";
+        final String REGION_NAME1 = "some random region name";
+        final String REGION_NAME2 = "some random region2 name";
+        countryService.create(COUNTRY_NAME);
+        Long region1Id = regionService.create(COUNTRY_NAME, REGION_NAME1).getId();
+        Long region2Id = regionService.create(COUNTRY_NAME, REGION_NAME2).getId();
+        for (int i = 0; i < 2; i++) {
+            postService.create(old, region1Id);
+        }
+        for (int i = 0; i < 2; i++) {
+            postService.create(old, COUNTRY_NAME, REGION_NAME2);
+        }
+        final var expectedCountry = countryService.get(COUNTRY_NAME);
+        final var expectedRegion = regionService.get(COUNTRY_NAME, REGION_NAME2);
+        PostDTO specialDTOSaved = postService.create(specialPost, region2Id);
+        final PostDTO updatedSpecialPost = PostDTO.builder()
+                .id(specialDTOSaved.getId())
+                .money(BigDecimal.ZERO)
+                .date(checkDate(LocalDateTime.now()))
+                .link(link)
+                .heading(heading)
+                .categories(List.of())
+                .build();
+        //when
+        postService.update(updatedSpecialPost);
+        //then
+        final var actualRegion = regionRepository
+                .findRegionDTOInCountryByNamesIgnoringCase(COUNTRY_NAME, REGION_NAME2)
+                .orElseThrow(RegionNotFoundException::new);
+        final var actualCountry = countryRepository
+                .findCountryDTOByNameIgnoreCase(COUNTRY_NAME)
+                .orElseThrow(RegionNotFoundException::new);
+        assertThat(actualRegion).isEqualTo(expectedRegion);
+        assertThat(actualCountry).isEqualTo(expectedCountry);
     }
 }
