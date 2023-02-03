@@ -10,9 +10,9 @@ import java.util.Optional;
 @Builder(toBuilder = true)
 public record StatisticResult
         (BigDecimal newMoneyValue,//if empty means that newMoneyValue value is the same
-         List<CategoryDTO> newCategories,//if empty means that there is no new categories
-         List<CategoryDTO> updatedCategories,//if empty means that there is no updated categories
-         List<CategoryDTO> excessiveCategories//if empty means that there is no categories to delete
+         List<CategoryDTO> newCategories,//if empty means that there are no new categories
+         List<CategoryDTO> updatedCategories,//if empty means that there are no updated categories
+         List<CategoryDTO> excessiveCategories//if empty means that there are no categories to delete
         ) {
 
     public Optional<BigDecimal> getNewMoneyValueOpt() {
