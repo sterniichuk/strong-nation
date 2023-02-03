@@ -132,7 +132,7 @@ public interface RequestParameterFixer {
         return clearName;
     }
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT);
 
     static LocalDateTime checkDate(LocalDateTime date) {
         boolean isFuture = date.isAfter(LocalDateTime.now().plusDays(1));
@@ -147,6 +147,9 @@ public interface RequestParameterFixer {
         int endIndex = s.lastIndexOf('.');
         String deletedAfterDot = endIndex == -1 ? s : s.substring(0, endIndex);
         String dateAsString = deletedAfterDot.replace('T', ' ');
+        if(dateAsString.length() > Constants.DATE_FORMAT.length()){
+            dateAsString = dateAsString.substring(0, Constants.DATE_FORMAT.length());
+        }
         return LocalDateTime.parse(dateAsString, formatter);
     }
 

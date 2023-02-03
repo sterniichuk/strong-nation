@@ -24,7 +24,7 @@ public class PostPhoto {
     )
     @Column(name = "id")
     private Long id;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String relativePathToPhoto;
 
     public PostPhoto(String relativePathToPhoto) {

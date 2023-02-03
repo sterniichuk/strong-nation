@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class Constants {
 
     public static int MAX_NUMBER_OF_CATEGORIES_OF_POST = 100;
+    public static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Value("${directory.post.photo}")
     public String PATH_TO_POST_PHOTO_DIRECTORY;
