@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface StatisticModel {
     BigDecimal getMoney();
+
     List<CategoryDTO> getCategories();
 }

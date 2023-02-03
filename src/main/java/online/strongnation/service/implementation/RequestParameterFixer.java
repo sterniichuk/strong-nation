@@ -133,6 +133,7 @@ public interface RequestParameterFixer {
     }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     static LocalDateTime checkDate(LocalDateTime date) {
         boolean isFuture = date.isAfter(LocalDateTime.now().plusDays(1));
         if (isFuture) {

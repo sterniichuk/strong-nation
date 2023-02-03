@@ -184,7 +184,7 @@ class RegionServiceImplTest {
                 .isInstanceOf(IllegalRegionException.class)
                 .hasMessage("Region " + regionName + " is already present. Regions are not saved");
         for (var i : strings) {
-            if(regionName.equals(i)){
+            if (regionName.equals(i)) {
                 continue;
             }
             assertThat(regionRepository

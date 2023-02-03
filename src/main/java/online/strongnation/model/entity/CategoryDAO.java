@@ -32,7 +32,7 @@ public class CategoryDAO implements Category {
     private Long id;
     @Column(length = NameProperties.CATEGORY_NAME_LENGTH, nullable = false)
     private String name;
-    @Column(nullable = false, scale = Floats.CATEGORY_SCALE, columnDefinition="Decimal(38,2) default '0.00'")
+    @Column(nullable = false, scale = Floats.CATEGORY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
     private BigDecimal number;
     @Column(length = NameProperties.CATEGORY_UNITS_LENGTH)
     private String units;

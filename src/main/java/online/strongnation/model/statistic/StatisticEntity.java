@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface StatisticEntity {
     void setMoney(BigDecimal money);
+
     List<? extends CategoryHolder> getCategories();
+
     void addCategory(CategoryDTO category);
 }

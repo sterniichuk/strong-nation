@@ -39,10 +39,10 @@ public class Country implements StatisticEntity {
     private Long id;
     @Column(unique = true, nullable = false, length = NameProperties.COUNTRY_NAME_LENGTH)
     private String name;
-    @Column(scale = Floats.MONEY_SCALE, columnDefinition="Decimal(38,2) default '0.00'")
+    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
     private BigDecimal money;
 
-    @OneToMany(targetEntity = CountryCategory.class, cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity = CountryCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<CountryCategory> categories = new ArrayList<>(0);
@@ -64,8 +64,8 @@ public class Country implements StatisticEntity {
         this.regions = regions;
     }
 
-    public void setRegionsDTO(List<RegionDTO> dtoList){
-        this.regions = dtoList.stream().map(x->{
+    public void setRegionsDTO(List<RegionDTO> dtoList) {
+        this.regions = dtoList.stream().map(x -> {
             Region region = new Region(x);
             region.setCountry(this);
             return region;

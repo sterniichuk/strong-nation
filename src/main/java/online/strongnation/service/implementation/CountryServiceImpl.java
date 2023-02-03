@@ -1,25 +1,27 @@
 package online.strongnation.service.implementation;
 
-import lombok.RequiredArgsConstructor;
-import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.entity.Country;
+import lombok.AllArgsConstructor;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalCountryException;
+import online.strongnation.model.dto.CountryDTO;
+import online.strongnation.model.entity.Country;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.service.CountryService;
+import online.strongnation.service.PostPhotoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeCountry;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static online.strongnation.service.implementation.RequestParameterFixer.checkAndNormalizeCountry;
+
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository countryRepository;
+    private final PostPhotoService postPhotoService;
 
     @Override
     public CountryDTO create(final String name) {
@@ -67,6 +69,7 @@ public class CountryServiceImpl implements CountryService {
     public CountryDTO delete(String name) {
         final String clearName = checkAndNormalizeCountry(name);
         final CountryDTO deleted = getByNormalizedName(clearName);
+        postPhotoService.deletePhotoCountryId(deleted.getId());
         countryRepository.deleteById(deleted.getId());
         return deleted;
     }
@@ -74,6 +77,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public List<CountryDTO> deleteAll() {
         final var all = countryRepository.findAllDTO();
+        postPhotoService.deleteAll();
         countryRepository.deleteAll();
         return all;
     }

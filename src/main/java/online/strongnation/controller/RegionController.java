@@ -52,14 +52,14 @@ public class RegionController {
     @PutMapping("/update/{country}/{oldName}/{newName}")
     public ResponseEntity<RegionDTO> rename(@PathVariable("country") String countryName,
                                             @PathVariable("oldName") String oldName,
-                                             @PathVariable("newName") String newName) {
+                                            @PathVariable("newName") String newName) {
         final var response = service.rename(countryName, oldName, newName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update-by-id/{id}/{newName}")
     public ResponseEntity<RegionDTO> renameById(@PathVariable("id") Long id,
-                                            @PathVariable("newName") String newName) {
+                                                @PathVariable("newName") String newName) {
         final var response = service.rename(id, newName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

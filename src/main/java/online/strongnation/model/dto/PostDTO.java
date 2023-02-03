@@ -46,11 +46,11 @@ public class PostDTO implements StatisticModel {
         setPostCategories(post.getCategories());
     }
 
-    public void setPostCategories(List<PostCategory> list){
+    public void setPostCategories(List<PostCategory> list) {
         this.categories = list.stream().map(PostCategory::getCategoryDAO).map(CategoryDTO::new).toList();
     }
 
-    public GetPostResponse toGetResponse(){
+    public GetPostResponse toGetResponse() {
         return GetPostResponse.builder()
                 .id(id)
                 .date(date)
@@ -59,7 +59,7 @@ public class PostDTO implements StatisticModel {
                 .build();
     }
 
-    public PostDTO getWithId(Long id){
+    public PostDTO getWithId(Long id) {
         return PostDTO.builder()
                 .id(id)
                 .date(date)

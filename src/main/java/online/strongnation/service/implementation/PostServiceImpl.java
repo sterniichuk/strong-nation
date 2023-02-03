@@ -8,15 +8,18 @@ import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Post;
+import online.strongnation.model.entity.PostPhoto;
 import online.strongnation.model.entity.Region;
 import online.strongnation.model.statistic.StatisticResult;
 import online.strongnation.repository.*;
+import online.strongnation.service.PostPhotoService;
 import online.strongnation.service.PostService;
 import online.strongnation.service.StatisticOfEntityUpdater;
 import online.strongnation.service.StatisticService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static online.strongnation.service.implementation.RequestParameterFixer.*;
@@ -26,9 +29,10 @@ import static online.strongnation.service.implementation.RequestParameterFixer.*
 public class PostServiceImpl implements PostService {
     private final RegionRepository regionRepository;
     private final CountryRepository countryRepository;
-    private final StatisticService statistic;
-    private final StatisticOfEntityUpdater updater;
     private final PostRepository postRepository;
+    private final StatisticOfEntityUpdater updater;
+    private final StatisticService statistic;
+    private final PostPhotoService postPhotoService;
 
     private record Pair(Country country, Region region) {
     }
@@ -151,15 +155,17 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostDTO delete(Long id) {
-        final PostDTO post = postRepository.findPostDTOById(id)
+        final var post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("There is no post with id: " + id));
         Pair pair = getPairByPostId(id);
         RegionDTO oldRegion = new RegionDTO(pair.region);
+        PostDTO oldPost = new PostDTO(post);
         StatisticResult regionResult = statistic
-                .deleteChild(new RegionDTO(pair.region), post);
+                .deleteChild(new RegionDTO(pair.region), oldPost);
         updateParentDAOs(pair.region, pair.country, oldRegion, regionResult);
+        deletePhotoIfExists(post);
         postRepository.deleteById(id);
-        return post;
+        return oldPost;
     }
 
     @Override
@@ -179,18 +185,29 @@ public class PostServiceImpl implements PostService {
     }
 
     private List<PostDTO> deleteAll(Country country, Region region) {
-        List<PostDTO> list = postRepository.findPostDTOAllByRegionId(region.getId());
+        var list = postRepository.findAllByRegionId(region.getId());
+        List<PostDTO> old = new LinkedList<>();
         list.forEach(post -> {
-            StatisticResult regionResult = statistic.deleteChild(new RegionDTO(region), post);
+            PostDTO oldPost = new PostDTO(post);
+            old.add(oldPost);
+            StatisticResult regionResult = statistic.deleteChild(new RegionDTO(region), oldPost);
             RegionDTO oldRegion = new RegionDTO(region);
             updater.update(region, regionResult);
             StatisticResult countryResult = statistic
                     .updateChild(new CountryDTO(country), oldRegion, new RegionDTO(region));
             updater.update(country, countryResult);
+            deletePhotoIfExists(post);
             postRepository.deleteById(post.getId());
         });
         regionRepository.save(region);
         countryRepository.save(country);
-        return list;
+        return old;
+    }
+
+    private void deletePhotoIfExists(Post post) {
+        PostPhoto postPhoto = post.getPostPhoto();
+        if (postPhoto != null) {
+            postPhotoService.deletePhotoByPostPhoto(postPhoto);
+        }
     }
 }

@@ -30,13 +30,13 @@ public class CategoryDTO implements Category {
         return Objects.hash(name, number, units);
     }
 
-    public CategoryDTO(Category categoryEntity){
+    public CategoryDTO(Category categoryEntity) {
         this.name = categoryEntity.getName();
         this.number = categoryEntity.getNumber();
         this.units = categoryEntity.getUnits();
     }
 
-    public CategoryDTO addNumber(CategoryDTO category){
+    public CategoryDTO addNumber(CategoryDTO category) {
         return new CategoryDTO(
                 this.getName(),
                 this.getNumber().add(category.getNumber()),
@@ -44,7 +44,7 @@ public class CategoryDTO implements Category {
         );
     }
 
-    public CategoryDTO updateNumber(BigDecimal number){
+    public CategoryDTO updateNumber(BigDecimal number) {
         return new CategoryDTO(
                 this.getName(),
                 number,

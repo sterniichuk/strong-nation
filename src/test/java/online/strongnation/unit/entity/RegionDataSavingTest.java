@@ -6,7 +6,6 @@ import online.strongnation.model.entity.Region;
 import online.strongnation.model.entity.RegionCategory;
 import online.strongnation.repository.CategoryRepository;
 import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.RegionCategoryRepository;
 import online.strongnation.repository.RegionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +91,7 @@ class RegionDataSavingTest {
         assertThat(savedCategory).isEqualTo(categoryDAO);
 
         CategoryDAO categoryDAO1 = categoryRepository.findAll()
-                .stream().filter(x-> categoryDAO.getName().equals(x.getName()))
+                .stream().filter(x -> categoryDAO.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
         assertThat(categoryDAO).isEqualTo(categoryDAO1);
     }

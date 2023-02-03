@@ -48,7 +48,7 @@ public class Post implements StatisticEntity {
     @JoinColumn(name = "post_photo_id", referencedColumnName = "id")
     private PostPhoto postPhoto;
 
-    @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<PostCategory> categories = new ArrayList<>(0);

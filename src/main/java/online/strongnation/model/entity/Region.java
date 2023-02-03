@@ -40,10 +40,10 @@ public class Region implements StatisticEntity {
     private Long id;
     @Column(nullable = false, length = NameProperties.REGION_NAME_LENGTH)
     private String name;
-    @Column(scale = Floats.MONEY_SCALE, columnDefinition="Decimal(38,2) default '0.00'")
+    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
     private BigDecimal money;
 
-    @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private List<RegionCategory> categories = new ArrayList<>(0);
@@ -60,16 +60,16 @@ public class Region implements StatisticEntity {
     @ToString.Exclude
     private Country country;
 
-    public void setPostsDTO(List<PostDTO> dtoList){
-        this.posts = dtoList.stream().map(x->{
-          Post post = new Post(x);
-          post.setRegion(this);
-          return post;
+    public void setPostsDTO(List<PostDTO> dtoList) {
+        this.posts = dtoList.stream().map(x -> {
+            Post post = new Post(x);
+            post.setRegion(this);
+            return post;
         }).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void setPosts(List<Post> posts){
-        posts.forEach(x->x.setRegion(this));
+    public void setPosts(List<Post> posts) {
+        posts.forEach(x -> x.setRegion(this));
         this.posts = posts;
     }
 

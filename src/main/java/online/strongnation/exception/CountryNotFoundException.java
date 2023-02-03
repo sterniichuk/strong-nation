@@ -1,6 +1,6 @@
 package online.strongnation.exception;
 
-public class CountryNotFoundException extends NotFoundException{
+public class CountryNotFoundException extends NotFoundException {
     public CountryNotFoundException() {
     }
 

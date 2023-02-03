@@ -11,6 +11,7 @@ import online.strongnation.model.entity.Region;
 import online.strongnation.model.statistic.StatisticResult;
 import online.strongnation.repository.CountryRepository;
 import online.strongnation.repository.RegionRepository;
+import online.strongnation.service.PostPhotoService;
 import online.strongnation.service.RegionService;
 import online.strongnation.service.StatisticOfEntityUpdater;
 import online.strongnation.service.StatisticService;
@@ -32,6 +33,7 @@ public class RegionServiceImpl implements RegionService {
     private final CountryRepository countryRepository;
     private final StatisticService statistic;
     private final StatisticOfEntityUpdater updater;
+    private final PostPhotoService postPhotoService;
 
     @Override
     public RegionDTO create(final String countryName, final String name) {
@@ -134,6 +136,7 @@ public class RegionServiceImpl implements RegionService {
         StatisticResult result = statistic.deleteChild(new CountryDTO(country), regionDTO);
         updater.update(country, result);
         countryRepository.save(country);
+        postPhotoService.deletePhotoByRegionId(regionDTO.getId());
         regionRepository.deleteById(regionDTO.getId());
         return regionDTO;
     }
@@ -144,6 +147,7 @@ public class RegionServiceImpl implements RegionService {
         RegionDTO regionDTO = get(id);
         Country country = regionRepository.findCountryOfRegionById(id)
                 .orElseThrow(IllegalRegionException::new);
+        postPhotoService.deletePhotoByRegionId(regionDTO.getId());
         regionRepository.deleteById(regionDTO.getId());
         StatisticResult result = statistic.deleteChild(new CountryDTO(country), regionDTO);
         updater.update(country, result);
@@ -163,6 +167,7 @@ public class RegionServiceImpl implements RegionService {
                 });
         List<RegionDTO> regions = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(countryName);
         regions.forEach(r -> {
+            postPhotoService.deletePhotoByRegionId(r.getId());
             regionRepository.deleteById(r.getId());
             StatisticResult result = statistic.deleteChild(new CountryDTO(country), r);
             updater.update(country, result);
@@ -170,5 +175,4 @@ public class RegionServiceImpl implements RegionService {
         countryRepository.save(country);
         return regions;
     }
-
 }

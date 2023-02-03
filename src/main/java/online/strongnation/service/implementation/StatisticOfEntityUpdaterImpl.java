@@ -17,15 +17,15 @@ public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
         var excessive = getCategoryMap(statistic.excessiveCategories());
         var categories = updated.getCategories();
         var iterator = categories.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             var next = iterator.next().getCategoryDAO();
             CategoryDTO updatedCategory = updateMap.get(next.getName());
-            if(updatedCategory != null){
+            if (updatedCategory != null) {
                 next.setNumber(updatedCategory.getNumber());
                 continue;
             }
             CategoryDTO deletedCategory = excessive.get(next.getName());
-            if(deletedCategory != null){
+            if (deletedCategory != null) {
                 iterator.remove();
             }
         }

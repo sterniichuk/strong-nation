@@ -1,4 +1,4 @@
 package online.strongnation.exception;
 
-public class IllegalStatisticException extends IllegalOperationException{
+public class IllegalStatisticException extends IllegalOperationException {
 }

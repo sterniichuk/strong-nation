@@ -1,5 +1,5 @@
 package online.strongnation.unit.entity;
-    
+
 import online.strongnation.model.entity.*;
 import online.strongnation.exception.RegionNotFoundException;
 import online.strongnation.repository.*;
@@ -56,14 +56,16 @@ class PostDataSavingTest {
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
-        photo.setPathToPhoto(path);
+        photo.setRelativePathToPhoto(path);
         post.setPostPhoto(photo);
         final String link = "localH0sT";
         post.setLink(link);
         region.setPosts(List.of(post));
         countryRepository.save(country);
 
-        final var savedRegion = regionRepository.findFirstByName(name).orElseThrow(()->{throw new RegionNotFoundException();});
+        final var savedRegion = regionRepository.findFirstByName(name).orElseThrow(() -> {
+            throw new RegionNotFoundException();
+        });
         assertThat(savedRegion).isEqualTo(region);
         assertThat(savedRegion.getPosts()).isNotNull();
         assertThat(savedRegion.getPosts().size()).isEqualTo(1);
@@ -94,7 +96,7 @@ class PostDataSavingTest {
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
-        photo.setPathToPhoto(path);
+        photo.setRelativePathToPhoto(path);
         post.setPostPhoto(photo);
         final String link = "localH0sT";
         post.setLink(link);
@@ -116,7 +118,7 @@ class PostDataSavingTest {
         assertThat(postCategorySavedInPostCollection).isEqualTo(postCategory);
 
         CategoryDAO categoryDAO1 = categoryRepository.findAll()
-                .stream().filter(x-> categoryDAO.getName().equals(x.getName()))
+                .stream().filter(x -> categoryDAO.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
         assertThat(categoryDAO).isEqualTo(categoryDAO1);
 
@@ -129,7 +131,7 @@ class PostDataSavingTest {
     }
 
     @Test
-    void checkPhotoSaving(){
+    void checkPhotoSaving() {
         Country country = new Country();
         country.setName("Ukraine");
         Region region = new Region();
@@ -147,7 +149,7 @@ class PostDataSavingTest {
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
-        photo.setPathToPhoto(path);
+        photo.setRelativePathToPhoto(path);
         post.setPostPhoto(photo);
         final String link = "localH0sT";
         post.setLink(link);

@@ -128,6 +128,7 @@ public class RegionRepositoryTest {
         assertThat(oldExists).isFalse();
         assertThat(newExists).isTrue();
     }
+
     @Test
     void renameCountryByRegionId() {
         //given

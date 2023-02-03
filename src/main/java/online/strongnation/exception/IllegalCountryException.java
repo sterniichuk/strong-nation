@@ -1,6 +1,6 @@
 package online.strongnation.exception;
 
-public class IllegalCountryException extends IllegalOperationException{
+public class IllegalCountryException extends IllegalOperationException {
     public IllegalCountryException() {
     }
 

@@ -25,10 +25,10 @@ public class PostPhoto {
     @Column(name = "id")
     private Long id;
     @Column(nullable = false)
-    private String pathToPhoto;
+    private String relativePathToPhoto;
 
-    public PostPhoto(String pathToPhoto) {
-        this.pathToPhoto = pathToPhoto;
+    public PostPhoto(String relativePathToPhoto) {
+        this.relativePathToPhoto = relativePathToPhoto;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class PostPhoto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostPhoto photo = (PostPhoto) o;
-        return pathToPhoto.equals(photo.pathToPhoto);
+        return relativePathToPhoto.equals(photo.relativePathToPhoto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathToPhoto);
+        return Objects.hash(relativePathToPhoto);
     }
 }

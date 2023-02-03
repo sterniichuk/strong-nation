@@ -174,12 +174,12 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     private BigDecimal updateNumberWhenChildDeletedCategory(CategoryDTO parent,
-                                                                      CategoryDTO child) {
+                                                            CategoryDTO child) {
         return updateNumberWhenChildDeletedCategory(parent.getNumber(), child.getNumber());
     }
 
     private BigDecimal updateNumberWhenChildDeletedCategory(BigDecimal parent,
-                                                                      BigDecimal child) {
+                                                            BigDecimal child) {
         return parent.subtract(child);
     }
 
