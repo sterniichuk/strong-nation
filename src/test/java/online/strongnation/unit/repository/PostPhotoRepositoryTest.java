@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,13 +31,11 @@ class PostPhotoRepositoryTest {
         String regionName = "some ReGion";
         Region region = new Region(regionName);
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(LocalDateTime.now())
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .build();
         Post postDAO = new Post(post);
         PostPhoto photo = new PostPhoto("weweofijwepfijwefpj");
@@ -59,13 +56,11 @@ class PostPhotoRepositoryTest {
         String regionName = "some ReGion";
         Region region = new Region(regionName);
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(LocalDateTime.now())
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .build();
         Post postDAO = new Post(post);
         PostPhoto photo = new PostPhoto("weweofijwepfijwefpj");

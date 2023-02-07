@@ -12,7 +12,6 @@ import static online.strongnation.service.implementation.CategoryUtils.getCatego
 public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
     @Override
     public void update(StatisticEntity updated, StatisticResult statistic) {
-        statistic.getNewMoneyValueOpt().ifPresent(updated::setMoney);
         var updateMap = getCategoryMap(statistic.updatedCategories());
         var excessive = getCategoryMap(statistic.excessiveCategories());
         var categories = updated.getCategories();

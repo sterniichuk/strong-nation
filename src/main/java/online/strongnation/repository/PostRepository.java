@@ -1,6 +1,7 @@
 package online.strongnation.repository;
 
 import online.strongnation.model.dto.GetPostResponse;
+import online.strongnation.model.dto.GetPostResponseByCountryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.entity.Post;
 import online.strongnation.model.entity.Region;
@@ -21,6 +22,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT new online.strongnation.model.dto.PostDTO(post)" +
             " FROM Post post JOIN post.region reg WHERE reg.id = :id")
     List<PostDTO> findAllPostDTOByRegionId(Long id);
+
+    @Query("SELECT new online.strongnation.model.dto.GetPostResponseByCountryDTO(post)" +
+            " FROM Post post JOIN post.region.country c WHERE c.id = :id")
+    List<GetPostResponseByCountryDTO> findAllGetPostResponseByCountryDTObyCountryId(Long id);
 
     @Query("SELECT post FROM Post post JOIN post.region reg WHERE reg.id = :id")
     List<Post> findAllByRegionId(Long id);

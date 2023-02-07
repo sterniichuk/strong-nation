@@ -31,9 +31,6 @@ class StatisticOfEntityUpdaterTest {
     private final BigDecimal NUMBER_OF_WATER = BigDecimal.valueOf(50.25);
     private final String WATER_UNITS = "liter";
 
-    private final BigDecimal MONEY = new BigDecimal("10101010.11");
-    private final BigDecimal UPDATED_MONEY = new BigDecimal("101098510.11");
-
     private final CategoryDTO FOOD_CATEGORY = CategoryDTO.builder()
             .name(FOOD)
             .number(NUMBER_OF_FOOD)
@@ -61,11 +58,9 @@ class StatisticOfEntityUpdaterTest {
         //given
         Country country = new Country("usa");
         country.setCategoriesDTO(List.of(FOOD_CATEGORY, CARS_CATEGORY));
-        country.setMoney(MONEY);
         StatisticResult statistic = StatisticResult.builder().newCategories(List.of(WATER_CATEGORY))
                 .excessiveCategories(List.of(FOOD_CATEGORY))
-                .updatedCategories(List.of(UPDATED_CARS_CATEGORY))
-                .newMoneyValue(UPDATED_MONEY).build();
+                .updatedCategories(List.of(UPDATED_CARS_CATEGORY)).build();
         //when
         service.update(country, statistic);
         //then

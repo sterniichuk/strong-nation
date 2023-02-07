@@ -86,7 +86,6 @@ public class PostPhotoServiceImpl implements PostPhotoService {
     public String deletePhotoByPostPhoto(PostPhoto postPhoto) {
         String oldPath = getAbsolutePhotoPath(postPhoto);
         fileService.delete(oldPath);
-//        postPhotoRepository.delete(postPhoto);
         return postPhoto.getRelativePathToPhoto();
     }
 
@@ -144,7 +143,6 @@ public class PostPhotoServiceImpl implements PostPhotoService {
         all.forEach(x -> {
             fileService.delete(getAbsolutePhotoPath(x));
             list.add(x.getRelativePathToPhoto());
-//            postPhotoRepository.delete(x);
         });
         return list;
     }

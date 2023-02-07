@@ -28,7 +28,6 @@ public class StatisticServiceImpl implements StatisticService {
         }
         List<CategoryDTO> newCategories;
         List<CategoryDTO> updated;
-        Optional<BigDecimal> newMoney = addChildMoney(parent, child);
         List<CategoryDTO> parentCategories = parent.getCategories();
         if (parentCategories == null || parentCategories.size() == 0) {
             newCategories = child.getCategories();
@@ -42,15 +41,7 @@ public class StatisticServiceImpl implements StatisticService {
                 .updatedCategories(updated)
                 .excessiveCategories(List.of())
                 .newCategories(newCategories)
-                .newMoneyValue(newMoney.orElse(null))
                 .build();
-    }
-
-    private Optional<BigDecimal> addChildMoney(StatisticModel parent, StatisticModel child) {
-        var childMoney = child.getMoney();
-        return (childMoney != null) ?
-                Optional.of(parent.getMoney().add(childMoney))
-                : Optional.empty();
     }
 
     private void groupCategoriesOfNewChild(StatisticModel parent, StatisticModel child,
@@ -71,9 +62,8 @@ public class StatisticServiceImpl implements StatisticService {
         if (updated == null) {
             return emptyStatistic;
         }
-        Optional<BigDecimal> newMoney = updateNumber(parent.getMoney(), old.getMoney(), updated.getMoney());
         if (parent.getCategories().size() == 0) {
-            return onlyNewData(updated.getCategories(), newMoney);
+            return onlyNewData(updated.getCategories());
         }
         List<CategoryDTO> newCategories = new ArrayList<>();
         List<CategoryDTO> updatedCategories = new ArrayList<>();
@@ -83,7 +73,6 @@ public class StatisticServiceImpl implements StatisticService {
                 .updatedCategories(updatedCategories)
                 .excessiveCategories(excessiveCategories)
                 .newCategories(newCategories)
-                .newMoneyValue(newMoney.orElse(null))
                 .build();
     }
 
@@ -92,10 +81,9 @@ public class StatisticServiceImpl implements StatisticService {
         if (updated == null) {
             return emptyStatistic;
         }
-        Optional<BigDecimal> newMoney = selfUpdateNumber(old.getMoney(), updated.getMoney());
         List<CategoryDTO> categories = updated.getCategories() == null ? List.of() : updated.getCategories();
         if (old.getCategories().size() == 0) {
-            return onlyNewData(categories, newMoney);
+            return onlyNewData(categories);
         }
         List<CategoryDTO> newCategories = new ArrayList<>();
         List<CategoryDTO> updatedCategories = new ArrayList<>();
@@ -105,7 +93,6 @@ public class StatisticServiceImpl implements StatisticService {
                 .updatedCategories(updatedCategories)
                 .excessiveCategories(excessiveCategories)
                 .newCategories(newCategories)
-                .newMoneyValue(newMoney.orElse(null))
                 .build();
     }
 
@@ -203,17 +190,16 @@ public class StatisticServiceImpl implements StatisticService {
         };
     }
 
-    private StatisticResult onlyNewData(List<CategoryDTO> newCategories, Optional<BigDecimal> newMoney) {
+    private StatisticResult onlyNewData(List<CategoryDTO> newCategories) {
         return StatisticResult.builder()
                 .updatedCategories(List.of())
                 .excessiveCategories(List.of())
                 .newCategories(newCategories)
-                .newMoneyValue(newMoney.orElse(null))
                 .build();
     }
 
-    private StatisticResult onlyNewData(Optional<BigDecimal> newMoney) {
-        return onlyNewData(List.of(), newMoney);
+    private StatisticResult onlyNewData() {
+        return onlyNewData(List.of());
     }
 
     @Override
@@ -221,10 +207,9 @@ public class StatisticServiceImpl implements StatisticService {
         if (child == null) {
             return emptyStatistic;
         }
-        Optional<BigDecimal> newMoney = subtractChildMoney(parent, child);
         List<CategoryDTO> parentCategories = parent.getCategories();
         if (parentCategories == null || parentCategories.size() == 0) {
-            return onlyNewData(newMoney);
+            return onlyNewData();
         }
         List<CategoryDTO> excessive = new ArrayList<>();
         List<CategoryDTO> updated = new ArrayList<>();
@@ -233,7 +218,6 @@ public class StatisticServiceImpl implements StatisticService {
                 .updatedCategories(updated)
                 .excessiveCategories(excessive)
                 .newCategories(List.of())
-                .newMoneyValue(newMoney.orElse(null))
                 .build();
     }
 
@@ -251,12 +235,5 @@ public class StatisticServiceImpl implements StatisticService {
                 excessive.add(parentCategory);
             }
         }
-    }
-
-    private Optional<BigDecimal> subtractChildMoney(StatisticModel parent, StatisticModel child) {
-        BigDecimal childMoney = child.getMoney();
-        return (childMoney != null) ?
-                Optional.of(parent.getMoney().subtract(childMoney))
-                : Optional.empty();
     }
 }

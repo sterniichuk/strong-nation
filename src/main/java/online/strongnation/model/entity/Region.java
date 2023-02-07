@@ -5,14 +5,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,8 +38,6 @@ public class Region implements StatisticEntity {
     private Long id;
     @Column(nullable = false, length = NameProperties.REGION_NAME_LENGTH)
     private String name;
-    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
-    private BigDecimal money;
 
     @OneToMany(targetEntity = RegionCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "region_id", referencedColumnName = "id", nullable = false)
@@ -76,7 +72,6 @@ public class Region implements StatisticEntity {
     public Region(RegionDTO dto) {
         this.name = dto.getName();
         this.id = dto.getId();
-        this.money = dto.getMoney();
         setCategoriesDTO(dto.getCategories());
     }
 

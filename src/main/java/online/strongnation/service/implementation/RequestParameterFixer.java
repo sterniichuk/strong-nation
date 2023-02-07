@@ -63,16 +63,14 @@ public interface RequestParameterFixer {
     }
 
     private static PostDTO checkAndNormalizePost(final PostDTO post) {
-        final String heading = checkAndNormalizeHeadingOfPost(post.getHeading());
+        final String description = checkAndNormalizeDescriptionOfPost(post.getDescription());
         final String link = checkLink(post.getLink());
-        final BigDecimal money = checkAndNormalizeMoneyOfPost(post.getMoney());
         final LocalDateTime date = checkDate(post.getDate());
         final List<CategoryDTO> list = checkAndNormalizeCategories(post.getCategories());
         return PostDTO.builder()
                 .id(post.getId())
-                .heading(heading)
+                .description(description)
                 .link(link)
-                .money(money)
                 .date(date)
                 .categories(list)
                 .build();
@@ -163,11 +161,6 @@ public interface RequestParameterFixer {
         return link;
     }
 
-    private static BigDecimal checkAndNormalizeMoneyOfPost(final BigDecimal money) {
-        final String zeroMessage = "Money in post is less than zero: ";
-        return checkAndNormalizeNumber(money, Floats.MONEY_SCALE, Floats.MONEY_ROUNDING, zeroMessage);
-    }
-
     private static BigDecimal checkAndNormalizeNumber(final BigDecimal money,
                                                       final int scale,
                                                       final RoundingMode mode,
@@ -180,16 +173,16 @@ public interface RequestParameterFixer {
         };
     }
 
-    private static String checkAndNormalizeHeadingOfPost(final String heading) {
-        if (heading == null) {
-            throw new IllegalPostException("Heading of post is null");
+    private static String checkAndNormalizeDescriptionOfPost(final String description) {
+        if (description == null) {
+            throw new IllegalPostException("Description of post is null");
         }
-        if (heading.length() > NameProperties.POST_HEADING_LENGTH) {
-            throw new IllegalPostException("Too long heading of post");
+        if (description.length() > NameProperties.POST_DESCRIPTION_LENGTH) {
+            throw new IllegalPostException("Too long description of post");
         }
-        String clearName = StringUtils.normalizeSpace(heading);
+        String clearName = StringUtils.normalizeSpace(description);
         if (clearName.length() == 0) {
-            throw new IllegalPostException("Empty heading");
+            throw new IllegalPostException("Empty description");
         }
         return clearName;
     }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,13 +30,11 @@ class PostRepositoryTest {
         String regionName = "some ReGion";
         Region region = new Region(regionName);
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(LocalDateTime.now())
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .build();
         region.setPostsDTO(List.of(post));
         country.setRegions(List.of(region));
@@ -47,5 +44,29 @@ class PostRepositoryTest {
         //then
         Long id = actual != null && actual.getId() != null ? actual.getId() : 1L;
         assertThat(actual).isEqualTo(post.getWithId(id).toGetResponse());
+    }
+    @Test
+    void findByCountry() {
+        //given
+        final Country country = new Country("NaMe");
+        final Country country2 = new Country("NaMe2");
+        String regionName = "some ReGion";
+        Region region = new Region(regionName);
+        final String heading = "first post some heading";
+        final String link = "localH0sT";
+        final PostDTO post = PostDTO.builder()
+                .date(LocalDateTime.now())
+                .link(link)
+                .description(heading)
+                .build();
+        region.setPostsDTO(List.of(post));
+        country.setRegions(List.of(region));
+        countryRepository.save(country2);
+        countryRepository.save(country);
+        //when
+        var actual = postRepository.findAllGetPostResponseByCountryDTObyCountryId(country.getId()).get(0);
+        //then
+        Long id = actual != null && actual.getId() != null ? actual.getId() : 1L;
+        assertThat(actual).isEqualTo(post.getWithId(id).toGetResponseByCountry(regionName));
     }
 }

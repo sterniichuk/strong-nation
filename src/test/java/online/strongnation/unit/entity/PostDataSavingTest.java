@@ -45,14 +45,10 @@ class PostDataSavingTest {
         country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
-        final BigDecimal money1 = new BigDecimal(1000);
-        region.setMoney(money1);
 
         final Post post = new Post();
         final String heading = "first post some heading";
-        post.setHeading(heading);
-        final BigDecimal money = new BigDecimal(1000);
-        post.setMoney(money);
+        post.setDescription(heading);
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
@@ -72,8 +68,7 @@ class PostDataSavingTest {
         assertThat(savedRegion.getPosts().get(0)).isEqualTo(post);
         var postSaved = repository.findAll().get(0);
         assertThat(postSaved.getId()).isNotEqualTo(null);
-        assertThat(postSaved.getHeading()).isEqualTo(heading);
-        assertThat(postSaved.getMoney()).isEqualTo(money);
+        assertThat(postSaved.getDescription()).isEqualTo(heading);
         assertThat(postSaved.getCategories().isEmpty()).isTrue();
     }
 
@@ -85,14 +80,9 @@ class PostDataSavingTest {
         country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
-        final BigDecimal money1 = new BigDecimal(1000);
-        region.setMoney(money1);
-
         final Post post = new Post();
         final String heading = "first post some heading";
-        post.setHeading(heading);
-        final BigDecimal money = new BigDecimal(1000);
-        post.setMoney(money);
+        post.setDescription(heading);
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";
@@ -138,14 +128,10 @@ class PostDataSavingTest {
         country.setRegions(List.of(region));
         final String name = "Rivne";
         region.setName(name);
-        final BigDecimal money1 = new BigDecimal(1000);
-        region.setMoney(money1);
 
         final Post post = new Post();
         final String heading = "first post some heading";
-        post.setHeading(heading);
-        final BigDecimal money = new BigDecimal(1000);
-        post.setMoney(money);
+        post.setDescription(heading);
         post.setDate(LocalDateTime.now());
         final PostPhoto photo = new PostPhoto();
         final String path = "some/linux/path/like/normal/operation/system";

@@ -1,7 +1,9 @@
 package online.strongnation.controller;
 
 import lombok.AllArgsConstructor;
+import online.strongnation.config.SecurityConstants;
 import online.strongnation.model.dto.GetPostResponse;
+import online.strongnation.model.dto.GetPostResponseByCountryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("post/v1")
+@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
 @AllArgsConstructor
 public class PostController {
     private final PostService service;
@@ -31,12 +34,19 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @GetMapping("/all/{country}")
+    public ResponseEntity<List<GetPostResponseByCountryDTO>> all(@PathVariable("country") String countryName) {
+        final var response = service.all(countryName);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/all/{country}/{region}")
     public ResponseEntity<List<GetPostResponse>> all(@PathVariable("country") String countryName,
                                                      @PathVariable("region") String regionName) {
         final var response = service.all(countryName, regionName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     @GetMapping("/all-by-region-id/{id}")
     public ResponseEntity<List<GetPostResponse>> all(@PathVariable("id") Long id) {

@@ -1,6 +1,5 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.exception.CountryNotFoundException;
 import online.strongnation.exception.IllegalRegionException;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -38,13 +36,6 @@ class RegionServiceImplTest {
     private final String WASHINGTON_NAME = "Washington D.C.";
     private final String WARSAW_NAME = "Warsaw";
 
-    private final BigDecimal WASHINGTON_IN_USA_MONEY = new BigDecimal("10101010.11");
-    private final BigDecimal WARSAW_IN_USA_MONEY = new BigDecimal("2022.21");
-    private final BigDecimal USA_MONEY = WASHINGTON_IN_USA_MONEY.add(WARSAW_IN_USA_MONEY);
-    private final BigDecimal WASHINGTON_IN_POLAND_MONEY = new BigDecimal("1010.33");
-    private final BigDecimal WARSAW_IN_POLAND_MONEY = new BigDecimal("1010101010.22");
-    private final BigDecimal POLAND_MONEY = WASHINGTON_IN_POLAND_MONEY.add(WARSAW_IN_POLAND_MONEY);
-
     //write tests for categories
     @Autowired
     private RegionRepository regionRepository;
@@ -53,20 +44,14 @@ class RegionServiceImplTest {
     void setUp() {
         //usa
         Region washington = new Region(WASHINGTON_NAME);
-        washington.setMoney(WASHINGTON_IN_USA_MONEY);
         Region warsawInUSA = new Region(WARSAW_NAME);
-        warsawInUSA.setMoney(WARSAW_IN_USA_MONEY);
         Country USACountry = new Country(USA_NAME);
-        USACountry.setMoney(USA_MONEY);
         USACountry.setRegions(List.of(washington, warsawInUSA));
         //poland
         Country polandCountry = new Country(POLAND_NAME);
         Region washingtonInPoland = new Region(WASHINGTON_NAME);
-        washingtonInPoland.setMoney(WASHINGTON_IN_POLAND_MONEY);
         Region warsawInPoland = new Region(WARSAW_NAME);
-        warsawInPoland.setMoney(WARSAW_IN_POLAND_MONEY);
         polandCountry.setRegions(List.of(washingtonInPoland, warsawInPoland));
-        polandCountry.setMoney(POLAND_MONEY);
         countryRepository.saveAll(List.of(polandCountry, USACountry));
     }
 
@@ -282,55 +267,6 @@ class RegionServiceImplTest {
     }
 
     @Test
-    void deleteCheckMoneyOfCountry() {
-        //given
-        final var expected = regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        //when
-        var actual = service.delete(USA_NAME, WASHINGTON_NAME);
-        //then
-        assertThat(actual).isEqualTo(expected);
-        assertThat(countryRepository
-                .findCountryDTOByNameIgnoreCase(POLAND_NAME)
-                .orElseThrow(CountryNotFoundException::new)
-                .getMoney())
-                .isEqualTo(POLAND_MONEY);
-        assertThat(countryRepository
-                .findCountryDTOByNameIgnoreCase(USA_NAME)
-                .orElseThrow(CountryNotFoundException::new)
-                .getMoney())
-                .isEqualTo(WARSAW_IN_USA_MONEY);
-    }
-
-    @Test
-    void deleteCheckMoneyOfRegions() {
-        //given
-        final var expected = regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        //when
-        var actual = service.delete(USA_NAME, WASHINGTON_NAME);
-        //then
-        assertThat(actual).isEqualTo(expected);
-        assertThat(regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WARSAW_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getMoney())
-                .isEqualTo(WARSAW_IN_USA_MONEY);
-        assertThat(regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(POLAND_NAME, WARSAW_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getMoney())
-                .isEqualTo(WARSAW_IN_POLAND_MONEY);
-        assertThat(regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(POLAND_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getMoney())
-                .isEqualTo(WASHINGTON_IN_POLAND_MONEY);
-    }
-
-    @Test
     void deleteById() {
         //given
         final var expected = regionRepository
@@ -346,22 +282,5 @@ class RegionServiceImplTest {
         assertThat(regionRepository
                 .existsRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME))
                 .isFalse();
-    }
-
-    @Test
-    void deleteAll() {
-        //when
-        service.deleteAllByCountry(USA_NAME);
-        //then
-        boolean emptyRegionsUSA = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(USA_NAME).isEmpty();
-        assertThat(emptyRegionsUSA).isTrue();
-        boolean emptyRegionsPoland = regionRepository.findAllRegionDTOByCountryNameIgnoringCase(POLAND_NAME).isEmpty();
-        assertThat(emptyRegionsPoland).isFalse();
-        var zero = countryRepository.findCountryByName(USA_NAME)
-                .orElseThrow(CountryNotFoundException::new).getMoney();
-        assertThat(zero).isEqualTo(BigDecimal.ZERO.setScale(Floats.MONEY_SCALE, Floats.MONEY_ROUNDING));
-        var notZero = countryRepository.findCountryByName(POLAND_NAME)
-                .orElseThrow(CountryNotFoundException::new).getMoney();
-        assertThat(notZero).isNotEqualTo(BigDecimal.ZERO);
     }
 }

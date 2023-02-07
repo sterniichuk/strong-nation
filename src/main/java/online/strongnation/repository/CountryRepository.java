@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +25,6 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Modifying
     @Query("update Country c set c.name = :new where lower(c.name) = lower(:old)")
     void updateNameOfCountry(@Param("old") String oldName, @Param("new") String newName);
-
-    @Modifying
-    @Query("update Country c set c.money = :money where lower(c.name) = lower(:name)")
-    void updateMoneyOfCountryByNameIgnoreCase(@Param("name") String name, @Param("money") BigDecimal money);
 
     @Query("select new online.strongnation.model.dto.CountryDTO(c)" +
             " from Country c where upper(c.name) = upper(:name)")

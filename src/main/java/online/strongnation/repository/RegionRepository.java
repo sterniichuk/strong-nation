@@ -45,6 +45,4 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
     @Query("SELECT c FROM Region reg JOIN reg.country c WHERE reg.id = :id")
     Optional<Country> findCountryOfRegionById(Long id);
-
-
 }

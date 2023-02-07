@@ -2,10 +2,7 @@ package online.strongnation.service.implementation;
 
 import lombok.AllArgsConstructor;
 import online.strongnation.exception.*;
-import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.dto.GetPostResponse;
-import online.strongnation.model.dto.PostDTO;
-import online.strongnation.model.dto.RegionDTO;
+import online.strongnation.model.dto.*;
 import online.strongnation.model.entity.Country;
 import online.strongnation.model.entity.Post;
 import online.strongnation.model.entity.PostPhoto;
@@ -19,6 +16,7 @@ import online.strongnation.service.StatisticService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,18 +37,18 @@ public class PostServiceImpl implements PostService {
 
     private Pair getPairByNames(String clearNameOfCountry, String clearNameOfRegion) {
         Country country = countryRepository.findCountryByNameIgnoreCase(clearNameOfCountry)
-                .orElseThrow(() -> new CountryNotFoundException("Country " + clearNameOfCountry + "doesn't exist"));
+                .orElseThrow(() -> new CountryNotFoundException("Country " + clearNameOfCountry + " doesn't exist"));
         Region region = regionRepository.findRegionInCountryByNamesIgnoringCase(clearNameOfCountry, clearNameOfRegion)
-                .orElseThrow(() -> new RegionNotFoundException("Region " + clearNameOfRegion + "doesn't exist"));
+                .orElseThrow(() -> new RegionNotFoundException("Region " + clearNameOfRegion + " doesn't exist"));
         return new Pair(country, region);
     }
 
     private Pair getPairByRegionId(Long id) {
         Region region = regionRepository.findById(id)
-                .orElseThrow(() -> new RegionNotFoundException("Region with id: " + id + "doesn't exist"));
+                .orElseThrow(() -> new RegionNotFoundException("Region with id: " + id + " doesn't exist"));
         Country country = regionRepository.findCountryOfRegionById(id)
                 .orElseThrow(() -> {
-                    String message = "Region with id: " + id + "doesn't belong to any country...";
+                    String message = "Region with id: " + id + " doesn't belong to any country...";
                     throw new IllegalRegionException(message);
                 });
         return new Pair(country, region);
@@ -60,13 +58,13 @@ public class PostServiceImpl implements PostService {
         Region region = postRepository.findRegionOfPostById(id)
                 .orElseThrow(() -> {
                     String message = "Post with id: " +
-                            id + "doesn't belong to any region...";
+                            id + " doesn't belong to any region...";
                     throw new IllegalPostException(message);
                 });
         Country country = regionRepository.findCountryOfRegionById(region.getId())
                 .orElseThrow(() -> {
                     String message = "Region with id: " +
-                            region.getId() + "doesn't belong to any country...";
+                            region.getId() + " doesn't belong to any country...";
                     throw new IllegalRegionException(message);
                 });
         return new Pair(country, region);
@@ -105,13 +103,26 @@ public class PostServiceImpl implements PostService {
         final String clearNameOfCountry = checkAndNormalizeCountry(countryName);
         final String clearNameOfRegion = checkAndNormalizeRegion(regionName);
         var region = regionRepository.findRegionDTOInCountryByNamesIgnoringCase(clearNameOfCountry, clearNameOfRegion)
-                .orElseThrow(() -> new RegionNotFoundException("Region " + clearNameOfRegion + "doesn't exist"));
-        return postRepository.findGetPostResponseAllByRegionId(region.getId());
+                .orElseThrow(() -> new RegionNotFoundException("Region " + clearNameOfRegion + " doesn't exist"));
+        return postRepository.findGetPostResponseAllByRegionId(region.getId())
+                .stream().sorted(Comparator.comparing(GetPostResponse::getDate).reversed()).toList();
+    }
+
+    @Override
+    public List<GetPostResponseByCountryDTO> all(String countryName) {
+        final String clearNameOfCountry = checkAndNormalizeCountry(countryName);
+        var country = countryRepository.findCountryByNameIgnoreCase(clearNameOfCountry)
+                .orElseThrow(() -> new CountryNotFoundException("Country " + countryName + " doesn't exist"));
+        return postRepository.findAllGetPostResponseByCountryDTObyCountryId(country.getId())
+                .stream().sorted(Comparator.comparing(GetPostResponseByCountryDTO::getDate).reversed()).toList();
+
     }
 
     @Override
     public List<GetPostResponse> all(Long id) {
-        return postRepository.findGetPostResponseAllByRegionId(id);
+        return postRepository.findGetPostResponseAllByRegionId(id)
+                .stream().sorted(Comparator.comparing(GetPostResponse::getDate).reversed()).toList();
+
     }
 
     @Override
@@ -131,10 +142,17 @@ public class PostServiceImpl implements PostService {
         PostDTO old = new PostDTO(postDAO);
         var statisticResultOfPost = statistic.updateSelf(old, checkedPost);
         updater.update(postDAO, statisticResultOfPost);
+        updateStaticFields(postDAO, checkedPost);
         StatisticResult regionResult = statistic
                 .updateChild(new RegionDTO(pair.region), old, checkedPost);
         updateParentDAOs(postDAO, pair.region, pair.country, oldRegion, regionResult);
         return checkedPost;
+    }
+
+    private void updateStaticFields(Post postDAO, PostDTO newPost){
+        postDAO.setDate(newPost.getDate());
+        postDAO.setDescription(newPost.getDescription());
+        postDAO.setLink(newPost.getLink());
     }
 
     private void updateParentDAOs(Post postDAO, Region region, Country country,

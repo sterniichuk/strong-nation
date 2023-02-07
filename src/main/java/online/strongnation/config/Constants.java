@@ -18,4 +18,5 @@ public class Constants {
     public String PATH_TO_POST_PHOTO_DIRECTORY;
     @Value("${directory.post.photo.name}")
     public String POST_PHOTO_DIRECTORY_NAME;
+
 }

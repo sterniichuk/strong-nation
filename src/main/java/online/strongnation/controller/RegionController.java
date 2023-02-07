@@ -1,6 +1,7 @@
 package online.strongnation.controller;
 
 import lombok.AllArgsConstructor;
+import online.strongnation.config.SecurityConstants;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.service.RegionService;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("region/v1")
+@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
 @AllArgsConstructor
 public class RegionController {
 

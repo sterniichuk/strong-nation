@@ -1,6 +1,7 @@
 package online.strongnation.controller;
 
 import lombok.AllArgsConstructor;
+import online.strongnation.config.SecurityConstants;
 import online.strongnation.service.PostPhotoService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("post-photo/v1")
+@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
 @AllArgsConstructor
 public class PostPhotoController {
 

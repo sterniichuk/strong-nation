@@ -48,13 +48,6 @@ class PostServiceTest {
     private final String WASHINGTON_NAME = "Washington D.C.";
     private final String WARSAW_NAME = "Warsaw";
 
-    private final BigDecimal WASHINGTON_IN_USA_MONEY = new BigDecimal("10101010.11");
-    private final BigDecimal WARSAW_IN_USA_MONEY = new BigDecimal("2022.21");
-    private final BigDecimal USA_MONEY = WASHINGTON_IN_USA_MONEY.add(WARSAW_IN_USA_MONEY);
-    private final BigDecimal WASHINGTON_IN_POLAND_MONEY = new BigDecimal("1010.33");
-    private final BigDecimal WARSAW_IN_POLAND_MONEY = new BigDecimal("1010101010.22");
-    private final BigDecimal POLAND_MONEY = WASHINGTON_IN_POLAND_MONEY.add(WARSAW_IN_POLAND_MONEY);
-
     private final CategoryDTO WASHINGTON_IN_USA_FOOD_CATEGORY = CategoryDTO.builder()
             .name(FOOD)
             .number(NUMBER_OF_FOOD)
@@ -127,33 +120,27 @@ class PostServiceTest {
 
     //usa
     private final RegionDTO WASHINGTON_IN_USA = RegionDTO.builder()
-            .money(WASHINGTON_IN_USA_MONEY)
             .categories(CATEGORIES_OF_WASHINGTON_OF_USA)
             .name(WASHINGTON_NAME)
             .build();
     private final RegionDTO WARSAW_IN_USA = RegionDTO.builder()
-            .money(WARSAW_IN_USA_MONEY)
             .categories(CATEGORIES_OF_WARSAW_OF_USA)
             .name(WARSAW_NAME)
             .build();
     private final CountryDTO USA = CountryDTO.builder()
-            .money(USA_MONEY)
             .categories(CATEGORIES_OF_USA)
             .name(USA_NAME)
             .build();
     //poland
     private final RegionDTO WASHINGTON_IN_POLAND = RegionDTO.builder()
-            .money(WASHINGTON_IN_POLAND_MONEY)
             .categories(CATEGORIES_OF_WASHINGTON_OF_POLAND)
             .name(WASHINGTON_NAME)
             .build();
     private final RegionDTO WARSAW_IN_POLAND = RegionDTO.builder()
-            .money(WARSAW_IN_POLAND_MONEY)
             .categories(CATEGORIES_OF_WARSAW_OF_POLAND)
             .name(WARSAW_NAME)
             .build();
     private final CountryDTO POLAND = CountryDTO.builder()
-            .money(POLAND_MONEY)
             .categories(CATEGORIES_OF_POLAND)
             .name(POLAND_NAME)
             .build();
@@ -182,39 +169,14 @@ class PostServiceTest {
     }
 
     @Test
-    void createTestMoneyByNames() {
-        //given
-        final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
-        final String link = "localH0sT";
-        final PostDTO post = PostDTO.builder()
-                .money(money)
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .heading(heading)
-                .build();
-        //when
-        PostDTO actual = postService.create(post, USA_NAME, WASHINGTON_NAME);
-        //then
-        assertThat(actual.getId()).isNotNull();
-        var country = countryRepository.findCountryByName(USA_NAME).orElseThrow(CountryNotFoundException::new);
-        var region = regionRepository.findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(CountryNotFoundException::new);
-        assertThat(country.getMoney().compareTo(USA_MONEY.add(money))).isEqualTo(0);
-        assertThat(region.getMoney().compareTo(WASHINGTON_IN_USA_MONEY.add(money))).isEqualTo(0);
-    }
-
-    @Test
     void createTestCategoriesByNames() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         //when
@@ -235,43 +197,14 @@ class PostServiceTest {
     }
 
     @Test
-    void createTestMoneyById() {
-        //given
-        final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
-        final String link = "localH0sT";
-        final PostDTO post = PostDTO.builder()
-                .money(money)
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .heading(heading)
-                .build();
-        Long regionId = regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getId();
-        //when
-        PostDTO actual = postService.create(post, regionId);
-        //then
-        assertThat(actual.getId()).isNotNull();
-        var country = countryRepository.findCountryByName(USA_NAME).orElseThrow(CountryNotFoundException::new);
-        var region = regionRepository.findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(CountryNotFoundException::new);
-        assertThat(country.getMoney().compareTo(USA_MONEY.add(money))).isEqualTo(0);
-        assertThat(region.getMoney().compareTo(WASHINGTON_IN_USA_MONEY.add(money))).isEqualTo(0);
-    }
-
-    @Test
     void createTestCategoriesById() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         Long regionId = regionRepository
@@ -299,13 +232,11 @@ class PostServiceTest {
     void all() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         var region = regionRepository
@@ -325,13 +256,11 @@ class PostServiceTest {
     void allById() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         var region = regionRepository
@@ -350,13 +279,11 @@ class PostServiceTest {
     void get() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(1020.22);
         final String link = "localH0sT";
         final PostDTO post = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         var region = regionRepository
@@ -372,82 +299,31 @@ class PostServiceTest {
         assertThat(actual).isEqualTo(post.getWithId(id));
     }
 
-    @Test
-    void updateMoney() {
-        //given
-        final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
-        final String link = "localH0sT";
-        final PostDTO old = PostDTO.builder()
-                .money(money)
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .heading(heading)
-                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
-                .build();
-
-        var region = regionRepository
-                .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        var country = countryRepository
-                .findCountryDTOByNameIgnoreCase(USA_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        final BigDecimal oldMoneyOfRegion = region.getMoney();
-        final BigDecimal oldMoneyOfCountry = country.getMoney();
-        region.setPostsDTO(List.of(old));
-        regionRepository.save(region);
-        final PostDTO newPost = PostDTO.builder()
-                .money(money.multiply(BigDecimal.valueOf(2)))
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .id(postRepository.findAll().get(0).getId())
-                .heading(heading)
-                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
-                .build();
-        //when
-        postService.update(newPost);
-        //then
-        var regionUpdatedMoney = regionRepository
-                .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getMoney();
-        var countryUpdatedMoney = countryRepository
-                .findCountryDTOByNameIgnoreCase(USA_NAME)
-                .orElseThrow(RegionNotFoundException::new)
-                .getMoney();
-        assertThat(regionUpdatedMoney.subtract(oldMoneyOfRegion)
-                .compareTo(money)).isEqualTo(0);
-        assertThat(countryUpdatedMoney.subtract(oldMoneyOfCountry)
-                .compareTo(money)).isEqualTo(0);
-    }
 
     @Test
     void updateCategory() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
         final String link = "localH0sT";
         final PostDTO old = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
                 .getNumber()
-                .divide(BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
+                .divide(BigDecimal.valueOf(2), Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING);
         var region = regionRepository
                 .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
                 .orElseThrow(RegionNotFoundException::new);
         region.setPostsDTO(List.of(old));
         regionRepository.save(region);
         final PostDTO newPost = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
                 .id(postRepository.findAll().get(0).getId())
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
                 .build();
         //when
@@ -475,16 +351,14 @@ class PostServiceTest {
     void deleteTestCategories() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
         final String link = "localH0sT";
         final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
                 .getNumber()
-                .divide(BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
+                .divide(BigDecimal.valueOf(2), Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING);
         final PostDTO old = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
                 .build();
         var region = regionRepository
@@ -513,88 +387,20 @@ class PostServiceTest {
                 .compareTo(currentCountryFoodNumber)).isEqualTo(0);
     }
 
-    @Test
-    void deleteTestMoney() {
-        //given
-        final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
-        final String link = "localH0sT";
-        final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
-                .getNumber()
-                .divide(BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
-        final PostDTO old = PostDTO.builder()
-                .money(money)
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .heading(heading)
-                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
-                .build();
-        var region = regionRepository
-                .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        region.setPostsDTO(List.of(old));
-        regionRepository.save(region);
-        //when
-        postService.delete(postRepository.findAll().get(0).getId());
-        //then
-        final var regionDTO = regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        final var countryDTO = countryRepository
-                .findCountryDTOByNameIgnoreCase(USA_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        assertThat(countryDTO.getMoney().compareTo(USA_MONEY.subtract(money))).isEqualTo(0);
-        assertThat(regionDTO.getMoney().compareTo(WASHINGTON_IN_USA_MONEY.subtract(money))).isEqualTo(0);
-    }
-
-    @Test
-    void deleteAllByRegionIdTestMoney() {
-        //given
-        final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
-        final String link = "localH0sT";
-        final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
-                .getNumber()
-                .divide(BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
-        final PostDTO old = PostDTO.builder()
-                .money(money)
-                .date(checkDate(LocalDateTime.now()))
-                .link(link)
-                .heading(heading)
-                .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
-                .build();
-        var region = regionRepository
-                .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        region.setPostsDTO(List.of(old));
-        regionRepository.save(region);
-        //when
-        postService.deleteAllByRegionId(region.getId());
-        //then
-        final var regionDTO = regionRepository
-                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        final var countryDTO = countryRepository
-                .findCountryDTOByNameIgnoreCase(USA_NAME)
-                .orElseThrow(RegionNotFoundException::new);
-        assertThat(countryDTO.getMoney().compareTo(USA_MONEY.subtract(money))).isEqualTo(0);
-        assertThat(regionDTO.getMoney().compareTo(WASHINGTON_IN_USA_MONEY.subtract(money))).isEqualTo(0);
-    }
 
     @Test
     void deleteAllByNamesTestCategories() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
         final String link = "localH0sT";
         final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
                 .getNumber()
-                .divide(BigDecimal.valueOf(2), Floats.MONEY_SCALE, Floats.MONEY_ROUNDING);
+                .divide(BigDecimal.valueOf(2), Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING);
+
         final PostDTO old = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
                 .build();
         var region = regionRepository
@@ -628,20 +434,17 @@ class PostServiceTest {
     void updateCategoryDifficultTest() {
         //given
         final String heading = "first post some heading";
-        final BigDecimal money = BigDecimal.valueOf(120.22);
         final String link = "localH0sT";
         final PostDTO old = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY, WARSAW_IN_USA_CARS_CATEGORY))
                 .build();
         final PostDTO specialPost = PostDTO.builder()
-                .money(money)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY, WARSAW_IN_USA_CARS_CATEGORY,
                         CategoryDTO.builder()
                                 .name("guns")
@@ -666,10 +469,9 @@ class PostServiceTest {
         PostDTO specialDTOSaved = postService.create(specialPost, region2Id);
         final PostDTO updatedSpecialPost = PostDTO.builder()
                 .id(specialDTOSaved.getId())
-                .money(BigDecimal.ZERO)
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
-                .heading(heading)
+                .description(heading)
                 .categories(List.of())
                 .build();
         //when

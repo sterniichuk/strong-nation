@@ -39,17 +39,13 @@ class RegionDataSavingTest {
         country.setRegions(List.of(region));
         String name = "Rivne";
         region.setName(name);
-        BigDecimal money = new BigDecimal(1000);
-        region.setMoney(money);
         countryRepository.save(country);
         List<Region> all = repository.findAll();
         List<Region> list = all.stream()
-                .filter(x -> name.equals(x.getName()))
-                .filter(x -> money.equals(x.getMoney())).toList();
+                .filter(x -> name.equals(x.getName())).toList();
         assertThat(list.size()).isEqualTo(1);
         Region regionSaved = list.get(0);
         assertThat(regionSaved.getName()).isEqualTo(name);
-        assertThat(regionSaved.getMoney()).isEqualTo(money);
         assertThat(regionSaved.getId()).isNotEqualTo(null);
         assertThat(regionSaved.getCategories().isEmpty()).isTrue();
     }
@@ -62,9 +58,6 @@ class RegionDataSavingTest {
         country.setRegions(List.of(region));
         String name = "Rivne";
         region.setName(name);
-        BigDecimal money = new BigDecimal(1000);
-        region.setMoney(money);
-
         RegionCategory regionCategory = new RegionCategory();
         CategoryDAO categoryDAO = new CategoryDAO();
         categoryDAO.setNumber(BigDecimal.valueOf(9.f));
@@ -77,8 +70,7 @@ class RegionDataSavingTest {
 
         List<Region> all = repository.findAll();
         List<Region> list = all.stream()
-                .filter(x -> name.equals(x.getName()))
-                .filter(x -> money.equals(x.getMoney())).toList();
+                .filter(x -> name.equals(x.getName())).toList();
         assertThat(list.size()).isEqualTo(1);
         Region regionSaved = list.get(0);
         assertThat(regionSaved.getCategories()).isNotEqualTo(null);

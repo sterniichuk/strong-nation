@@ -2,13 +2,11 @@ package online.strongnation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.PostDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +32,10 @@ public class Post implements StatisticEntity {
     )
     @Column(name = "id")
     private Long id;
-    @Column(nullable = false, length = NameProperties.POST_HEADING_LENGTH)
-    private String heading;
+    @Column(nullable = false, length = NameProperties.POST_DESCRIPTION_LENGTH)
+    private String description;
     @Column(columnDefinition = "TEXT", nullable = false)
     private String link;
-    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
-    private BigDecimal money;
 
     @Column(nullable = false)
     private LocalDateTime date;
@@ -58,10 +54,9 @@ public class Post implements StatisticEntity {
     private Region region;
 
     public Post(PostDTO dto) {
-        this.heading = dto.getHeading();
+        this.description = dto.getDescription();
         this.link = dto.getLink();
         this.date = dto.getDate();
-        this.money = dto.getMoney();
         setCategoriesDTO(dto.getCategories());
     }
 
@@ -77,12 +72,12 @@ public class Post implements StatisticEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return heading.equals(post.heading) && link.equals(post.link) && date.equals(post.date);
+        return description.equals(post.description) && link.equals(post.link) && date.equals(post.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(heading, link, date);
+        return Objects.hash(description, link, date);
     }
 
     @Override

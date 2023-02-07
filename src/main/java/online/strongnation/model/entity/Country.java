@@ -5,14 +5,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import online.strongnation.config.Floats;
 import online.strongnation.config.NameProperties;
 import online.strongnation.model.dto.CategoryDTO;
 import online.strongnation.model.dto.CountryDTO;
 import online.strongnation.model.dto.RegionDTO;
 import online.strongnation.model.statistic.StatisticEntity;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,8 +37,6 @@ public class Country implements StatisticEntity {
     private Long id;
     @Column(unique = true, nullable = false, length = NameProperties.COUNTRY_NAME_LENGTH)
     private String name;
-    @Column(scale = Floats.MONEY_SCALE, columnDefinition = "Decimal(38,2) default '0.00'")
-    private BigDecimal money;
 
     @OneToMany(targetEntity = CountryCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
@@ -79,7 +75,6 @@ public class Country implements StatisticEntity {
     public Country(CountryDTO dto) {
         this.name = dto.getName();
         this.id = dto.getId();
-        this.money = dto.getMoney();
         setCategoriesDTO(dto.getCategories());
     }
 
