@@ -1,12 +1,12 @@
 package online.strongnation.unit.entity;
 
-import online.strongnation.model.entity.CategoryDAO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Region;
-import online.strongnation.model.entity.RegionCategory;
-import online.strongnation.repository.CategoryRepository;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.RegionRepository;
+import online.strongnation.business.model.entity.CategoryDAO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.Region;
+import online.strongnation.business.model.entity.RegionCategory;
+import online.strongnation.business.repository.CategoryRepository;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.repository.RegionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

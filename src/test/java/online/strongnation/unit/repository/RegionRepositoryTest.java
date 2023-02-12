@@ -1,12 +1,12 @@
 package online.strongnation.unit.repository;
 
-import online.strongnation.exception.IllegalCountryException;
-import online.strongnation.model.dto.RegionDTO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Region;
-import online.strongnation.exception.RegionNotFoundException;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.RegionRepository;
+import online.strongnation.business.exception.IllegalCountryException;
+import online.strongnation.business.model.dto.RegionDTO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.Region;
+import online.strongnation.business.exception.RegionNotFoundException;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.repository.RegionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

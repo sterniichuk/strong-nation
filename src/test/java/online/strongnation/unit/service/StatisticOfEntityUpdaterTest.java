@@ -1,10 +1,10 @@
 package online.strongnation.unit.service;
 
-import online.strongnation.model.dto.CategoryDTO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.statistic.CategoryHolder;
-import online.strongnation.model.statistic.StatisticResult;
-import online.strongnation.service.StatisticOfEntityUpdater;
+import online.strongnation.business.model.dto.CategoryDTO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.statistic.CategoryHolder;
+import online.strongnation.business.model.statistic.StatisticResult;
+import online.strongnation.business.service.StatisticOfEntityUpdater;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

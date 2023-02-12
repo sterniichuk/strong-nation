@@ -1,14 +1,14 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.NameProperties;
-import online.strongnation.exception.CountryNotFoundException;
-import online.strongnation.exception.IllegalRegionException;
-import online.strongnation.exception.RegionNotFoundException;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Region;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.RegionRepository;
-import online.strongnation.service.RegionService;
+import online.strongnation.business.config.NameProperties;
+import online.strongnation.business.exception.CountryNotFoundException;
+import online.strongnation.business.exception.IllegalRegionException;
+import online.strongnation.business.exception.RegionNotFoundException;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.Region;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.repository.RegionRepository;
+import online.strongnation.business.service.RegionService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

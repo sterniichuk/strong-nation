@@ -1,11 +1,11 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.NameProperties;
-import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.exception.IllegalCountryException;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.service.CountryService;
+import online.strongnation.business.config.NameProperties;
+import online.strongnation.business.model.dto.CountryDTO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.exception.IllegalCountryException;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.service.CountryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
