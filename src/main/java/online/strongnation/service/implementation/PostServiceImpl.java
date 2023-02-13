@@ -32,18 +32,18 @@ public class PostServiceImpl implements PostService {
     private final StatisticService statistic;
     private final PostPhotoService postPhotoService;
 
-    private record Pair(Country country, Region region) {
+    private record Location(Country country, Region region) {
     }
 
-    private Pair getPairByNames(String clearNameOfCountry, String clearNameOfRegion) {
+    private Location getLocationByNames(String clearNameOfCountry, String clearNameOfRegion) {
         Country country = countryRepository.findCountryByNameIgnoreCase(clearNameOfCountry)
                 .orElseThrow(() -> new CountryNotFoundException("Country " + clearNameOfCountry + " doesn't exist"));
         Region region = regionRepository.findRegionInCountryByNamesIgnoringCase(clearNameOfCountry, clearNameOfRegion)
                 .orElseThrow(() -> new RegionNotFoundException("Region " + clearNameOfRegion + " doesn't exist"));
-        return new Pair(country, region);
+        return new Location(country, region);
     }
 
-    private Pair getPairByRegionId(Long id) {
+    private Location getLocationByRegionId(Long id) {
         Region region = regionRepository.findById(id)
                 .orElseThrow(() -> new RegionNotFoundException("Region with id: " + id + " doesn't exist"));
         Country country = regionRepository.findCountryOfRegionById(id)
@@ -51,10 +51,10 @@ public class PostServiceImpl implements PostService {
                     String message = "Region with id: " + id + " doesn't belong to any country...";
                     throw new IllegalRegionException(message);
                 });
-        return new Pair(country, region);
+        return new Location(country, region);
     }
 
-    private Pair getPairByPostId(Long id) {
+    private Location getLocationByPostId(Long id) {
         Region region = postRepository.findRegionOfPostById(id)
                 .orElseThrow(() -> {
                     String message = "Post with id: " +
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
                             region.getId() + " doesn't belong to any country...";
                     throw new IllegalRegionException(message);
                 });
-        return new Pair(country, region);
+        return new Location(country, region);
     }
 
     @Override
@@ -76,8 +76,8 @@ public class PostServiceImpl implements PostService {
         final String clearNameOfCountry = checkAndNormalizeCountry(countryName);
         final String clearNameOfRegion = checkAndNormalizeRegion(regionName);
         final PostDTO checkedPost = checkAndNormalizeNewPost(post);
-        Pair pair = getPairByNames(clearNameOfCountry, clearNameOfRegion);
-        return create(checkedPost, pair.country, pair.region);
+        Location location = getLocationByNames(clearNameOfCountry, clearNameOfRegion);
+        return create(checkedPost, location.country, location.region);
     }
 
     private PostDTO create(PostDTO checkedPost, Country country, Region region) {
@@ -87,15 +87,15 @@ public class PostServiceImpl implements PostService {
 
         StatisticResult regionResult = statistic.addChildToParent(oldRegion, checkedPost);
         updateParentDAOs(postDAO, region, country, oldRegion, regionResult);
-        return checkedPost.getWithId(postDAO.getId());
+        return new PostDTO(postDAO);
     }
 
     @Override
     @Transactional
     public PostDTO create(PostDTO post, Long id) {
         final PostDTO checkedPost = checkAndNormalizeNewPost(post);
-        Pair pair = getPairByRegionId(id);
-        return create(checkedPost, pair.country, pair.region);
+        Location location = getLocationByRegionId(id);
+        return create(checkedPost, location.country, location.region);
     }
 
     @Override
@@ -137,19 +137,68 @@ public class PostServiceImpl implements PostService {
         final PostDTO checkedPost = checkAndNormalizeUpdatedPost(post);
         final Post postDAO = postRepository.findById(post.getId())
                 .orElseThrow(() -> new PostNotFoundException("There is no post with id: " + post.getId()));
-        Pair pair = getPairByPostId(post.getId());
-        RegionDTO oldRegion = new RegionDTO(pair.region);
-        PostDTO old = new PostDTO(postDAO);
-        var statisticResultOfPost = statistic.updateSelf(old, checkedPost);
-        updater.update(postDAO, statisticResultOfPost);
-        updateStaticFields(postDAO, checkedPost);
-        StatisticResult regionResult = statistic
-                .updateChild(new RegionDTO(pair.region), old, checkedPost);
-        updateParentDAOs(postDAO, pair.region, pair.country, oldRegion, regionResult);
-        return checkedPost;
+        Location location = getLocationByPostId(post.getId());
+        Region region = location.region;
+        if (region.getName().equalsIgnoreCase(checkedPost.getRegion())) {// region is the same
+            RegionDTO oldRegion = new RegionDTO(region);
+            PostDTO old = new PostDTO(postDAO);
+            updatePost(postDAO, checkedPost, old);
+            StatisticResult regionResult = statistic
+                    .updateChild(new RegionDTO(region), old, checkedPost);
+            updateParentDAOs(postDAO, region, location.country, oldRegion, regionResult);
+            return checkedPost;
+        }
+        //region is changed for this post
+        return movePostToAnotherRegion(location, postDAO, checkedPost);
     }
 
-    private void updateStaticFields(Post postDAO, PostDTO newPost){
+    private PostDTO movePostToAnotherRegion(Location location, Post postDAO, PostDTO newPost) {
+        final Region targetRegion = getTargetRegion(location, newPost);//first, we should check if the target region exists, and then we can do the math
+        final RegionDTO oldRegion = new RegionDTO(location.region);
+        final PostDTO old = new PostDTO(postDAO);
+        postDAO.setRegion(null);
+        updatePost(postDAO, newPost, old);
+        StatisticResult regionResult = statistic.deleteChild(oldRegion, old);
+        updater.update(location.region, regionResult);
+        StatisticResult countryResult = statistic
+                .updateChild(new CountryDTO(location.country), oldRegion, new RegionDTO(location.region));
+        updater.update(location.country, countryResult);
+
+        RegionDTO oldTargetRegion = new RegionDTO(targetRegion);
+        StatisticResult statisticResultOfRegionWithAddedPost = statistic
+                .addChildToParent(oldTargetRegion, newPost);
+        updater.update(targetRegion, statisticResultOfRegionWithAddedPost);
+        StatisticResult countryResultAfterMovingPost = statistic
+                .updateChild(new CountryDTO(location.country),
+                        oldTargetRegion, new RegionDTO(targetRegion));
+        updater.update(location.country, countryResultAfterMovingPost);
+        postDAO.setRegion(targetRegion);
+        postRepository.save(postDAO);
+        regionRepository.save(location.region);
+        regionRepository.save(targetRegion);
+        countryRepository.save(location.country);
+        return newPost;
+    }
+
+    private void updatePost(Post postDAO, PostDTO checkedPost, PostDTO old) {
+        StatisticResult statisticResultOfPost = statistic.updateSelf(old, checkedPost);
+        updater.update(postDAO, statisticResultOfPost);
+        updateStaticFields(postDAO, checkedPost);
+    }
+
+    private Region getTargetRegion(Location location, PostDTO checkedPost) {
+        return regionRepository
+                .findRegionInCountryByNamesIgnoringCase(location.country.getName(), checkedPost.getRegion())
+                .orElseThrow(() -> {
+                    final String message = "There is no region with name"
+                            + checkedPost.getRegion() + " in country " +
+                            location.country.getName() +
+                            ". You can't move post to region that doesn't exist.";
+                    throw new IllegalPostException(message);
+                });
+    }
+
+    private void updateStaticFields(Post postDAO, PostDTO newPost) {
         postDAO.setDate(newPost.getDate());
         postDAO.setDescription(newPost.getDescription());
         postDAO.setLink(newPost.getLink());
@@ -175,22 +224,23 @@ public class PostServiceImpl implements PostService {
     public PostDTO delete(Long id) {
         final var post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("There is no post with id: " + id));
-        Pair pair = getPairByPostId(id);
-        RegionDTO oldRegion = new RegionDTO(pair.region);
+        Location location = getLocationByPostId(id);
+        RegionDTO oldRegion = new RegionDTO(location.region);
         PostDTO oldPost = new PostDTO(post);
         StatisticResult regionResult = statistic
-                .deleteChild(new RegionDTO(pair.region), oldPost);
-        updateParentDAOs(pair.region, pair.country, oldRegion, regionResult);
+                .deleteChild(new RegionDTO(location.region), oldPost);
+        updateParentDAOs(location.region, location.country, oldRegion, regionResult);
         deletePhotoIfExists(post);
         postRepository.deleteById(id);
         return oldPost;
     }
 
+
     @Override
     @Transactional
     public List<PostDTO> deleteAllByRegionId(Long id) {
-        Pair pair = getPairByRegionId(id);
-        return deleteAll(pair.country, pair.region);
+        Location location = getLocationByRegionId(id);
+        return deleteAll(location.country, location.region);
     }
 
     @Override
@@ -198,8 +248,8 @@ public class PostServiceImpl implements PostService {
     public List<PostDTO> deleteAll(String countryName, String regionName) {
         final String clearNameOfCountry = checkAndNormalizeCountry(countryName);
         final String clearNameOfRegion = checkAndNormalizeRegion(regionName);
-        Pair pair = getPairByNames(clearNameOfCountry, clearNameOfRegion);
-        return deleteAll(pair.country, pair.region);
+        Location location = getLocationByNames(clearNameOfCountry, clearNameOfRegion);
+        return deleteAll(location.country, location.region);
     }
 
     private List<PostDTO> deleteAll(Country country, Region region) {

@@ -48,12 +48,13 @@ public interface RequestParameterFixer {
 
     static PostDTO checkAndNormalizeNewPost(final PostDTO post) {
         checkIdOfNewPost(post.getId());
-        return checkAndNormalizePost(post);
+        return checkAndNormalizePost(post).build();
     }
 
     static PostDTO checkAndNormalizeUpdatedPost(final PostDTO post) {
         checkPossibleIdOfPost(post.getId());
-        return checkAndNormalizePost(post);
+        final String regionName = checkAndNormalizeRegion(post.getRegion());
+        return checkAndNormalizePost(post).region(regionName).build();
     }
 
     private static void checkPossibleIdOfPost(Long id) {
@@ -62,7 +63,7 @@ public interface RequestParameterFixer {
         }
     }
 
-    private static PostDTO checkAndNormalizePost(final PostDTO post) {
+    private static PostDTO.PostDTOBuilder checkAndNormalizePost(final PostDTO post) {
         final String description = checkAndNormalizeDescriptionOfPost(post.getDescription());
         final String link = checkLink(post.getLink());
         final LocalDateTime date = checkDate(post.getDate());
@@ -72,8 +73,7 @@ public interface RequestParameterFixer {
                 .description(description)
                 .link(link)
                 .date(date)
-                .categories(list)
-                .build();
+                .categories(list);
     }
 
     private static List<CategoryDTO> checkAndNormalizeCategories(List<CategoryDTO> list) {

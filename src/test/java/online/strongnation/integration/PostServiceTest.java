@@ -284,6 +284,7 @@ class PostServiceTest {
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
                 .description(heading)
+                .region(WASHINGTON_NAME)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         var region = regionRepository
@@ -322,6 +323,7 @@ class PostServiceTest {
         final PostDTO newPost = PostDTO.builder()
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
+                .region(WASHINGTON_NAME)
                 .id(postRepository.findAll().get(0).getId())
                 .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY.updateNumber(newNumber)))
@@ -345,6 +347,63 @@ class PostServiceTest {
                 .compareTo(currentRegionFoodNumber)).isEqualTo(0);
         assertThat(USA_FOOD_CATEGORY.getNumber().subtract(newNumber)
                 .compareTo(currentCountryFoodNumber)).isEqualTo(0);
+    }
+
+    @Test
+    void movePostToAnotherRegion() {
+        //given
+        final String heading = "first post some heading";
+        final String link = "localH0sT";
+        final String GOLD = "gold";
+        final CategoryDTO categoryDTO = CategoryDTO.builder()
+                .number(WASHINGTON_IN_USA_FOOD_CATEGORY.getNumber())
+                .name(GOLD)
+                .units("kg")
+                .build();
+        final PostDTO old = PostDTO.builder()
+                .date(checkDate(LocalDateTime.now()))
+                .link(link)
+                .description(heading)
+                .categories(List.of(categoryDTO))
+                .build();
+        final BigDecimal newNumber = WASHINGTON_IN_USA_FOOD_CATEGORY
+                .getNumber()
+                .divide(BigDecimal.valueOf(2), Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING);
+        PostDTO postDTO = postService.create(old, USA_NAME, WASHINGTON_NAME);
+        final PostDTO newPost = PostDTO.builder()
+                .date(checkDate(LocalDateTime.now()))
+                .link(link)
+                .region(WARSAW_NAME)
+                .id(postDTO.getId())
+                .description(heading)
+                .categories(List.of(categoryDTO.updateNumber(newNumber)))
+                .build();
+        //when
+        postService.update(newPost);
+        //then
+        final var sourceRegionCategories = regionRepository
+                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
+                .orElseThrow(RegionNotFoundException::new)
+                .getCategories();
+        assertThat(sourceRegionCategories.contains(categoryDTO)).isFalse();
+        final var targetRegionCategories = regionRepository
+                .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WARSAW_NAME)
+                .orElseThrow(RegionNotFoundException::new)
+                .getCategories();
+        assertThat(targetRegionCategories.isEmpty()).isFalse();
+        final var countryCategories = countryRepository
+                .findCountryDTOByNameIgnoreCase(USA_NAME)
+                .orElseThrow(RegionNotFoundException::new)
+                .getCategories();
+        final var countryCategoriesMap = getCategoryMap(countryCategories);
+        final var targetRegionCategoriesMap = getCategoryMap(targetRegionCategories);
+        final var currentRegionGoldNumber = targetRegionCategoriesMap.get(GOLD).getNumber();
+        final var currentCountryGoldNumber = countryCategoriesMap.get(GOLD).getNumber();
+        BigDecimal expectedValueOfGold = NUMBER_OF_FOOD.subtract(newNumber);
+        assertThat(expectedValueOfGold
+                .compareTo(currentRegionGoldNumber)).isEqualTo(0);
+        assertThat(expectedValueOfGold
+                .compareTo(currentCountryGoldNumber)).isEqualTo(0);
     }
 
     @Test
@@ -471,6 +530,7 @@ class PostServiceTest {
                 .id(specialDTOSaved.getId())
                 .date(checkDate(LocalDateTime.now()))
                 .link(link)
+                .region(specialDTOSaved.getRegion())
                 .description(heading)
                 .categories(List.of())
                 .build();

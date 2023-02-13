@@ -7,35 +7,22 @@ import online.strongnation.model.statistic.StatisticModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Builder(toBuilder = true)
-@Getter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostDTO implements StatisticModel {
     private Long id;
+    private String region;
     private String description;
     private String link;
     private LocalDateTime date;
     private List<CategoryDTO> categories;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PostDTO postDTO = (PostDTO) o;
-        return Objects.equals(id, postDTO.id) && description.equals(postDTO.description) && link.equals(postDTO.link) && date.equals(postDTO.date) && Objects.equals(categories, postDTO.categories);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, link, date, categories);
-    }
-
     public PostDTO(Post post) {
         this.id = post.getId();
+        this.region = post.getRegion().getName();
         this.description = post.getDescription();
         this.link = post.getLink();
         this.date = post.getDate();
@@ -71,8 +58,8 @@ public class PostDTO implements StatisticModel {
                 .date(date)
                 .description(description)
                 .link(link)
+                .region(region)
                 .categories(categories)
                 .build();
     }
-
 }

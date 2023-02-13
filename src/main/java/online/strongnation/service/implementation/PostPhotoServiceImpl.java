@@ -131,8 +131,13 @@ public class PostPhotoServiceImpl implements PostPhotoService {
 
     @Override
     public Resource downloadPhotoByPostId(Long id) {
-        PostPhoto postPhoto = getPostPhoto(id);
-        String path = getAbsolutePhotoPath(postPhoto);
+        String path;
+        try{
+            PostPhoto postPhoto = getPostPhoto(id);
+            path = getAbsolutePhotoPath(postPhoto);
+        }catch (PostPhotoNotFoundException e){
+            path = constants.PATH_TO_DEFAULT_POST_PHOTO;
+        }
         return fileService.read(path);
     }
 
