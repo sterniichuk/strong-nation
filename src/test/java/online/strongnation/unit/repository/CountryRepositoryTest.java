@@ -1,12 +1,12 @@
 package online.strongnation.unit.repository;
 
-import online.strongnation.exception.CountryNotFoundException;
-import online.strongnation.model.dto.CategoryDTO;
-import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.entity.CategoryDAO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.CountryCategory;
-import online.strongnation.repository.CountryRepository;
+import online.strongnation.business.exception.CountryNotFoundException;
+import online.strongnation.business.model.dto.CategoryDTO;
+import online.strongnation.business.model.dto.CountryDTO;
+import online.strongnation.business.model.entity.CategoryDAO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.CountryCategory;
+import online.strongnation.business.repository.CountryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

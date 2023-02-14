@@ -1,20 +1,20 @@
 package online.strongnation.integration;
 
-import online.strongnation.config.Floats;
-import online.strongnation.exception.CountryNotFoundException;
-import online.strongnation.exception.RegionNotFoundException;
-import online.strongnation.model.dto.CategoryDTO;
-import online.strongnation.model.dto.CountryDTO;
-import online.strongnation.model.dto.PostDTO;
-import online.strongnation.model.dto.RegionDTO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Post;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.PostRepository;
-import online.strongnation.repository.RegionRepository;
-import online.strongnation.service.CountryService;
-import online.strongnation.service.PostService;
-import online.strongnation.service.RegionService;
+import online.strongnation.business.config.Floats;
+import online.strongnation.business.exception.CountryNotFoundException;
+import online.strongnation.business.exception.RegionNotFoundException;
+import online.strongnation.business.model.dto.CategoryDTO;
+import online.strongnation.business.model.dto.CountryDTO;
+import online.strongnation.business.model.dto.PostDTO;
+import online.strongnation.business.model.dto.RegionDTO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.Post;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.repository.PostRepository;
+import online.strongnation.business.repository.RegionRepository;
+import online.strongnation.business.service.CountryService;
+import online.strongnation.business.service.PostService;
+import online.strongnation.business.service.RegionService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static online.strongnation.service.implementation.CategoryUtils.getCategoryMap;
-import static online.strongnation.service.implementation.RequestParameterFixer.checkDate;
+import static online.strongnation.business.service.implementation.CategoryUtils.getCategoryMap;
+import static online.strongnation.business.service.implementation.RequestParameterFixer.checkDate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest

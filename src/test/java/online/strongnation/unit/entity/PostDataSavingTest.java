@@ -1,8 +1,8 @@
 package online.strongnation.unit.entity;
 
-import online.strongnation.model.entity.*;
-import online.strongnation.exception.RegionNotFoundException;
-import online.strongnation.repository.*;
+import online.strongnation.business.model.entity.*;
+import online.strongnation.business.repository.*;
+import online.strongnation.business.exception.RegionNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

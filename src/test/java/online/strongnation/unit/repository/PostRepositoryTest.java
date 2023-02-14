@@ -1,10 +1,10 @@
 package online.strongnation.unit.repository;
 
-import online.strongnation.model.dto.PostDTO;
-import online.strongnation.model.entity.Country;
-import online.strongnation.model.entity.Region;
-import online.strongnation.repository.CountryRepository;
-import online.strongnation.repository.PostRepository;
+import online.strongnation.business.model.dto.PostDTO;
+import online.strongnation.business.model.entity.Country;
+import online.strongnation.business.model.entity.Region;
+import online.strongnation.business.repository.CountryRepository;
+import online.strongnation.business.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
