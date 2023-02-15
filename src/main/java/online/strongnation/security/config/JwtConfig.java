@@ -1,4 +1,4 @@
-package online.strongnation.security.model.jwt;
+package online.strongnation.security.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 @NoArgsConstructor
 @Getter
@@ -21,13 +23,18 @@ public class JwtConfig {
 
     private String secretKey;
     private String tokenPrefix;
-    private Integer tokenExpirationAfterDays;
+    private Integer tokenExpirationTime;
+    private String units;
 
-    public void setTokenExpirationAfterDays(Integer tokenExpirationAfterDays) {
-        this.tokenExpirationAfterDays = tokenExpirationAfterDays;
-    }
     public String getAuthorizationHeader() {
         return HttpHeaders.AUTHORIZATION;
     }
 
+    public long getExpirationTimeInMillis(){
+        return getTimeUnits().toMillis(getTokenExpirationTime());
+    }
+
+    private TimeUnit getTimeUnits(){
+        return TimeUnit.valueOf(units);
+    }
 }

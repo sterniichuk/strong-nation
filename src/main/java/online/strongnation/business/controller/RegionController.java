@@ -1,24 +1,24 @@
 package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
-import online.strongnation.business.config.SecurityConstants;
 import online.strongnation.business.service.RegionService;
 import online.strongnation.business.model.dto.RegionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("region/v1")
-@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
+@RequestMapping("api/v2/region")
 @AllArgsConstructor
 public class RegionController {
 
     private final RegionService service;
 
     @PostMapping("/add/{country}/{name}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<RegionDTO> create(@PathVariable("country") String countryName,
                                             @PathVariable("name") String name) {
         final var response = service.create(countryName, name);
@@ -26,6 +26,7 @@ public class RegionController {
     }
 
     @PostMapping("/add-all/{country}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<List<RegionDTO>> createAll(@PathVariable("country") String countryName,
                                                      @RequestBody List<String> names) {
         final var response = service.createAll(countryName, names);
@@ -52,6 +53,7 @@ public class RegionController {
     }
 
     @PutMapping("/update/{country}/{oldName}/{newName}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<RegionDTO> rename(@PathVariable("country") String countryName,
                                             @PathVariable("oldName") String oldName,
                                             @PathVariable("newName") String newName) {
@@ -60,6 +62,7 @@ public class RegionController {
     }
 
     @PutMapping("/update-by-id/{id}/{newName}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<RegionDTO> renameById(@PathVariable("id") Long id,
                                                 @PathVariable("newName") String newName) {
         final var response = service.rename(id, newName);
@@ -67,6 +70,7 @@ public class RegionController {
     }
 
     @DeleteMapping("/delete/{country}/{name}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<RegionDTO> delete(@PathVariable("country") String countryName,
                                             @PathVariable("name") String name) {
         final var response = service.delete(countryName, name);
@@ -74,12 +78,14 @@ public class RegionController {
     }
 
     @DeleteMapping("/delete-by-id/{id}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<RegionDTO> deleteById(@PathVariable("id") Long id) {
         final var response = service.delete(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all-by-country/{country}")
+    @PreAuthorize("hasAuthority('region:write')")
     public ResponseEntity<List<RegionDTO>> deleteAllByCountry(@PathVariable("country") String countryName) {
         final var response = service.deleteAllByCountry(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);

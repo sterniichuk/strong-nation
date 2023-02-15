@@ -2,23 +2,23 @@ package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
 import online.strongnation.business.service.CountryService;
-import online.strongnation.business.config.SecurityConstants;
 import online.strongnation.business.model.dto.CountryDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("country/v1")
-@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
+@RequestMapping("api/v2/country")
 @AllArgsConstructor
 public class CountryController {
 
     CountryService service;
 
     @PostMapping("/add/{name}")
+    @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> create(@PathVariable("name") String countryName) {
         var response = service.create(countryName);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -37,6 +37,7 @@ public class CountryController {
     }
 
     @PutMapping("/update/{oldName}/{newName}")
+    @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> rename(@PathVariable("oldName") String oldName,
                                              @PathVariable("newName") String newName) {
         var response = service.rename(oldName, newName);
@@ -44,12 +45,14 @@ public class CountryController {
     }
 
     @DeleteMapping("/delete/{name}")
+    @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> delete(@PathVariable("name") String countryName) {
         var response = service.delete(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all")
+    @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<List<CountryDTO>> deleteAll() {
         var response = service.deleteAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
