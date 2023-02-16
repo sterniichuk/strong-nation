@@ -1,7 +1,8 @@
 package online.strongnation.security.service.implementation;
 
-import online.strongnation.security.config.JwtService;
-import online.strongnation.security.model.AuthenticationRequest;
+import online.strongnation.security.exception.IllegalUserException;
+import online.strongnation.security.exception.UserNotFoundException;
+import online.strongnation.security.model.UserDTO;
 import online.strongnation.security.model.AuthenticationResponse;
 import online.strongnation.security.repository.UserRepository;
 import online.strongnation.security.service.AuthenticationService;
@@ -20,12 +21,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserValidator validator;
 
     @Override
-    public AuthenticationResponse register(AuthenticationRequest request, Role role) {
+    public AuthenticationResponse register(UserDTO request, Role role) {
+        final String email = request.getEmail();
+        final String password = request.getPassword();
+        validator.checkEmail(email);
+        validator.checkPassword(password);
+        if(repository.existsByEmail(email)){
+            throw new IllegalUserException("Email: " + email +" is already in use");
+        }
         var user = User.builder()
-                .email(request.getEmail())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .email(email)
+                .passwordHash(passwordEncoder.encode(password))
                 .role(role)
                 .build();
         repository.save(user);
@@ -36,15 +45,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(UserDTO request) {
+        String email = request.getEmail();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        email,
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)

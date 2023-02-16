@@ -1,4 +1,4 @@
-package online.strongnation.security.config;
+package online.strongnation.security.service.implementation;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
+import online.strongnation.security.config.JwtConfig;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
     private final JwtConfig jwtConfig;
-
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

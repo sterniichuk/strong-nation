@@ -12,7 +12,6 @@ public enum ApplicationUserPermission {
     REGION_WRITE("region:write"),
     //POST
     POST_WRITE("post:write"),
-    POST_READ_ALL_INFO("post:read_all"),
     POST_DELETE_ALL("post:delete_all"),
     //admin
     ADMIN_CREATE("admin:create"),

@@ -1,6 +1,7 @@
 package online.strongnation.security.config;
 
 import lombok.RequiredArgsConstructor;
+import online.strongnation.security.service.implementation.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
