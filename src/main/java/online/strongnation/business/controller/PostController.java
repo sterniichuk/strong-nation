@@ -58,7 +58,6 @@ public class PostController {
     }
 
     @GetMapping("/get-by-post-id/{id}")
-    @PreAuthorize("hasAuthority('post:read_all')")
     public ResponseEntity<PostDTO> get(@PathVariable("id") Long id) {
         final var response = service.get(id);
         return new ResponseEntity<>(response, HttpStatus.OK);

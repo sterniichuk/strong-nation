@@ -27,10 +27,9 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/api/v2/country/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v2/region/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v2/post-photo/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v2/post/**").permitAll()
                 .requestMatchers("/api/v2/auth/authenticate").permitAll()
                 .requestMatchers("/api/v2/admin/**").permitAll()
-                .requestMatchers("/api/v2/post/all-by-region-id/**",
-                        "/api/v2/post/all/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
