@@ -1,6 +1,7 @@
 package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
+import online.strongnation.business.config.SecurityConstants;
 import online.strongnation.business.model.dto.GetPostResponse;
 import online.strongnation.business.model.dto.GetPostResponseByCountryDTO;
 import online.strongnation.business.model.dto.PostDTO;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v2/post")
+@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
 @AllArgsConstructor
 public class PostController {
     private final PostService service;
