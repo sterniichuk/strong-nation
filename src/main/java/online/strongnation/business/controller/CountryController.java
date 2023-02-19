@@ -1,7 +1,6 @@
 package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
-import online.strongnation.business.config.SecurityConstants;
 import online.strongnation.business.service.CountryService;
 import online.strongnation.business.model.dto.CountryDTO;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static online.strongnation.business.config.SecurityConstants.FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
+import static online.strongnation.business.config.SecurityConstants.LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
+
 @RestController
 @RequestMapping("api/v2/country")
-@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
+@CrossOrigin(origins = {LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS, FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS})
 @AllArgsConstructor
 public class CountryController {
 

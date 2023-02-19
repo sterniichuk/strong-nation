@@ -2,7 +2,6 @@ package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
 import online.strongnation.business.config.Constants;
-import online.strongnation.business.config.SecurityConstants;
 import online.strongnation.business.service.PostPhotoService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,9 +11,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static online.strongnation.business.config.SecurityConstants.FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
+import static online.strongnation.business.config.SecurityConstants.LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
+
 @RestController
 @RequestMapping("api/v2/post-photo")
-@CrossOrigin(origins = SecurityConstants.URL_WITH_ENABLED_CROSS_ORIGIN_REQUESTS)
+@CrossOrigin(origins = {LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS, FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS})
 @AllArgsConstructor
 public class PostPhotoController {
 
