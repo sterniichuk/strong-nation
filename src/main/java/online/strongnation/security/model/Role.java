@@ -12,10 +12,11 @@ import static online.strongnation.security.model.ApplicationUserPermission.*;
 @Getter
 @AllArgsConstructor
 public enum Role {
-    ADMIN(Set.of(POST_WRITE)),
+    ADMIN(Set.of(POST_WRITE, ADMIN_UPDATE, ADMIN_DELETE)),
     DEVELOPER(Set.of(POST_WRITE, POST_DELETE_ALL,
             COUNTRY_WRITE, REGION_WRITE,
             ADMIN_CREATE, ADMIN_READ, ADMIN_DELETE, ADMIN_UPDATE,
+            DEVELOPER_DELETE, DEVELOPER_UPDATE,
             LOGS_READ)),
     MASTER(Set.of(POST_WRITE, POST_DELETE_ALL,
             COUNTRY_WRITE, REGION_WRITE,

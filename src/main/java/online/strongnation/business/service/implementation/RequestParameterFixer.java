@@ -143,10 +143,16 @@ public interface RequestParameterFixer {
         }
         String s = date.toString();
         int endIndex = s.lastIndexOf('.');
-        String deletedAfterDot = endIndex == -1 ? s : s.substring(0, endIndex);
+        String deletedAfterDot = s;
+        if(Constants.DATE_FORMAT.contains(".")){
+            deletedAfterDot = endIndex == -1 ? s : s.substring(0, endIndex);
+        }
         String dateAsString = deletedAfterDot.replace('T', ' ');
         if(dateAsString.length() > Constants.DATE_FORMAT.length()){
             dateAsString = dateAsString.substring(0, Constants.DATE_FORMAT.length());
+        }
+        if(dateAsString.length() == 16 && Constants.DATE_FORMAT.lastIndexOf(':') == 16){
+            dateAsString += ":00";
         }
         return LocalDateTime.parse(dateAsString, formatter);
     }

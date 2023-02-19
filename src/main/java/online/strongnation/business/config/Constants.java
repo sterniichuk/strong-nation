@@ -5,8 +5,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-
 @Component
 @PropertySources({
         @PropertySource("classpath:custom.properties")
@@ -22,10 +20,4 @@ public class Constants {
     public String POST_PHOTO_DIRECTORY_NAME;
     @Value("${post.photo.default.path}")
     public String PATH_TO_DEFAULT_POST_PHOTO;
-
-    public String getAllPathToPhoto() {
-        return PATH_TO_POST_PHOTO_DIRECTORY + File.separator +
-                POST_PHOTO_DIRECTORY_NAME + File.separator;
-    }
-
 }
