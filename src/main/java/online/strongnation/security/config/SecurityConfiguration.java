@@ -52,8 +52,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS,
-                LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS));
+        configuration.addAllowedOrigin(FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS);
+        configuration.addAllowedOrigin(LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
