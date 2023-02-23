@@ -7,6 +7,7 @@ import online.strongnation.business.model.entity.PostPhoto;
 import online.strongnation.business.model.entity.Region;
 import online.strongnation.business.repository.CountryRepository;
 import online.strongnation.business.repository.PostPhotoRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,6 +24,11 @@ class PostPhotoRepositoryTest {
     private CountryRepository countryRepository;
     @Autowired
     private PostPhotoRepository postPhotoRepository;
+
+    @AfterEach
+    void tearDown() {
+        countryRepository.deleteAll();
+    }
 
     @Test
     void findAllPostPhotoByRegionId() {

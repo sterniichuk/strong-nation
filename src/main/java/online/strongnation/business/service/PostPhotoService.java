@@ -11,8 +11,6 @@ public interface PostPhotoService {
 
     Resource downloadPhotoByPostId(Long id); //post's id
 
-    String deletePhotoByPostId(Long id);
-
     String deletePhotoByPostPhoto(PostPhoto postPhoto);
 
     List<String> deletePhotoCountryId(Long id);

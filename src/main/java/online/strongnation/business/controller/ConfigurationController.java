@@ -18,7 +18,7 @@ public class ConfigurationController {
     @GetMapping("/get/constants")
     @PreAuthorize("hasAuthority('properties:read')")
     public ResponseEntity<String> get() {
-        var photo = "PATH_TO_POST_PHOTO_DIRECTORY: " + constants.PATH_TO_POST_PHOTO_DIRECTORY;
+        var photo = "PATH_TO_POST_PHOTO_DIRECTORY: " + constants.PATH_TO_PHOTO_DIRECTORY;
         return new ResponseEntity<>(photo, HttpStatus.OK);
     }
 }

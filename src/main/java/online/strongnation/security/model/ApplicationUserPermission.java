@@ -13,6 +13,8 @@ public enum ApplicationUserPermission {
     //POST
     POST_WRITE("post:write"),
     POST_DELETE_ALL("post:delete_all"),
+    SLIDER_WRITE("slider:write"),
+
     //admin
     ADMIN_CREATE("admin:create"),
     ADMIN_READ("admin:read"),

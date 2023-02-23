@@ -1,6 +1,6 @@
 package online.strongnation.business.service.implementation;
 
-import online.strongnation.business.exception.IllegalFileServiceException;
+import online.strongnation.business.config.Constants;
 import online.strongnation.business.exception.PostNotFoundException;
 import online.strongnation.business.exception.PostPhotoNotFoundException;
 import online.strongnation.business.model.entity.Post;
@@ -9,18 +9,16 @@ import online.strongnation.business.repository.PostPhotoRepository;
 import online.strongnation.business.repository.PostRepository;
 import online.strongnation.business.service.FileService;
 import online.strongnation.business.service.PostPhotoService;
-import online.strongnation.business.config.Constants;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+
+import static online.strongnation.business.service.implementation.FileUtils.getUnifiedPhotoFileName;
+import static online.strongnation.business.service.implementation.FileUtils.initFolder;
 
 @Service
 public class PostPhotoServiceImpl implements PostPhotoService {
@@ -37,21 +35,17 @@ public class PostPhotoServiceImpl implements PostPhotoService {
         this.fileService = fileService;
         this.postPhotoRepository = postPhotoRepository;
         this.postRepository = postRepository;
-        initPostPhotoFolder();
+        initPostPhotoDirectory();
     }
 
-    private void initPostPhotoFolder() {
-        try {
-            Files.createDirectories(Paths.get(getPhotoDirectory()));
-        } catch (IOException e) {
-            String message = "Can't create folder for saving post's photo";
-            throw new IllegalFileServiceException(message, e);
-        }
+    private void initPostPhotoDirectory() {
+        final String message = "Can't create folder for saving post's photo";
+        initFolder(getPhotoDirectory(), message);
     }
 
     private String getPhotoDirectory() {
-        return constants.PATH_TO_POST_PHOTO_DIRECTORY +
-                $ + constants.POST_PHOTO_DIRECTORY_NAME;
+        return constants.PATH_TO_PHOTO_DIRECTORY +
+                $ + constants.SLIDER_PHOTO_DIRECTORY_NAME;
     }
 
     @Override
@@ -76,11 +70,6 @@ public class PostPhotoServiceImpl implements PostPhotoService {
         return id;
     }
 
-    @Override
-    public String deletePhotoByPostId(Long id) {
-        PostPhoto postPhoto = getPostPhoto(id);
-        return deletePhotoByPostPhoto(postPhoto);
-    }
 
     @Override
     public String deletePhotoByPostPhoto(PostPhoto postPhoto) {
@@ -123,11 +112,7 @@ public class PostPhotoServiceImpl implements PostPhotoService {
         return postPhoto;
     }
 
-    private String getUnifiedPhotoFileName(Long id, MultipartFile file) {
-        final String oldName = file.getOriginalFilename();
-        final String extension = StringUtils.getFilenameExtension(oldName);
-        return id + "." + extension;
-    }
+
 
     @Override
     public Resource downloadPhotoByPostId(Long id) {
