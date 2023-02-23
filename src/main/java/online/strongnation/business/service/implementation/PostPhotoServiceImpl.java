@@ -45,7 +45,7 @@ public class PostPhotoServiceImpl implements PostPhotoService {
 
     private String getPhotoDirectory() {
         return constants.PATH_TO_PHOTO_DIRECTORY +
-                $ + constants.SLIDER_PHOTO_DIRECTORY_NAME;
+                $ + constants.POST_PHOTO_DIRECTORY_NAME;
     }
 
     @Override
