@@ -16,10 +16,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static online.strongnation.business.config.SecurityConstants.FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
-import static online.strongnation.business.config.SecurityConstants.LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +24,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final OriginsConfig originsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,8 +49,12 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin(FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS);
-        configuration.addAllowedOrigin(LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS);
+        String[] allowedOrigins = originsConfig.getAllowedOrigins();
+        if(allowedOrigins != null){
+            for(var s : allowedOrigins){
+                configuration.addAllowedOrigin(s);
+            }
+        }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));

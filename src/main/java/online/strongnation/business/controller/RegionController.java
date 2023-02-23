@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static online.strongnation.business.config.SecurityConstants.FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
-import static online.strongnation.business.config.SecurityConstants.LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS;
 
 @RestController
 @RequestMapping("api/v2/region")
-@CrossOrigin(origins = {LOCAL_HOST_WITH_ENABLED_CROSS_ORIGIN_REQUESTS, FRONTEND_WITH_ENABLED_CROSS_ORIGIN_REQUESTS})
 @AllArgsConstructor
 public class RegionController {
 
