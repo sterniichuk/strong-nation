@@ -16,6 +16,9 @@ public class GetPostResponseByCountryDTO {
     private String description;
     private String link;
     private LocalDateTime date;
+
+    private Boolean important;
+
     private String region;
 
     public GetPostResponseByCountryDTO(Post post) {
@@ -23,6 +26,7 @@ public class GetPostResponseByCountryDTO {
         this.description = post.getDescription();
         this.link = post.getLink();
         this.date = post.getDate();
+        this.important = post.getImportant();
         this.region = post.getRegion().getName();
     }
 }

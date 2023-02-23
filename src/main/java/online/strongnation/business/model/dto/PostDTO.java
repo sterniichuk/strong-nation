@@ -18,6 +18,9 @@ public class PostDTO implements StatisticModel {
     private String description;
     private String link;
     private LocalDateTime date;
+
+    private Boolean important;
+
     private List<CategoryDTO> categories;
 
     public PostDTO(Post post) {
@@ -26,6 +29,7 @@ public class PostDTO implements StatisticModel {
         this.description = post.getDescription();
         this.link = post.getLink();
         this.date = post.getDate();
+        this.important = post.getImportant();
         setPostCategories(post.getCategories());
     }
 
@@ -39,6 +43,7 @@ public class PostDTO implements StatisticModel {
                 .date(date)
                 .description(description)
                 .link(link)
+                .important(important)
                 .build();
     }
 
@@ -48,6 +53,7 @@ public class PostDTO implements StatisticModel {
                 .region(region)
                 .date(date)
                 .description(description)
+                .important(important)
                 .link(link)
                 .build();
     }
@@ -59,6 +65,7 @@ public class PostDTO implements StatisticModel {
                 .description(description)
                 .link(link)
                 .region(region)
+                .important(important)
                 .categories(categories)
                 .build();
     }

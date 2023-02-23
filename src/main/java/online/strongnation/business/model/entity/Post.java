@@ -44,6 +44,9 @@ public class Post implements StatisticEntity {
     @JoinColumn(name = "post_photo_id", referencedColumnName = "id")
     private PostPhoto postPhoto;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean important = false;
+
     @OneToMany(targetEntity = PostCategory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
@@ -57,6 +60,7 @@ public class Post implements StatisticEntity {
         this.description = dto.getDescription();
         this.link = dto.getLink();
         this.date = dto.getDate();
+        this.important = dto.getImportant() != null && dto.getImportant();
         setCategoriesDTO(dto.getCategories());
     }
 

@@ -69,6 +69,13 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PutMapping("/update/important/{id}/{important}")
+    @PreAuthorize("hasAuthority('post:write')")
+    public ResponseEntity<Boolean> setImportant(@PathVariable("id") Long id, @PathVariable("important") Boolean important) {
+        final var response = service.setImportant(id, important);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<PostDTO> delete(@PathVariable("id") Long id) {

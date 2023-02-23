@@ -17,10 +17,13 @@ public class GetPostResponse {
     private String link;
     private LocalDateTime date;
 
+    private Boolean important;
+
     public GetPostResponse(Post post) {
         this.id = post.getId();
         this.description = post.getDescription();
         this.link = post.getLink();
         this.date = post.getDate();
+        this.important = post.getImportant();
     }
 }

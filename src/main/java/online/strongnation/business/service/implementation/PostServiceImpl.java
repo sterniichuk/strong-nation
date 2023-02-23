@@ -204,6 +204,10 @@ public class PostServiceImpl implements PostService {
         postDAO.setDate(newPost.getDate());
         postDAO.setDescription(newPost.getDescription());
         postDAO.setLink(newPost.getLink());
+        Boolean important = newPost.getImportant();
+        if(important != null){
+            postDAO.setImportant(important);
+        }
     }
 
     private void updateParentDAOs(Post postDAO, Region region, Country country,
@@ -252,6 +256,22 @@ public class PostServiceImpl implements PostService {
         final String clearNameOfRegion = checkAndNormalizeRegion(regionName);
         Location location = getLocationByNames(clearNameOfCountry, clearNameOfRegion);
         return deleteAll(location.country, location.region);
+    }
+
+    @Override
+    @Transactional
+    public Boolean setImportant(Long id, Boolean important) {
+        if(id == null){
+            throw new IllegalPostException("Id of post is null");
+        }
+        if(important == null){
+            throw new IllegalPostException("Important is null");
+        }
+        if(!postRepository.existsById(id)){
+            throw new PostNotFoundException("There is no post with id: " + id);
+        }
+        postRepository.setImportantOfPostById(id, important);
+        return important;
     }
 
     private List<PostDTO> deleteAll(Country country, Region region) {

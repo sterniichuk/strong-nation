@@ -35,6 +35,7 @@ class PostRepositoryTest {
                 .date(LocalDateTime.now())
                 .link(link)
                 .description(heading)
+                .important(false)
                 .build();
         region.setPostsDTO(List.of(post));
         country.setRegions(List.of(region));
@@ -58,6 +59,7 @@ class PostRepositoryTest {
                 .date(LocalDateTime.now())
                 .link(link)
                 .description(heading)
+                .important(false)
                 .build();
         region.setPostsDTO(List.of(post));
         country.setRegions(List.of(region));

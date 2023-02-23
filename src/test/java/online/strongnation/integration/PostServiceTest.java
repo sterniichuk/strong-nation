@@ -178,6 +178,7 @@ class PostServiceTest {
                 .link(link)
                 .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
+                .important(false)
                 .build();
         //when
         PostDTO actual = postService.create(post, USA_NAME, WASHINGTON_NAME);
@@ -206,6 +207,7 @@ class PostServiceTest {
                 .link(link)
                 .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
+                .important(false)
                 .build();
         Long regionId = regionRepository
                 .findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -238,6 +240,7 @@ class PostServiceTest {
                 .link(link)
                 .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
+                .important(false)
                 .build();
         var region = regionRepository
                 .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -262,6 +265,7 @@ class PostServiceTest {
                 .link(link)
                 .description(heading)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
+                .important(false)
                 .build();
         var region = regionRepository
                 .findRegionInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
@@ -285,6 +289,7 @@ class PostServiceTest {
                 .link(link)
                 .description(heading)
                 .region(WASHINGTON_NAME)
+                .important(false)
                 .categories(List.of(WASHINGTON_IN_USA_FOOD_CATEGORY))
                 .build();
         var region = regionRepository

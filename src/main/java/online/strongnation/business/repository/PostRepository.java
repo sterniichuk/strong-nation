@@ -6,6 +6,7 @@ import online.strongnation.business.model.dto.PostDTO;
 import online.strongnation.business.model.entity.Post;
 import online.strongnation.business.model.entity.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -19,10 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             " FROM Post post JOIN post.region reg WHERE reg.id = :id")
     List<GetPostResponse> findGetPostResponseAllByRegionId(Long id);
 
-    @Query("SELECT new online.strongnation.business.model.dto.PostDTO(post)" +
-            " FROM Post post JOIN post.region reg WHERE reg.id = :id")
-    List<PostDTO> findAllPostDTOByRegionId(Long id);
-
     @Query("SELECT new online.strongnation.business.model.dto.GetPostResponseByCountryDTO(post)" +
             " FROM Post post JOIN post.region.country c WHERE c.id = :id")
     List<GetPostResponseByCountryDTO> findAllGetPostResponseByCountryDTObyCountryId(Long id);
@@ -35,4 +32,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT reg FROM Post p JOIN p.region reg WHERE p.id = :id")
     Optional<Region> findRegionOfPostById(Long id);
+
+    @Modifying
+    @Query("update Post p set p.important = :important where p.id = :id")
+    void setImportantOfPostById(Long id, Boolean important);
 }

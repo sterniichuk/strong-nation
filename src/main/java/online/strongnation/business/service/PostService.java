@@ -26,4 +26,6 @@ public interface PostService {
     List<PostDTO> deleteAllByRegionId(Long id);
 
     List<PostDTO> deleteAll(String countryName, String region);
+
+    Boolean setImportant(Long id, Boolean important);
 }
