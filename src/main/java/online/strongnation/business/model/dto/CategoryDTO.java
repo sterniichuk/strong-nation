@@ -51,4 +51,12 @@ public class CategoryDTO implements Category {
                 this.getUnits()
         );
     }
+
+    public CategoryDTO getWithUnits(String units) {
+        return new CategoryDTO(
+                this.getName(),
+                this.getNumber(),
+                units
+        );
+    }
 }

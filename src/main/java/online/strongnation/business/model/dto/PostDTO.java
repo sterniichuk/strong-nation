@@ -12,15 +12,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDTO implements StatisticModel {
+public class PostDTO implements StatisticModel<RegionDTO> {
     private Long id;
     private String region;
     private String description;
     private String link;
     private LocalDateTime date;
-
     private Boolean important;
-
     private List<CategoryDTO> categories;
 
     public PostDTO(Post post) {

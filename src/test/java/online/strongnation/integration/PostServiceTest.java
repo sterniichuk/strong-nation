@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static online.strongnation.business.service.implementation.CategoryUtils.getCategoryMap;
+import static online.strongnation.business.service.implementation.CategoryUtils.getCategoryNameMap;
 import static online.strongnation.business.service.implementation.RequestParameterFixer.checkDate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -187,8 +187,8 @@ class PostServiceTest {
         var country = countryRepository.findCountryDTOByNameIgnoreCase(USA_NAME).orElseThrow(CountryNotFoundException::new);
         var region = regionRepository.findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
                 .orElseThrow(CountryNotFoundException::new);
-        var regionCategoryMap = getCategoryMap(region.getCategories());
-        var countryCategoryMap = getCategoryMap(country.getCategories());
+        var regionCategoryMap = getCategoryNameMap(region.getCategories());
+        var countryCategoryMap = getCategoryNameMap(country.getCategories());
         assertThat(regionCategoryMap.get(FOOD).getNumber()
                 .compareTo(WASHINGTON_IN_USA_FOOD_CATEGORY.getNumber().multiply(BigDecimal.valueOf(2))))
                 .isEqualTo(0);
@@ -220,8 +220,8 @@ class PostServiceTest {
         var country = countryRepository.findCountryDTOByNameIgnoreCase(USA_NAME).orElseThrow(CountryNotFoundException::new);
         var region = regionRepository.findRegionDTOInCountryByNamesIgnoringCase(USA_NAME, WASHINGTON_NAME)
                 .orElseThrow(CountryNotFoundException::new);
-        var regionCategoryMap = getCategoryMap(region.getCategories());
-        var countryCategoryMap = getCategoryMap(country.getCategories());
+        var regionCategoryMap = getCategoryNameMap(region.getCategories());
+        var countryCategoryMap = getCategoryNameMap(country.getCategories());
         assertThat(regionCategoryMap.get(FOOD).getNumber()
                 .compareTo(WASHINGTON_IN_USA_FOOD_CATEGORY.getNumber().multiply(BigDecimal.valueOf(2))))
                 .isEqualTo(0);
@@ -344,8 +344,8 @@ class PostServiceTest {
                 .findCountryDTOByNameIgnoreCase(USA_NAME)
                 .orElseThrow(RegionNotFoundException::new)
                 .getCategories();
-        final var countryCategoriesMap = getCategoryMap(countryCategories);
-        final var regionCategoriesMap = getCategoryMap(regionCategories);
+        final var countryCategoriesMap = getCategoryNameMap(countryCategories);
+        final var regionCategoriesMap = getCategoryNameMap(regionCategories);
         final var currentRegionFoodNumber = regionCategoriesMap.get(FOOD).getNumber();
         final var currentCountryFoodNumber = countryCategoriesMap.get(FOOD).getNumber();
         assertThat(NUMBER_OF_FOOD.subtract(newNumber)
@@ -400,8 +400,8 @@ class PostServiceTest {
                 .findCountryDTOByNameIgnoreCase(USA_NAME)
                 .orElseThrow(RegionNotFoundException::new)
                 .getCategories();
-        final var countryCategoriesMap = getCategoryMap(countryCategories);
-        final var targetRegionCategoriesMap = getCategoryMap(targetRegionCategories);
+        final var countryCategoriesMap = getCategoryNameMap(countryCategories);
+        final var targetRegionCategoriesMap = getCategoryNameMap(targetRegionCategories);
         final var currentRegionGoldNumber = targetRegionCategoriesMap.get(GOLD).getNumber();
         final var currentCountryGoldNumber = countryCategoriesMap.get(GOLD).getNumber();
         BigDecimal expectedValueOfGold = NUMBER_OF_FOOD.subtract(newNumber);
@@ -441,8 +441,8 @@ class PostServiceTest {
                 .findCountryDTOByNameIgnoreCase(USA_NAME)
                 .orElseThrow(RegionNotFoundException::new)
                 .getCategories();
-        final var countryCategoriesMap = getCategoryMap(countryCategories);
-        final var regionCategoriesMap = getCategoryMap(regionCategories);
+        final var countryCategoriesMap = getCategoryNameMap(countryCategories);
+        final var regionCategoriesMap = getCategoryNameMap(regionCategories);
         final var currentRegionFoodNumber = regionCategoriesMap.get(FOOD).getNumber();
         final var currentCountryFoodNumber = countryCategoriesMap.get(FOOD).getNumber();
         assertThat(NUMBER_OF_FOOD.subtract(newNumber)
@@ -483,8 +483,8 @@ class PostServiceTest {
                 .findCountryDTOByNameIgnoreCase(USA_NAME)
                 .orElseThrow(RegionNotFoundException::new)
                 .getCategories();
-        final var countryCategoriesMap = getCategoryMap(countryCategories);
-        final var regionCategoriesMap = getCategoryMap(regionCategories);
+        final var countryCategoriesMap = getCategoryNameMap(countryCategories);
+        final var regionCategoriesMap = getCategoryNameMap(regionCategories);
         final var currentRegionFoodNumber = regionCategoriesMap.get(FOOD).getNumber();
         final var currentCountryFoodNumber = countryCategoriesMap.get(FOOD).getNumber();
         assertThat(NUMBER_OF_FOOD.subtract(newNumber)

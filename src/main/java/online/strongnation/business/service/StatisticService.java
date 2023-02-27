@@ -4,11 +4,15 @@ import online.strongnation.business.model.statistic.StatisticModel;
 import online.strongnation.business.model.statistic.StatisticResult;
 
 public interface StatisticService {
-    StatisticResult addChildToParent(StatisticModel parent, StatisticModel child);
+    <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult addChildToParent(Parent parent, Child child);
 
-    <T extends StatisticModel> StatisticResult updateChild(StatisticModel parent, T old, T updated);
+    <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult updateChild(Parent parent, Child old, Child updated);
 
-    <T extends StatisticModel> StatisticResult updateSelf(T old, T updated);
+    <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult updateSelf(Child old, Child updated);
 
-    StatisticResult deleteChild(StatisticModel parent, StatisticModel child);
+    <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult deleteChild(Parent parent, Child child);
 }

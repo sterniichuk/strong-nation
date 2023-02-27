@@ -10,10 +10,13 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-import static online.strongnation.business.service.implementation.CategoryUtils.getCategoryMap;
+import static online.strongnation.business.service.implementation.CategoryUtils.*;
 
 @Service
 public class StatisticServiceImpl implements StatisticService {
+
+    private static final CategoryDTOComparator comparator = new CategoryDTOComparator();
+
 
     private static final StatisticResult emptyStatistic = StatisticResult.builder()
             .updatedCategories(List.of())
@@ -22,7 +25,8 @@ public class StatisticServiceImpl implements StatisticService {
             .build();
 
     @Override
-    public StatisticResult addChildToParent(StatisticModel parent, StatisticModel child) {
+    public <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult addChildToParent(Parent parent, Child child) {
         if (child == null) {
             return emptyStatistic;
         }
@@ -44,11 +48,12 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    private void groupCategoriesOfNewChild(StatisticModel parent, StatisticModel child,
-                                           List<CategoryDTO> updated, List<CategoryDTO> newCategories) {
-        Map<String, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
+    private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    void groupCategoriesOfNewChild(Parent parent, Child child,
+                                   List<CategoryDTO> updated, List<CategoryDTO> newCategories) {
+        Map<CategoryDTO, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
         for (var i : child.getCategories()) {
-            var categoryDTO = parentCategories.get(i.getName());
+            var categoryDTO = parentCategories.remove(i);
             if (categoryDTO != null) {
                 updated.add(categoryDTO.addNumber(i));
                 continue;
@@ -58,7 +63,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public <T extends StatisticModel> StatisticResult updateChild(StatisticModel parent, T old, T updated) {
+    public <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult updateChild(Parent parent, Child old, Child updated) {
+
         if (updated == null) {
             return emptyStatistic;
         }
@@ -77,7 +84,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public <T extends StatisticModel> StatisticResult updateSelf(T old, T updated) {
+    public <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult updateSelf(Child old, Child updated) {
+
         if (updated == null) {
             return emptyStatistic;
         }
@@ -96,42 +105,43 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    private <T extends StatisticModel> void groupCategoriesWhenUpdateSelf(T old, T updated,
-                                                                          List<CategoryDTO> updatedCategories,
-                                                                          List<CategoryDTO> newCategories,
-                                                                          List<CategoryDTO> excessiveCategories) {
-        Map<String, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
-        Set<String> presentCategoryInNewModel = new HashSet<>();
+    private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    void groupCategoriesWhenUpdateSelf(Child old, Child updated,
+                                       List<CategoryDTO> updatedCategories,
+                                       List<CategoryDTO> newCategories,
+                                       List<CategoryDTO> excessiveCategories) {
+        Map<CategoryDTO, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
+        Set<CategoryDTO> presentCategoryInNewModel = new TreeSet<>(comparator);
         for (var i : updated.getCategories()) {
-            var oldCategory = oldMap.get(i.getName());
+            var oldCategory = oldMap.get(i);
             if (oldCategory != null) {
                 Optional<BigDecimal> number = selfUpdateNumber(oldCategory.getNumber(), i.getNumber());
                 number.ifPresent(m -> updatedCategories.add(oldCategory.updateNumber(m)));
-                presentCategoryInNewModel.add(oldCategory.getName());
+                presentCategoryInNewModel.add(oldCategory);
                 continue;
             }
             newCategories.add(i);
         }
         old.getCategories().forEach(c -> {
-            String name = c.getName();
-            if (!presentCategoryInNewModel.remove(name)) {
+            if (!presentCategoryInNewModel.remove(c)) {
                 excessiveCategories.add(c);
             }
         });
     }
 
-    Optional<BigDecimal> selfUpdateNumber(BigDecimal old, BigDecimal newNumber) {
+    private Optional<BigDecimal> selfUpdateNumber(BigDecimal old, BigDecimal newNumber) {
         int compare = old.compareTo(newNumber);
         return compare == 0 ? Optional.empty() : Optional.of(newNumber);
     }
 
-    private void groupCategoriesWhenUpdateChild(StatisticModel parent, StatisticModel old,
-                                                StatisticModel updated,
-                                                List<CategoryDTO> updatedCategories,
-                                                List<CategoryDTO> newCategories,
-                                                List<CategoryDTO> excessiveCategories) {
-        Map<String, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
-        Map<String, CategoryDTO> parentMap = getCategoryMap(parent.getCategories());
+    private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    void groupCategoriesWhenUpdateChild(Parent parent, Child old,
+                                        Child updated,
+                                        List<CategoryDTO> updatedCategories,
+                                        List<CategoryDTO> newCategories,
+                                        List<CategoryDTO> excessiveCategories) {
+        Map<CategoryDTO, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
+        Map<CategoryDTO, CategoryDTO> parentMap = getCategoryMap(parent.getCategories());
         Set<CategoryDTO> analyzed = new HashSet<>();
         BiConsumer<BigDecimal, CategoryDTO> categoryAnalizator = (m, parentCategory) -> {
             if (m.compareTo(BigDecimal.ZERO) <= 0) {
@@ -141,9 +151,9 @@ public class StatisticServiceImpl implements StatisticService {
             }
         };
         for (var i : updated.getCategories()) {
-            var parentCategory = parentMap.get(i.getName());
+            var parentCategory = parentMap.remove(i);
             if (parentCategory != null) {
-                var oldCategory = oldMap.get(i.getName());
+                var oldCategory = oldMap.remove(i);
                 Optional<BigDecimal> number = updateNumber(parentCategory, oldCategory, i);
                 number.ifPresent(m -> categoryAnalizator.accept(m, parentCategory));
                 analyzed.add(oldCategory);
@@ -153,7 +163,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         old.getCategories().forEach(c -> {
             if (!analyzed.remove(c)) {
-                var parentCategory = parentMap.get(c.getName());
+                var parentCategory = parentMap.remove(c);
                 BigDecimal number = updateNumberWhenChildDeletedCategory(parentCategory, c);
                 categoryAnalizator.accept(number, c);
             }
@@ -203,7 +213,8 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public StatisticResult deleteChild(StatisticModel parent, StatisticModel child) {
+    public <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    StatisticResult deleteChild(Parent parent, Child child) {
         if (child == null) {
             return emptyStatistic;
         }
@@ -221,12 +232,13 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    private void groupCategoriesOfDeletedChild(StatisticModel parent, StatisticModel child,
-                                               List<CategoryDTO> updated, List<CategoryDTO> excessive) {
-        Map<String, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
+    private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
+    void groupCategoriesOfDeletedChild(Parent parent, Child child,
+                                       List<CategoryDTO> updated, List<CategoryDTO> excessive) {
+        Map<CategoryDTO, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
         for (var i : child.getCategories()) {
-            var parentCategory = parentCategories.get(i.getName());
-            if (parentCategory != null && Objects.equals(parentCategory.getUnits(), i.getUnits())) {
+            var parentCategory = parentCategories.get(i);
+            if (parentCategory != null) {
                 BigDecimal newNumber = parentCategory.getNumber().subtract(i.getNumber());
                 if (newNumber.compareTo(BigDecimal.ZERO) > 0) {
                     updated.add(parentCategory.updateNumber(newNumber));

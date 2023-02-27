@@ -3,6 +3,7 @@ package online.strongnation.unit.service;
 import online.strongnation.business.config.Floats;
 import online.strongnation.business.model.dto.CategoryDTO;
 import online.strongnation.business.model.dto.CountryDTO;
+import online.strongnation.business.model.dto.PostDTO;
 import online.strongnation.business.model.dto.RegionDTO;
 import online.strongnation.business.model.statistic.StatisticResult;
 import online.strongnation.business.service.StatisticService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -250,5 +252,50 @@ class StatisticServiceTest {
                         .units(FOOD_UNITS).build()
                 );
         assertThat(actual.newCategories().isEmpty()).isTrue();
+    }
+
+    @Test
+    void unitsTestNewPost() {
+        //given
+        CategoryDTO foodInWrongUnits = POLAND_FOOD_CATEGORY.getWithUnits("liter");
+        PostDTO postDTO = PostDTO.builder().categories(List.of(foodInWrongUnits)).build();
+        //when
+        final var actual = service.addChildToParent(WARSAW_IN_POLAND, postDTO);
+        //then
+        assertThat(actual.excessiveCategories().isEmpty()).isTrue();
+        assertThat(actual.updatedCategories().isEmpty()).isTrue();
+        assertThat(actual.newCategories().size()).isEqualTo(1);
+        assertThat(actual.newCategories().get(0)).isEqualTo(foodInWrongUnits);
+    }
+
+    @Test
+    void unitsTestUpdateSelfPost() {
+        //given
+        CategoryDTO foodInWrongUnits = POLAND_FOOD_CATEGORY.getWithUnits("liter");
+        PostDTO oldDTO = PostDTO.builder().categories(CATEGORIES_OF_WARSAW_OF_USA).build();
+        PostDTO postDTO = PostDTO.builder().categories(List.of(foodInWrongUnits)).build();
+        //when
+        final var actual = service.updateSelf(oldDTO, postDTO);
+        //then
+        assertThat(actual.excessiveCategories().size()).isEqualTo(2);
+        assertThat(actual.excessiveCategories().containsAll(CATEGORIES_OF_WARSAW_OF_USA)).isTrue();
+        assertThat(actual.updatedCategories().isEmpty()).isTrue();
+        assertThat(actual.newCategories().size()).isEqualTo(1);
+        assertThat(actual.newCategories().get(0)).isEqualTo(foodInWrongUnits);
+    }
+
+    @Test
+    void unitsTestDeleteChild() {
+        //given
+        CategoryDTO foodInWrongUnits = POLAND_FOOD_CATEGORY.getWithUnits("liter");
+        PostDTO postDTO = PostDTO.builder().categories(List.of(foodInWrongUnits)).build();
+        ArrayList<CategoryDTO> categoryDTOS = new ArrayList<>(CATEGORIES_OF_USA);
+        categoryDTOS.add(foodInWrongUnits);
+        //when
+        final var actual = service.deleteChild(RegionDTO.builder().categories(categoryDTOS).build(), postDTO);
+        //then
+        assertThat(actual.excessiveCategories().size()).isEqualTo(1);
+        assertThat(actual.updatedCategories().isEmpty()).isTrue();
+        assertThat(actual.newCategories().size()).isEqualTo(0);
     }
 }

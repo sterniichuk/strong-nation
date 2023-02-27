@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryDTO implements StatisticModel {
+public class CountryDTO implements StatisticModel<CountryDTO> {
     private Long id;
     private String name;
     private List<CategoryDTO> categories;
