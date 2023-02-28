@@ -1,13 +1,17 @@
 # Strong Nation
+
 Charity organization website
+
 ## Built With
+
 - Java 17 <img src="https://cdn.jsdelivr.net/npm/programming-languages-logos/src/java/java.png" style="height: 1rem">
-- Lombok
 - Spring Boot
 - Spring Security
 - PostgreSQL
 - H2 for testing
 - Integration/Unit testing
+- Lombok
+
 ## Solve problems
 The main task of the back-end is to perform CRUD operations on posts on the site, as well as to count statistics for regions and countries regarding the support described in the posts.
 <h2>Frontend Part</h2>
