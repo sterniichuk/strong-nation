@@ -2,13 +2,12 @@ package online.strongnation.security.controller;
 
 import lombok.AllArgsConstructor;
 import online.strongnation.business.model.dto.RegionDTO;
-import online.strongnation.security.model.UserDTO;
-import online.strongnation.security.model.AuthenticationResponse;
-import online.strongnation.security.model.Role;
+import online.strongnation.security.model.*;
 import online.strongnation.security.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,31 +22,35 @@ public class AdminController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<AuthenticationResponse> create(@RequestBody UserDTO user) {
-        AuthenticationResponse register = service.register(user, Role.DEVELOPER);
+        AuthenticationResponse register = service.register(user, Role.ADMIN);
         return new ResponseEntity<>(register, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/get/{email}")
-    @PreAuthorize("hasAuthority('admin:read')")
-    public ResponseEntity<UserDTO> get(@PathVariable("email") String email) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
-    public ResponseEntity<List<UserDTO>> get() {
+    public ResponseEntity<List<String>> getEmails() {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{email}")
+    @PutMapping("/update/password")
     @PreAuthorize("hasAuthority('admin:update')")
-    public ResponseEntity<String> update(@RequestBody UserDTO user) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<?> changePassword(Authentication authentication,
+                                    @RequestBody UpdatePasswordDTO passwordDTO) {
+        String name = authentication.getName();
+        return new ResponseEntity<>("name: " + name + "authorities: " + authentication.getAuthorities() + " userdto: " + passwordDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/email")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<?> changePassword(Authentication authentication,
+                                            @RequestBody UpdateEmailDTO updateEmailDTO) {
+        String name = authentication.getName();
+        return new ResponseEntity<>("name: " + name + "authorities: " + authentication.getAuthorities() + " userdto: " + updateEmailDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{email}")
-    @PreAuthorize("hasAuthority('admin:delete   ')")
-    public ResponseEntity<RegionDTO> delete(@PathVariable("email") String email) {
+    @PreAuthorize("hasAuthority('admin:delete')")
+    public ResponseEntity<RegionDTO> delete(Authentication authentication, @PathVariable("email") String email) {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

@@ -47,10 +47,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse authenticate(UserDTO request) {
         String email = request.getEmail();
+        String password = request.getPassword();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         email,
-                        request.getPassword()
+                        password
                 )
         );
         var user = repository.findByEmail(email)
