@@ -12,14 +12,17 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @Component
 @PropertySources({
         @PropertySource("classpath:application.properties")
 })
 @ConfigurationProperties(prefix = "application.jwt")
 public class JwtConfig {
+
+    public static String staticUnits;
+    public static Integer staticTokenExpirationTime;
 
     private String secretKey;
     private String tokenPrefix;
@@ -30,11 +33,26 @@ public class JwtConfig {
         return HttpHeaders.AUTHORIZATION;
     }
 
-    public long getExpirationTimeInMillis(){
+    public long getExpirationTimeInMillis() {
         return getTimeUnits().toMillis(getTokenExpirationTime());
     }
 
-    private TimeUnit getTimeUnits(){
-        return TimeUnit.valueOf(units);
+    public int getTokenExpirationTime() {
+        if (staticTokenExpirationTime == null) {
+            staticTokenExpirationTime = tokenExpirationTime;
+        }
+        return staticTokenExpirationTime;
+    }
+
+
+    public TimeUnit getTimeUnits() {
+        return TimeUnit.valueOf(getUnits());
+    }
+
+    public String getUnits() {
+        if (staticUnits == null) {
+            staticUnits = units;
+        }
+        return staticUnits;
     }
 }
