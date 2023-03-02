@@ -52,11 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void filterJWT(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        if (authHeader == null) {
-            throw new SecurityException("Token is null. Authentication header is null");
-        }
-        if (!authHeader.startsWith(jwtConfig.getTokenPrefix())) {
-            throw new SecurityException("Token is not valid. Authentication header is not starting with " + jwtConfig.getTokenPrefix());
+        if (authHeader == null || !authHeader.startsWith(jwtConfig.getTokenPrefix())) {
+            filterChain.doFilter(request, response);
+            return;
         }
         final String jwt;
         final String userEmail;
