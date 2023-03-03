@@ -1,10 +1,11 @@
 package online.strongnation.security.service.implementation;
 
-import lombok.RequiredArgsConstructor;
+import online.strongnation.security.config.InitMasterConfig;
 import online.strongnation.security.exception.IllegalUserException;
 import online.strongnation.security.exception.UserNotFoundException;
 import online.strongnation.security.model.*;
 import online.strongnation.security.repository.UserRepository;
+import online.strongnation.security.service.AuthenticationService;
 import online.strongnation.security.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,27 +13,85 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.logging.Logger;
 
+import static online.strongnation.security.model.ApplicationUserPermission.DELETE_SELF;
 import static online.strongnation.security.model.ApplicationUserPermission.UPDATE_SELF;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final UserValidator validator;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
+
+    public UserServiceImpl(UserRepository repository,
+                           UserValidator validator,
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationService authenticationService,
+                           InitMasterConfig masterConfig) {
+        this.repository = repository;
+        this.validator = validator;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
+        initMaster(masterConfig);
+    }
+
+    private void initMaster(InitMasterConfig masterConfig) {
+        List<String> emails = repository.getEmailsByRole(Role.MASTER);
+        int size = emails.size();
+        switch (size) {
+            case 0 -> {
+                UserDTO userDTO = masterConfig.getUserDTO();
+                checkUser(userDTO);
+                authenticationService.register(userDTO, Role.MASTER);
+                logger.info("Default master: " + userDTO.getEmail() + " created");
+            }
+            case 1 -> logger.info("Master is already present in the DB. Master: " + emails.get(0));
+            default -> throw new IllegalStateException("Here is more than 1 MASTER in the DB");
+        }
+    }
+
+    @Override
+    public AuthenticationResponse add(Authentication authentication, UserDTO user, Role role) {
+        checkRole(role);
+        checkUser(user);
+        checkAuthentication(authentication);
+        String email = authentication.getName();
+        User creator = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("There is no user with email: " + email));
+        checkPermission(creator, role.getCreatePermission());
+        return authenticationService.register(user, role);
+    }
+
+    private void checkUser(UserDTO user) {
+        if (user == null) {
+            throw new IllegalUserException("Body is empty");
+        }
+        final String email = user.getEmail();
+        final String password = user.getPassword();
+        validator.checkEmail(email);
+        validator.checkPassword(password);
+    }
 
     @Override
     public List<String> getEmails(Authentication authentication, Role role) {
-        if (role == null) {
-            throw new IllegalUserException("Role can't be null");
-        }
+        checkRole(role);
         checkAuthentication(authentication);
         String email = authentication.getName();
         User reader = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("There is no user with email: " + email));
-        checkPermission(reader, reader.getRole().getReadPermission());
+        checkPermission(reader, role.getReadPermission());
         return repository.getEmailsByRole(role);
+    }
+
+    private void checkRole(Role role) {
+        if (role == null) {
+            throw new IllegalUserException("Role can't be null");
+        }
     }
 
     @Override
@@ -41,7 +100,7 @@ public class UserServiceImpl implements UserService {
         defaultUpdateCheck(authentication, dto);
         checkPasswordDTO(dto);
         String email = dto.email();
-        User user = getUser(authentication, email);
+        User user = getUserForUpdating(authentication, email);
         updatePassword(user, dto.newPassword());
         return "Password of " + email + " is updated";
     }
@@ -63,24 +122,31 @@ public class UserServiceImpl implements UserService {
         defaultUpdateCheck(authentication, dto);
         checkEmailDTO(dto);
         String email = dto.email();
-        User user = getUser(authentication, email);
+        User user = getUserForUpdating(authentication, email);
         updateEmail(user, dto.newEmail());
         return "Email of " + email + " is updated to " + dto.newEmail();
     }
 
-    private User getUser(Authentication authentication, String email) {
+    private User getUserForUpdating(Authentication authentication, String email) {
+        return getUserForOperation(authentication, email, UPDATE_SELF, Role::getUpdatePermission);
+    }
+
+    private User getUserForOperation(Authentication authentication, String email,
+                                     ApplicationUserPermission selfPermission,
+                                     Function<Role, ApplicationUserPermission> getterOfOperationPermissionOfUpdater) {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("There is no user with email: " + email));
         String updaterEmail = authentication.getName();
         if (email.equals(updaterEmail)) {
-            checkPermission(user, UPDATE_SELF);
+            checkPermission(user, selfPermission);
         } else {
             User updater = repository.findByEmail(updaterEmail)
                     .orElseThrow(() -> new UserNotFoundException("There is no updater with email: " + updaterEmail));
-            checkPermission(updater, user.getRole().getUpdatePermission());
+            checkPermission(updater, getterOfOperationPermissionOfUpdater.apply(user.getRole()));
         }
         return user;
     }
+
 
     private void updateEmail(User user, String newEmail) {
         repository.findByEmail(newEmail).ifPresent(x -> {
@@ -126,10 +192,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void checkAuthentication(Authentication authentication){
+    private void checkAuthentication(Authentication authentication) {
         if (authentication == null || authentication.getName() == null
                 || authentication.getAuthorities() == null) {
-            throw new IllegalUserException("Authentication error");
+            throw new IllegalUserException("Authentication object is invalid. Custom exception");
         }
     }
 
@@ -137,7 +203,7 @@ public class UserServiceImpl implements UserService {
         try {
             validator.checkEmail(email);
         } catch (IllegalUserException ex) {
-            throw new IllegalUserException("new email" + "\n" + ex.getMessage());
+            throw new IllegalUserException("new email\n" + ex.getMessage());
         }
     }
 
@@ -145,14 +211,20 @@ public class UserServiceImpl implements UserService {
         try {
             validator.checkPassword(password);
         } catch (IllegalUserException ex) {
-            throw new IllegalUserException("new password error" + "\n" + ex.getMessage());
+            throw new IllegalUserException("new password error\n" + ex.getMessage());
         }
     }
 
+    private User getUserForDeleting(Authentication authentication, String email) {
+        return getUserForOperation(authentication, email, DELETE_SELF, Role::getDeletePermission);
+    }
 
     @Override
     public String delete(Authentication authentication, String email) {
-        //todo implement deleting
-        return null;
+        checkAuthentication(authentication);
+        checkEmail(email);
+        User user = getUserForDeleting(authentication, email);
+        repository.deleteById(user.getId());
+        return "Deleted user: " + email;
     }
 }

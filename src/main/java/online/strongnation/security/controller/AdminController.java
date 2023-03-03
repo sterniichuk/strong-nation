@@ -3,7 +3,7 @@ package online.strongnation.security.controller;
 import lombok.AllArgsConstructor;
 import online.strongnation.business.model.dto.RegionDTO;
 import online.strongnation.security.model.*;
-import online.strongnation.security.service.AuthenticationService;
+import online.strongnation.security.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminController {
 
-    private final AuthenticationService service;
+    private final UserService service;
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('admin:create')")
-    public ResponseEntity<AuthenticationResponse> create(@RequestBody UserDTO user) {
-        AuthenticationResponse register = service.register(user, Role.ADMIN);
+    public ResponseEntity<AuthenticationResponse> create(Authentication authentication, @RequestBody UserDTO user) {
+        AuthenticationResponse register = service.add(authentication, user, Role.ADMIN);
         return new ResponseEntity<>(register, HttpStatus.CREATED);
     }
 
@@ -35,7 +35,7 @@ public class AdminController {
     @PutMapping("/update/password")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<?> changePassword(Authentication authentication,
-                                    @RequestBody UpdatePasswordDTO passwordDTO) {
+                                            @RequestBody UpdatePasswordDTO passwordDTO) {
         String name = authentication.getName();
         return new ResponseEntity<>("name: " + name + "authorities: " + authentication.getAuthorities() + " userdto: " + passwordDTO, HttpStatus.OK);
     }

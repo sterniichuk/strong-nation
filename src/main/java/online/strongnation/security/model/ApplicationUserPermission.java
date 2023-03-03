@@ -31,10 +31,14 @@ public enum ApplicationUserPermission {
     DEVELOPER_UPDATE("developer:update"),
     DEVELOPER_DELETE("developer:delete"),
     //master
-    MASTER_UPDATE("master:update"),
-    MASTER_READ("master:read"),//WARNING don't give this permission to any role
+    MASTER_CREATE("master:create"),//WARNING don't give this permission to any role!
+    MASTER_UPDATE("master:update"),//WARNING only master can!
+    MASTER_READ("master:read"),//WARNING don't give this permission to any role!
+    MASTER_DELETE("master:delete"),//WARNING don't give this permission to any role!
+
     //app
     PROPERTIES_READ("properties:read"),
+
     LOGS_READ("logs:read");
 
     public static final String UPDATE_PERMISSION_POSTFIX = ":update";

@@ -21,16 +21,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserValidator validator;
 
     @Override
     public AuthenticationResponse register(UserDTO request, Role role) {
         final String email = request.getEmail();
         final String password = request.getPassword();
-        validator.checkEmail(email);
-        validator.checkPassword(password);
-        if(repository.existsByEmail(email)){
-            throw new IllegalUserException("Email: " + email +" is already in use");
+        if (repository.existsByEmail(email)) {
+            throw new IllegalUserException("Email: " + email + " is already in use");
         }
         var user = User.builder()
                 .email(email)
