@@ -9,7 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserDTO implements EmailOwner{
     private String email;
     private String password;
+
+    @Override
+    public String email() {
+        return email;
+    }
 }

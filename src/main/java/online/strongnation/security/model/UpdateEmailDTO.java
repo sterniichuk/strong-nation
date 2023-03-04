@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record UpdateEmailDTO(String email,
-                             String newEmail) implements EmailOwner {
+                             String newEmail) {
 }

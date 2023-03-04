@@ -1,20 +1,14 @@
 package online.strongnation.security.service;
 
-import online.strongnation.security.model.*;
+import online.strongnation.security.model.UpdateEmailWithPasswordDTO;
+import online.strongnation.security.model.UpdatePasswordDTO;
+import online.strongnation.security.model.UserDTO;
 import org.springframework.security.core.Authentication;
 
-import java.util.List;
-
 public interface UserService {
+    String changePassword(Authentication authentication, UpdatePasswordDTO passwordDTO);
 
-    AuthenticationResponse add(Authentication authentication, UserDTO user, Role role);
+    String changeEmail(Authentication authentication, UpdateEmailWithPasswordDTO updateEmailDTO);
 
-
-    List<String> getEmails(Authentication authentication, Role role);
-
-    String changePassword(Authentication authentication, UpdatePasswordDTO dto);
-
-    String changeEmail(Authentication authentication, UpdateEmailDTO dto);
-
-    String delete(Authentication authentication, String email);
+    String delete(Authentication authentication, UserDTO user);
 }
