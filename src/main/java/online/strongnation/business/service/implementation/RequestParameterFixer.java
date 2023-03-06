@@ -11,11 +11,11 @@ import online.strongnation.business.model.dto.PostDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public interface RequestParameterFixer {
     static String checkAndNormalizeRegion(final String name) {
@@ -91,19 +91,17 @@ public interface RequestParameterFixer {
                     " Actual: " + list.size();
             throw new IllegalPostException(message);
         }
-        return list.stream().map(RequestParameterFixer::checkAndNormalizeCategory).toList();
+        return list.stream().filter(Objects::nonNull)
+                .map(RequestParameterFixer::checkAndNormalizeCategory)
+                .filter(x -> x.getNumber().compareTo(BigDecimal.ZERO) > 0)
+                .toList();
     }
 
     private static CategoryDTO checkAndNormalizeCategory(CategoryDTO category) {
         final String name = checkAndNormalizeNameOfCategory(category.getName());
-        final BigDecimal number = checkAndNormalizeNumberOfCategory(category.getNumber());
+        final BigDecimal number = checkAndNormalizeNumber(category.getNumber());
         final String units = checkAndNormalizeUnitsOfCategory(category.getUnits());
         return new CategoryDTO(name, number, units);
-    }
-
-    private static BigDecimal checkAndNormalizeNumberOfCategory(final BigDecimal number) {
-        final String zeroMessage = "Number in category is less than zero: ";
-        return checkAndNormalizeNumber(number, Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING, zeroMessage);
     }
 
     private static String checkAndNormalizeUnitsOfCategory(final String units) {
@@ -172,15 +170,12 @@ public interface RequestParameterFixer {
         return link;
     }
 
-    private static BigDecimal checkAndNormalizeNumber(final BigDecimal money,
-                                                      final int scale,
-                                                      final RoundingMode mode,
-                                                      final String zeroMessage) {
+    private static BigDecimal checkAndNormalizeNumber(final BigDecimal money) {
         int compare = money.compareTo(BigDecimal.ZERO);
         return switch (compare) {
-            case -1 -> throw new IllegalPostException(zeroMessage + money);
+            case -1 -> throw new IllegalPostException("Number in category is less than zero: " + money);
             case 0 -> BigDecimal.ZERO;
-            default -> money.setScale(scale, mode);
+            default -> money.setScale(Floats.CATEGORY_SCALE, Floats.CATEGORY_ROUNDING);
         };
     }
 
