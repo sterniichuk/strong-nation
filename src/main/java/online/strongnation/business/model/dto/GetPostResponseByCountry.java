@@ -11,17 +11,16 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetPostResponseByCountryDTO {
+public class GetPostResponseByCountry {
     private Long id;
     private String description;
     private String link;
     private LocalDateTime date;
-
     private Boolean important;
 
     private String region;
 
-    public GetPostResponseByCountryDTO(Post post) {
+    public GetPostResponseByCountry(Post post) {
         this.id = post.getId();
         this.description = post.getDescription();
         this.link = post.getLink();

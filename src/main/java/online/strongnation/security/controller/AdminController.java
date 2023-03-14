@@ -30,28 +30,28 @@ public class AdminController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<String>> getEmails() {
-        var response = service.getEmails(Role.ADMIN);
+        List<String> response = service.getEmails(Role.ADMIN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/password")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<String> changePassword(@RequestBody UserDTO passwordDTO) {
-        var response = service.changePassword(passwordDTO, Role.ADMIN);
+        String response = service.changePassword(passwordDTO, Role.ADMIN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/email")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<String> changeEmail(@RequestBody UpdateEmailDTO updateEmailDTO) {
-        var response = service.changeEmail(updateEmailDTO, Role.ADMIN);
+        String response = service.changeEmail(updateEmailDTO, Role.ADMIN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{email}")
     @PreAuthorize("hasAuthority('admin:delete')")
     public ResponseEntity<String> delete(@PathVariable("email") String email) {
-        var response = service.delete(email, Role.ADMIN);
+        String response = service.delete(email, Role.ADMIN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -27,28 +27,28 @@ public class DeveloperController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('developer:read')")
     public ResponseEntity<List<String>> getEmails() {
-        var response = service.getEmails(Role.DEVELOPER);
+        List<String> response = service.getEmails(Role.DEVELOPER);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/password")
     @PreAuthorize("hasAuthority('developer:update')")
     public ResponseEntity<String> changePassword(@RequestBody UserDTO passwordDTO) {
-        var response = service.changePassword(passwordDTO, Role.DEVELOPER);
+        String response = service.changePassword(passwordDTO, Role.DEVELOPER);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/email")
     @PreAuthorize("hasAuthority('developer:update')")
     public ResponseEntity<String> changeEmail(@RequestBody UpdateEmailDTO updateEmailDTO) {
-        var response = service.changeEmail(updateEmailDTO, Role.DEVELOPER);
+        String response = service.changeEmail(updateEmailDTO, Role.DEVELOPER);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{email}")
     @PreAuthorize("hasAuthority('developer:delete')")
     public ResponseEntity<String> delete(@PathVariable("email") String email) {
-        var response = service.delete(email, Role.DEVELOPER);
+        String response = service.delete(email, Role.DEVELOPER);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

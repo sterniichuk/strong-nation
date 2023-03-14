@@ -7,6 +7,5 @@ public interface NameProperties {
     int CATEGORY_NAME_LENGTH = 100;
     int CATEGORY_UNITS_LENGTH = 10;
     int EMAIL_LENGTH = 300;
-
     int ROLE_LENGTH = 50;
 }

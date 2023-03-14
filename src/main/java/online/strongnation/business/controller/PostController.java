@@ -2,7 +2,7 @@ package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
 import online.strongnation.business.model.dto.GetPostResponse;
-import online.strongnation.business.model.dto.GetPostResponseByCountryDTO;
+import online.strongnation.business.model.dto.GetPostResponseByCountry;
 import online.strongnation.business.model.dto.PostDTO;
 import online.strongnation.business.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -37,8 +37,8 @@ public class PostController {
     }
 
     @GetMapping("/all/{country}")
-    public ResponseEntity<List<GetPostResponseByCountryDTO>> all(@PathVariable("country") String countryName) {
-        final List<GetPostResponseByCountryDTO> response = service.all(countryName);
+    public ResponseEntity<List<GetPostResponseByCountry>> all(@PathVariable("country") String countryName) {
+        final List<GetPostResponseByCountry> response = service.all(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

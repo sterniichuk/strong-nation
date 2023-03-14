@@ -16,15 +16,12 @@ public enum Role {
     ADMIN(ADMIN_CREATE, ADMIN_READ, ADMIN_UPDATE, ADMIN_DELETE, Set.of(POST_WRITE, SLIDER_WRITE, UPDATE_SELF, DELETE_SELF)),
     DEVELOPER(DEVELOPER_CREATE, DEVELOPER_READ, DEVELOPER_UPDATE, DEVELOPER_DELETE, Set.of(POST_WRITE, POST_DELETE_ALL,
             COUNTRY_WRITE, REGION_WRITE,
-            ADMIN_CREATE, ADMIN_READ, ADMIN_DELETE, ADMIN_UPDATE,
-            LOGS_READ, SLIDER_WRITE, UPDATE_SELF, DELETE_SELF)),
+            ADMIN_CREATE, ADMIN_READ, ADMIN_DELETE, ADMIN_UPDATE, SLIDER_WRITE, UPDATE_SELF, DELETE_SELF)),
     MASTER(MASTER_CREATE, MASTER_READ, MASTER_UPDATE, MASTER_DELETE, Set.of(POST_WRITE, POST_DELETE_ALL,
             COUNTRY_WRITE, REGION_WRITE,
             ADMIN_CREATE, ADMIN_READ, ADMIN_DELETE, ADMIN_UPDATE,
-            LOGS_READ,
             DEVELOPER_CREATE, DEVELOPER_READ,
-            DEVELOPER_DELETE, DEVELOPER_UPDATE,
-            PROPERTIES_READ, SLIDER_WRITE, UPDATE_SELF
+            DEVELOPER_DELETE, DEVELOPER_UPDATE, SLIDER_WRITE, UPDATE_SELF
     ));
     public static final String rolePrefix = "ROLE_";
     private final ApplicationUserPermission createPermission;
@@ -42,9 +39,5 @@ public enum Role {
                 .collect(Collectors.toSet());
         permissions.add(new SimpleGrantedAuthority(rolePrefix + this.name()));
         return permissions;
-    }
-
-    public boolean hasPermission(final ApplicationUserPermission permission) {
-        return permissions.stream().anyMatch(x -> x.equals(permission));
     }
 }

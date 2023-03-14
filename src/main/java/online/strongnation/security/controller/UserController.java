@@ -21,7 +21,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:update-self')")
     public ResponseEntity<String> changePassword(Authentication authentication,
                                                  @RequestBody UpdatePasswordDTO passwordDTO) {
-        var response = service.changePassword(authentication, passwordDTO);
+        String response = service.changePassword(authentication, passwordDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -29,7 +29,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:update-self')")
     public ResponseEntity<String> changeEmail(Authentication authentication,
                                               @RequestBody UpdateEmailWithPasswordDTO updateEmailDTO) {
-        var response = service.changeEmail(authentication, updateEmailDTO);
+        String response = service.changeEmail(authentication, updateEmailDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -37,7 +37,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:delete-self')")
     public ResponseEntity<String> delete(Authentication authentication,
                                          @RequestBody UserDTO user) {
-        var response = service.delete(authentication, user);
+        String response = service.delete(authentication, user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

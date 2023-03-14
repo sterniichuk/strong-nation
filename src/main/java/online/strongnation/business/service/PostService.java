@@ -1,7 +1,7 @@
 package online.strongnation.business.service;
 
 import online.strongnation.business.model.dto.GetPostResponse;
-import online.strongnation.business.model.dto.GetPostResponseByCountryDTO;
+import online.strongnation.business.model.dto.GetPostResponseByCountry;
 import online.strongnation.business.model.dto.PostDTO;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface PostService {
 
     List<GetPostResponse> all(String countryName, String regionName);
 
-    List<GetPostResponseByCountryDTO> all(String countryName);
+    List<GetPostResponseByCountry> all(String countryName);
 
     List<GetPostResponse> all(Long id);//regionId
 

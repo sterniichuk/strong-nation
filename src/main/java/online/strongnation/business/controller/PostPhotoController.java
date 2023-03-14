@@ -1,7 +1,6 @@
 package online.strongnation.business.controller;
 
 import lombok.AllArgsConstructor;
-import online.strongnation.business.config.Constants;
 import online.strongnation.business.service.PostPhotoService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostPhotoController {
 
     PostPhotoService service;
-    Constants constants;
 
     @PostMapping("/upload/{id}")
     @PreAuthorize("hasAuthority('post:write')")

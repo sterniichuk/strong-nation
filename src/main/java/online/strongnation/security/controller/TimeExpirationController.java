@@ -17,14 +17,14 @@ public class TimeExpirationController {
     @PutMapping("token/time-expiration/update")
     @PreAuthorize("hasAnyRole('ROLE_DEVELOPER, ROLE_MASTER')")
     public ResponseEntity<TokenExpirationConfig> changeTimeExpirationTime(@RequestBody TokenExpirationConfig time) {
-        var response = timeExpirationService.changeTimeExpirationTime(time);
+        TokenExpirationConfig response = timeExpirationService.changeTimeExpirationTime(time);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("token/time-expiration/get")
     @PreAuthorize("hasAnyRole('ROLE_DEVELOPER, ROLE_MASTER')")
     public ResponseEntity<TokenExpirationConfig> get() {
-        var response = timeExpirationService.get();
+        TokenExpirationConfig response = timeExpirationService.get();
         return ResponseEntity.ok(response);
     }
 }

@@ -111,12 +111,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<GetPostResponseByCountryDTO> all(String countryName) {
+    public List<GetPostResponseByCountry> all(String countryName) {
         final String clearNameOfCountry = checkAndNormalizeCountry(countryName);
         var country = countryRepository.findCountryByNameIgnoreCase(clearNameOfCountry)
                 .orElseThrow(() -> new CountryNotFoundException("Country " + countryName + " doesn't exist"));
         return postRepository.findAllGetPostResponseByCountryDTObyCountryId(country.getId())
-                .stream().sorted(Comparator.comparing(GetPostResponseByCountryDTO::getDate).reversed()).toList();
+                .stream().sorted(Comparator.comparing(GetPostResponseByCountry::getDate).reversed()).toList();
 
     }
 

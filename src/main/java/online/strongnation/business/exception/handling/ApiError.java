@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -21,14 +20,6 @@ class ApiError {
         timestamp = new Date();
     }
 
-    ApiError(HttpStatus status) {
-        this();
-        this.status = status;
-    }
-
-    ApiError(HttpStatus status, Throwable ex) {
-        this(status,"Unexpected error", ex.getLocalizedMessage());
-    }
     public ApiError(HttpStatus status, String message, String debugMessage) {
         this();
         this.status = status;
@@ -39,6 +30,4 @@ class ApiError {
     public ApiError(HttpStatus status, String message, Throwable ex) {
         this(status, message, ex.getLocalizedMessage());
     }
-
-
 }

@@ -45,8 +45,8 @@ public class PostDTO implements StatisticModel<RegionDTO> {
                 .build();
     }
 
-    public GetPostResponseByCountryDTO toGetResponseByCountry(String region) {
-        return GetPostResponseByCountryDTO.builder()
+    public GetPostResponseByCountry toGetResponseByCountry(String region) {
+        return GetPostResponseByCountry.builder()
                 .id(id)
                 .region(region)
                 .date(date)
@@ -57,14 +57,6 @@ public class PostDTO implements StatisticModel<RegionDTO> {
     }
 
     public PostDTO getWithId(Long id) {
-        return PostDTO.builder()
-                .id(id)
-                .date(date)
-                .description(description)
-                .link(link)
-                .region(region)
-                .important(important)
-                .categories(categories)
-                .build();
+        return this.toBuilder().id(id).build();
     }
 }

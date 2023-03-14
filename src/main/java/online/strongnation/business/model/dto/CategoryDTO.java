@@ -1,7 +1,6 @@
 package online.strongnation.business.model.dto;
 
 import lombok.*;
-import online.strongnation.business.model.BigDecimalEquals;
 import online.strongnation.business.model.Category;
 
 import java.math.BigDecimal;
@@ -22,7 +21,18 @@ public class CategoryDTO implements Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CategoryDTO that = (CategoryDTO) o;
-        return name.equals(that.name) && BigDecimalEquals.compare(number, that.number) && Objects.equals(units, that.units);
+        return name.equals(that.name) && compare(number, that.number) && Objects.equals(units, that.units);
+    }
+
+    @SuppressWarnings("all")
+    private static boolean compare(BigDecimal one, BigDecimal two) {
+        if (one == two) {
+            return true;
+        }
+        if (one == null || two == null) {
+            return false;
+        }
+        return one.compareTo(two) == 0;
     }
 
     @Override
