@@ -33,14 +33,14 @@ public class CountryCategory implements CategoryHolder {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
-    private CategoryDAO categoryDAO;
+    private CategoryEntity categoryEntity;
 
-    public CountryCategory(CategoryDAO categoryDAO) {
-        this.categoryDAO = categoryDAO;
+    public CountryCategory(CategoryEntity categoryEntity) {
+        this.categoryEntity = categoryEntity;
     }
 
     public CountryCategory(CategoryDTO categoryDTO) {
-        this(new CategoryDAO(categoryDTO));
+        this(new CategoryEntity(categoryDTO));
     }
 
     @Override
@@ -48,11 +48,11 @@ public class CountryCategory implements CategoryHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CountryCategory that = (CountryCategory) o;
-        return categoryDAO.equals(that.categoryDAO);
+        return categoryEntity.equals(that.categoryEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(categoryDAO);
+        return Objects.hash(categoryEntity);
     }
 }

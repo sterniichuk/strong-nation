@@ -23,7 +23,7 @@ public class CountryDTO implements StatisticModel<CountryDTO> {
         this.name = entity.getName();
         List<CountryCategory> entityCategories = entity.getCategories();
         this.categories = (entityCategories == null) ? List.of() : entityCategories
-                .stream().map(CountryCategory::getCategoryDAO)
+                .stream().map(CountryCategory::getCategoryEntity)
                 .map(CategoryDTO::new).toList();
     }
 }

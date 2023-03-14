@@ -17,7 +17,7 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "category")
-public class CategoryDAO implements Category {
+public class CategoryEntity implements Category {
     @Id
     @SequenceGenerator(
             name = "category_sequence",
@@ -37,13 +37,13 @@ public class CategoryDAO implements Category {
     @Column(length = NameProperties.CATEGORY_UNITS_LENGTH)
     private String units;
 
-    public CategoryDAO(String name, BigDecimal number, String units) {
+    public CategoryEntity(String name, BigDecimal number, String units) {
         this.name = name;
         this.number = number;
         this.units = units;
     }
 
-    public CategoryDAO(CategoryDTO categoryDTO) {
+    public CategoryEntity(CategoryDTO categoryDTO) {
         this(categoryDTO.getName(), categoryDTO.getNumber(), categoryDTO.getUnits());
     }
 
@@ -51,8 +51,8 @@ public class CategoryDAO implements Category {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CategoryDAO categoryDAO = (CategoryDAO) o;
-        return name.equals(categoryDAO.name) && Objects.equals(units, categoryDAO.units);
+        CategoryEntity categoryEntity = (CategoryEntity) o;
+        return name.equals(categoryEntity.name) && Objects.equals(units, categoryEntity.units);
     }
 
     @Override

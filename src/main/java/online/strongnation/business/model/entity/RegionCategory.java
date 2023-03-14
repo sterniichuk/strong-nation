@@ -31,14 +31,14 @@ public class RegionCategory implements CategoryHolder {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
-    private CategoryDAO categoryDAO;
+    private CategoryEntity categoryEntity;
 
-    public RegionCategory(CategoryDAO categoryDAO) {
-        this.categoryDAO = categoryDAO;
+    public RegionCategory(CategoryEntity categoryEntity) {
+        this.categoryEntity = categoryEntity;
     }
 
     public RegionCategory(CategoryDTO categoryDTO) {
-        this(new CategoryDAO(categoryDTO));
+        this(new CategoryEntity(categoryDTO));
     }
 
     @Override
@@ -46,11 +46,11 @@ public class RegionCategory implements CategoryHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RegionCategory that = (RegionCategory) o;
-        return categoryDAO.equals(that.categoryDAO);
+        return categoryEntity.equals(that.categoryEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(categoryDAO);
+        return Objects.hash(categoryEntity);
     }
 }

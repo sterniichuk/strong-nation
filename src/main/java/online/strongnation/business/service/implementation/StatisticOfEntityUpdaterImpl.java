@@ -1,7 +1,7 @@
 package online.strongnation.business.service.implementation;
 
 import online.strongnation.business.model.Category;
-import online.strongnation.business.model.entity.CategoryDAO;
+import online.strongnation.business.model.entity.CategoryEntity;
 import online.strongnation.business.model.statistic.CategoryHolder;
 import online.strongnation.business.model.statistic.StatisticEntity;
 import online.strongnation.business.model.statistic.StatisticResult;
@@ -21,7 +21,7 @@ public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
         List<? extends CategoryHolder> categories = updated.getCategories();
         var iterator = categories.iterator();
         while (iterator.hasNext()) {
-            CategoryDAO next = iterator.next().getCategoryDAO();
+            CategoryEntity next = iterator.next().getCategoryEntity();
             CategoryDTO updatedCategory = updateMap.get(next);
             if (updatedCategory != null) {
                 next.setNumber(updatedCategory.getNumber());

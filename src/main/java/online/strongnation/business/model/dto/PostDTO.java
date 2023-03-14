@@ -32,7 +32,7 @@ public class PostDTO implements StatisticModel<RegionDTO> {
     }
 
     public void setPostCategories(List<PostCategory> list) {
-        this.categories = list.stream().map(PostCategory::getCategoryDAO).map(CategoryDTO::new).toList();
+        this.categories = list.stream().map(PostCategory::getCategoryEntity).map(CategoryDTO::new).toList();
     }
 
     public GetPostResponse toGetResponse() {

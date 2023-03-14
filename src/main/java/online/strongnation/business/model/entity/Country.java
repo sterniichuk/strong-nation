@@ -79,7 +79,7 @@ public class Country implements StatisticEntity {
     }
 
     public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(CategoryDAO::new).map(CountryCategory::new)
+        this.categories = categories.stream().map(CategoryEntity::new).map(CountryCategory::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

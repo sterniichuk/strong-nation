@@ -1,6 +1,6 @@
 package online.strongnation.unit.entity;
 
-import online.strongnation.business.model.entity.CategoryDAO;
+import online.strongnation.business.model.entity.CategoryEntity;
 import online.strongnation.business.model.entity.Country;
 import online.strongnation.business.model.entity.Region;
 import online.strongnation.business.model.entity.RegionCategory;
@@ -59,11 +59,11 @@ class RegionDataSavingTest {
         String name = "Rivne";
         region.setName(name);
         RegionCategory regionCategory = new RegionCategory();
-        CategoryDAO categoryDAO = new CategoryDAO();
-        categoryDAO.setNumber(BigDecimal.valueOf(9.f));
-        categoryDAO.setName("food");
-        categoryDAO.setUnits("kg");
-        regionCategory.setCategoryDAO(categoryDAO);
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setNumber(BigDecimal.valueOf(9.f));
+        categoryEntity.setName("food");
+        categoryEntity.setUnits("kg");
+        regionCategory.setCategoryEntity(categoryEntity);
 
         region.setCategories(List.of(regionCategory));
         countryRepository.save(country);
@@ -78,13 +78,13 @@ class RegionDataSavingTest {
 
         var regionCategorySaved = regionSaved.getCategories().get(0);
 
-        assertThat(regionCategorySaved.getCategoryDAO()).isNotEqualTo(null);
-        var savedCategory = regionCategorySaved.getCategoryDAO();
-        assertThat(savedCategory).isEqualTo(categoryDAO);
+        assertThat(regionCategorySaved.getCategoryEntity()).isNotEqualTo(null);
+        var savedCategory = regionCategorySaved.getCategoryEntity();
+        assertThat(savedCategory).isEqualTo(categoryEntity);
 
-        CategoryDAO categoryDAO1 = categoryRepository.findAll()
-                .stream().filter(x -> categoryDAO.getName().equals(x.getName()))
+        CategoryEntity categoryEntity1 = categoryRepository.findAll()
+                .stream().filter(x -> categoryEntity.getName().equals(x.getName()))
                 .findFirst().orElseThrow(IllegalStateException::new);
-        assertThat(categoryDAO).isEqualTo(categoryDAO1);
+        assertThat(categoryEntity).isEqualTo(categoryEntity1);
     }
 }

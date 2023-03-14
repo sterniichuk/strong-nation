@@ -76,7 +76,7 @@ public class Region implements StatisticEntity {
     }
 
     public void setCategoriesDTO(List<CategoryDTO> categories) {
-        this.categories = categories.stream().map(CategoryDAO::new).map(RegionCategory::new)
+        this.categories = categories.stream().map(CategoryEntity::new).map(RegionCategory::new)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

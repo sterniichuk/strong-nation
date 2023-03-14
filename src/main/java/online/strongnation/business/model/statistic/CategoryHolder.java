@@ -1,8 +1,8 @@
 package online.strongnation.business.model.statistic;
 
 
-import online.strongnation.business.model.entity.CategoryDAO;
+import online.strongnation.business.model.entity.CategoryEntity;
 
 public interface CategoryHolder {
-    CategoryDAO getCategoryDAO();
+    CategoryEntity getCategoryEntity();
 }
