@@ -1,5 +1,7 @@
 package online.strongnation.business.service.implementation;
 
+import online.strongnation.business.model.Category;
+import online.strongnation.business.model.entity.CategoryDAO;
 import online.strongnation.business.model.statistic.CategoryHolder;
 import online.strongnation.business.model.statistic.StatisticEntity;
 import online.strongnation.business.model.statistic.StatisticResult;
@@ -14,12 +16,12 @@ import java.util.Map;
 public class StatisticOfEntityUpdaterImpl implements StatisticOfEntityUpdater {
     @Override
     public void update(StatisticEntity updated, StatisticResult statistic) {
-        Map<CategoryDTO, CategoryDTO> updateMap = CategoryUtils.getCategoryMap(statistic.updatedCategories());
-        Map<CategoryDTO, CategoryDTO> excessive = CategoryUtils.getCategoryMap(statistic.excessiveCategories());
+        Map<Category, CategoryDTO> updateMap = CategoryUtils.getCategoryMap(statistic.updatedCategories());
+        Map<Category, CategoryDTO> excessive = CategoryUtils.getCategoryMap(statistic.excessiveCategories());
         List<? extends CategoryHolder> categories = updated.getCategories();
         var iterator = categories.iterator();
         while (iterator.hasNext()) {
-            var next = iterator.next().getCategoryDAO();
+            CategoryDAO next = iterator.next().getCategoryDAO();
             CategoryDTO updatedCategory = updateMap.get(next);
             if (updatedCategory != null) {
                 next.setNumber(updatedCategory.getNumber());

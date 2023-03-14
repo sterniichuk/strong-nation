@@ -1,5 +1,6 @@
 package online.strongnation.business.service.implementation;
 
+import online.strongnation.business.model.Category;
 import online.strongnation.business.model.statistic.StatisticModel;
 import online.strongnation.business.model.statistic.StatisticResult;
 import online.strongnation.business.service.StatisticService;
@@ -51,7 +52,7 @@ public class StatisticServiceImpl implements StatisticService {
     private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
     void groupCategoriesOfNewChild(Parent parent, Child child,
                                    List<CategoryDTO> updated, List<CategoryDTO> newCategories) {
-        Map<CategoryDTO, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
+        Map<Category, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
         for (var i : child.getCategories()) {
             var categoryDTO = parentCategories.remove(i);
             if (categoryDTO != null) {
@@ -110,7 +111,7 @@ public class StatisticServiceImpl implements StatisticService {
                                        List<CategoryDTO> updatedCategories,
                                        List<CategoryDTO> newCategories,
                                        List<CategoryDTO> excessiveCategories) {
-        Map<CategoryDTO, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
+        Map<Category, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
         Set<CategoryDTO> presentCategoryInNewModel = new TreeSet<>(comparator);
         for (var i : updated.getCategories()) {
             var oldCategory = oldMap.get(i);
@@ -140,8 +141,8 @@ public class StatisticServiceImpl implements StatisticService {
                                         List<CategoryDTO> updatedCategories,
                                         List<CategoryDTO> newCategories,
                                         List<CategoryDTO> excessiveCategories) {
-        Map<CategoryDTO, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
-        Map<CategoryDTO, CategoryDTO> parentMap = getCategoryMap(parent.getCategories());
+        Map<Category, CategoryDTO> oldMap = getCategoryMap(old.getCategories());
+        Map<Category, CategoryDTO> parentMap = getCategoryMap(parent.getCategories());
         Set<CategoryDTO> analyzed = new HashSet<>();
         BiConsumer<BigDecimal, CategoryDTO> categoryAnalizator = (m, parentCategory) -> {
             if (m.compareTo(BigDecimal.ZERO) <= 0) {
@@ -235,7 +236,7 @@ public class StatisticServiceImpl implements StatisticService {
     private <Parent extends StatisticModel<?>, Child extends StatisticModel<Parent>>
     void groupCategoriesOfDeletedChild(Parent parent, Child child,
                                        List<CategoryDTO> updated, List<CategoryDTO> excessive) {
-        Map<CategoryDTO, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
+        Map<Category, CategoryDTO> parentCategories = getCategoryMap(parent.getCategories());
         for (var i : child.getCategories()) {
             var parentCategory = parentCategories.get(i);
             if (parentCategory != null) {

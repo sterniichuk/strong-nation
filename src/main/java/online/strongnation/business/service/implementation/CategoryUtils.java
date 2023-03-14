@@ -16,7 +16,7 @@ public class CategoryUtils {
                 .collect(Collectors.toMap(CategoryDTO::getName, Function.identity()));
     }
 
-    public static <T extends Category> Map<T, T> getCategoryMap(List<T> list) {
+    public static <T extends Category> Map<Category, T> getCategoryMap(List<T> list) {
         return list.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
