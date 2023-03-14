@@ -24,7 +24,7 @@ public class PostController {
     public ResponseEntity<PostDTO> create(@RequestBody PostDTO post,
                                           @PathVariable("country") String countryName,
                                           @PathVariable("region") String region) {
-        final var response = service.create(post, countryName, region);
+        final PostDTO response = service.create(post, countryName, region);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -32,61 +32,61 @@ public class PostController {
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<PostDTO> create(@RequestBody PostDTO post,
                                           @PathVariable("id") Long id) {
-        final var response = service.create(post, id);
+        final PostDTO response = service.create(post, id);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/all/{country}")
     public ResponseEntity<List<GetPostResponseByCountryDTO>> all(@PathVariable("country") String countryName) {
-        final var response = service.all(countryName);
+        final List<GetPostResponseByCountryDTO> response = service.all(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/all/{country}/{region}")
     public ResponseEntity<List<GetPostResponse>> all(@PathVariable("country") String countryName,
                                                      @PathVariable("region") String regionName) {
-        final var response = service.all(countryName, regionName);
+        final List<GetPostResponse> response = service.all(countryName, regionName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @GetMapping("/all-by-region-id/{id}")
     public ResponseEntity<List<GetPostResponse>> all(@PathVariable("id") Long id) {
-        final var response = service.all(id);
+        final List<GetPostResponse> response = service.all(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/get-by-post-id/{id}")
     public ResponseEntity<PostDTO> get(@PathVariable("id") Long id) {
-        final var response = service.get(id);
+        final PostDTO response = service.get(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<PostDTO> update(@RequestBody PostDTO post) {
-        final var response = service.update(post);
+        final PostDTO response = service.update(post);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/important/{id}/{important}")
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<Boolean> setImportant(@PathVariable("id") Long id, @PathVariable("important") Boolean important) {
-        final var response = service.setImportant(id, important);
+        final Boolean response = service.setImportant(id, important);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<PostDTO> delete(@PathVariable("id") Long id) {
-        final var response = service.delete(id);
+        final PostDTO response = service.delete(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all-by-region-id/{id}")
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<List<PostDTO>> deleteAllByRegionId(@PathVariable("id") Long id) {
-        final var response = service.deleteAllByRegionId(id);
+        final List<PostDTO> response = service.deleteAllByRegionId(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -94,7 +94,7 @@ public class PostController {
     @PreAuthorize("hasAuthority('post:delete_all')")
     public ResponseEntity<List<PostDTO>> deleteAll(@PathVariable("country") String countryName,
                                                    @PathVariable("region") String region) {
-        final var response = service.deleteAll(countryName, region);
+        final List<PostDTO> response = service.deleteAll(countryName, region);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

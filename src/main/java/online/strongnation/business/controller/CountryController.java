@@ -20,19 +20,19 @@ public class CountryController {
     @PostMapping("/add/{name}")
     @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> create(@PathVariable("name") String countryName) {
-        var response = service.create(countryName);
+        CountryDTO response = service.create(countryName);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{name}")
     public ResponseEntity<CountryDTO> get(@PathVariable("name") String countryName) {
-        var response = service.get(countryName);
+        CountryDTO response = service.get(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<CountryDTO>> getAll() {
-        var response = service.getAll();
+        List<CountryDTO> response = service.getAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -40,21 +40,21 @@ public class CountryController {
     @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> rename(@PathVariable("oldName") String oldName,
                                              @PathVariable("newName") String newName) {
-        var response = service.rename(oldName, newName);
+        CountryDTO response = service.rename(oldName, newName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{name}")
     @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<CountryDTO> delete(@PathVariable("name") String countryName) {
-        var response = service.delete(countryName);
+        CountryDTO response = service.delete(countryName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-all")
     @PreAuthorize("hasAuthority('country:write')")
     public ResponseEntity<List<CountryDTO>> deleteAll() {
-        var response = service.deleteAll();
+        List<CountryDTO> response = service.deleteAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -23,7 +23,7 @@ public class SliderPhotoController {
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('slider:write')")
     public ResponseEntity<Long> upload(@RequestParam("file") MultipartFile file) {
-        final var response = service.uploadSliderPhoto(file);
+        final Long response = service.uploadSliderPhoto(file);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -37,14 +37,14 @@ public class SliderPhotoController {
 
     @GetMapping("/all-id")
     public ResponseEntity<List<Long>> all() {
-        final var response = service.getListOfSliderPhotoIds();
+        final List<Long> response = service.getListOfSliderPhotoIds();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('slider:write')")
     public ResponseEntity<Long> delete(@PathVariable Long id) {
-        final var response = service.deleteSliderPhotoById(id);
+        final Long response = service.deleteSliderPhotoById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -24,7 +24,7 @@ public class PostPhotoController {
     @PreAuthorize("hasAuthority('post:write')")
     public ResponseEntity<Long> upload(@RequestParam("file") MultipartFile file,
                                        @PathVariable("id") Long id) {
-        final var response = service.uploadPhotoByPostId(id, file);
+        final Long response = service.uploadPhotoByPostId(id, file);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
