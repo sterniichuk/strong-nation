@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +28,8 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final OriginsConfig originsConfig;
+
+    private final Logger logger = Logger.getLogger(this.getClass().toString());
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,13 +52,15 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         String[] allowedOrigins = originsConfig.getAllowedOrigins();
-        if(allowedOrigins != null){
-            for(var s : allowedOrigins){
+        if (allowedOrigins != null) {
+            for (var s : allowedOrigins) {
                 configuration.addAllowedOrigin(s);
+                logger.info("Allowed origin: " + s);
             }
         }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
